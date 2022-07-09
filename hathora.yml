@@ -1,0 +1,151 @@
+types:
+  AbilityCardTypes:
+    - Item
+    - Spell
+    - Weapon
+    - Friend
+  Roles:
+    - Barbarian
+    - Wizard
+    - Rogue
+    - Paladin
+  Gender:
+    - Male
+    - Female
+  RoundState:
+    - idle
+    - waitingPlayerPassives
+    - activeRunningPlayerPassives
+    - waitingMonsterPassives
+    - activeRunningMonsterPassives
+    - waitingOnTD
+    - activeRunningTDPassive
+    - activeRunningTDActive
+    - waitingOnMonster
+    - activeRunningMonster
+    - waitingOnPlayer
+    - activeRunningPlayer
+    - waitingOnApplyingDamage
+    - activeApplyingDamage
+    - waitingOnCardPool
+    - activeOpeningPool
+    - waitingToBuyCard
+    - activeBuyingCard
+    - waitingOnEndTurn
+    - activeEndingTurn
+  GameState:
+    - Lobby
+    - GameSetup
+    - ReadyToStart
+    - RoundSetup
+    - PlayersTurn
+    - GameOver
+  StatusEffects:
+    - Stunned
+    - NoHeal
+    - NoDraw
+    - LocationCursed
+    - DiscardCurse
+  Targets:
+    - AllHereos
+    - ActiveHero
+    - OtherHero
+    - AnyHero
+    - RandomHero
+  Effect:
+    target: Targets
+    callback: string
+    userPrompt: string?
+  EffectType:
+    - Active
+    - Passive
+  MCard:
+    id: string
+    title: string
+    effectstring: string
+    rewardstring: string
+    health: int
+    damage: int
+    level: int
+    ActiveEffect: Effect?
+    PassiveEffect: Effect?
+    Rewards: Effect?
+    StatusEffects: StatusEffects[]
+  TDCard:
+    id: string
+    title: string
+    level: int
+    ActiveEffect: Effect?
+    PassiveEffect: Effect?
+  ABCard:
+    id: string
+    title: string
+    type: AbilityCardTypes
+    level: int
+    cost: int
+    ActiveEffect: Effect?
+    PassiveEffect: Effect?
+  LCard:
+    id: string
+    title: string
+    level: int
+    sequence: int
+    td: int
+    health: int
+    damage: int
+    ActiveEffect: Effect?
+    PassiveEffect: Effect?
+  player:
+    id: UserId
+    name: string
+    health: int
+    attack: int
+    ability: int
+    hand: ABCard[]
+    role: Roles
+    gender: Gender
+    statusEffects: StatusEffects[]
+  UserState:
+    me: player
+    others: player[]
+    roundState: RoundState
+    activeMonsters: MCard[]
+    location: LCard?
+    TDcard: TDCard?
+    cardPool: ABCard[]
+
+methods:
+  joinGame:
+    role: Roles
+    name: string
+    gender: Gender
+  startGame:
+  startTurn:
+  runPlayerPassives:
+  runMonsterPassives:
+  enableTD:
+  playTD:
+    cardID: string
+  enableMonsters:
+  playMonster:
+    cardID: string
+  enablePlayer:
+  playPlayerCard:
+    cardID: string
+  enableMonsterDamage:
+  applyMonsterDamage:
+    cardID: string
+  disableMonsterDamage:
+  enableCardPool:
+  buyFromCardPool:
+    cardID: string
+  closeCardPool:
+  endRound:
+
+auth:
+  anonymous: {}
+
+userState: UserState
+
+error: string
+
