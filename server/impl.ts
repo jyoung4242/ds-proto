@@ -14,7 +14,7 @@ import {
   TDCard,
   ABCard,
   LCard,
-  player,
+  Player,
   UserState,
   UserId,
   IInitializeRequest,
@@ -38,21 +38,26 @@ import {
   IEndRoundRequest,
 } from "../api/types";
 
+//importing decks
+import MonsterLibrary from "./lib/monster";
+
 type InternalState = {
   roundState: RoundState;
   gameState: GameState;
   activeMonsters: MCard[];
   turn?: UserId;
-  players: player[];
+  players: Player[];
   TD?: TDCard;
   Location?: LCard;
   cardPool: ABCard[];
 };
 
 //nonstate variables
-const monsterDeck: MCard[] = [];
-const towerDefenseDeck: TDCard[] = [];
-const locationDeck: LCard[] = [];
+let gameLevel: number;
+let monsterDeck: MCard[] = [];
+let towerDefenseDeck: TDCard[] = [];
+let locationDeck: LCard[] = [];
+const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
 
 const abilityCardDeck: ABCard[] = [];
 const barbarianStarterDeck: ABCard[] = [];
@@ -85,8 +90,13 @@ export class Impl implements Methods<InternalState> {
     if (state.players.length >= 4) Response.error("Too many users, cannot join");
     if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
     if (state.players.find((player) => player.id === userId) !== undefined) return Response.error("Already joined");
+    if (request.level < 1 || request.level > 8) return Response.error("Invalid Level submitted, must be between 1 and 8");
 
-    let newPlayer: player = {
+    if (state.players.length === 0) {
+      gameLevel = request.level;
+    }
+
+    let newPlayer: Player = {
       id: userId,
       name: request.name,
       health: 10,
@@ -107,7 +117,17 @@ export class Impl implements Methods<InternalState> {
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
     state.gameState = GameState.GameSetup;
     state.turn = state.players[0].id;
+
     //TODO - load up decks
+
+    //Monster Deck
+    monsterDeck = MonsterLibrary.filter((card) => card.level <= gameLevel);
+    monsterDeck = ctx.chance.shuffle(monsterDeck);
+    for (let index = 0; index < numberMonstersActiveByLevel[gameLevel]; index++) {
+      const myCard = monsterDeck.pop()!;
+      state.activeMonsters.push(myCard);
+    }
+
     return Response.ok();
   }
 
@@ -118,12 +138,7 @@ export class Impl implements Methods<InternalState> {
   runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
     return Response.error("Not implemented");
   }
-  runMonsterPassives(
-    state: InternalState,
-    userId: UserId,
-    ctx: Context,
-    request: IRunMonsterPassivesRequest
-  ): Response {
+  runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
     return Response.error("Not implemented");
   }
   enableTD(state: InternalState, userId: UserId, ctx: Context, request: IEnableTDRequest): Response {
@@ -144,28 +159,13 @@ export class Impl implements Methods<InternalState> {
   playPlayerCard(state: InternalState, userId: UserId, ctx: Context, request: IPlayPlayerCardRequest): Response {
     return Response.error("Not implemented");
   }
-  enableMonsterDamage(
-    state: InternalState,
-    userId: UserId,
-    ctx: Context,
-    request: IEnableMonsterDamageRequest
-  ): Response {
+  enableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonsterDamageRequest): Response {
     return Response.error("Not implemented");
   }
-  applyMonsterDamage(
-    state: InternalState,
-    userId: UserId,
-    ctx: Context,
-    request: IApplyMonsterDamageRequest
-  ): Response {
+  applyMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IApplyMonsterDamageRequest): Response {
     return Response.error("Not implemented");
   }
-  disableMonsterDamage(
-    state: InternalState,
-    userId: UserId,
-    ctx: Context,
-    request: IDisableMonsterDamageRequest
-  ): Response {
+  disableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IDisableMonsterDamageRequest): Response {
     return Response.error("Not implemented");
   }
   enableCardPool(state: InternalState, userId: UserId, ctx: Context, request: IEnableCardPoolRequest): Response {

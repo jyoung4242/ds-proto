@@ -12,6 +12,7 @@ types:
   Gender:
     - Male
     - Female
+
   RoundState:
     - idle
     - waitingPlayerPassives
@@ -69,7 +70,7 @@ types:
     level: int
     ActiveEffect: Effect?
     PassiveEffect: Effect?
-    Rewards: Effect?
+    Rewards: Effect
     StatusEffects: StatusEffects[]
   TDCard:
     id: string
@@ -95,7 +96,7 @@ types:
     damage: int
     ActiveEffect: Effect?
     PassiveEffect: Effect?
-  player:
+  Player:
     id: UserId
     name: string
     health: int
@@ -106,8 +107,8 @@ types:
     gender: Gender
     statusEffects: StatusEffects[]
   UserState:
-    me: player?
-    others: player[]
+    me: Player?
+    others: Player[]
     roundState: RoundState
     activeMonsters: MCard[]
     location: LCard?
@@ -119,6 +120,7 @@ methods:
     role: Roles
     name: string
     gender: Gender
+    level: int
   startGame:
   startTurn:
   runPlayerPassives:
