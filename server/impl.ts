@@ -102,11 +102,19 @@ export class Impl implements Methods<InternalState> {
   }
 
   startGame(state: InternalState, userId: UserId, ctx: Context, request: IStartGameRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.gameState != GameState.Lobby) return Response.error("Cannot Start game, its already started");
+    if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
+    state.gameState = GameState.GameSetup;
+    state.turn = state.players[0].id;
+    //TODO - load up decks
+    return Response.ok();
   }
+
   startTurn(state: InternalState, userId: UserId, ctx: Context, request: IStartTurnRequest): Response {
     return Response.error("Not implemented");
   }
+
   runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
     return Response.error("Not implemented");
   }
