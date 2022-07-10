@@ -39,14 +39,14 @@ import {
 } from "../api/types";
 
 type InternalState = {
-  roundState: RoundState,
-  gameState: GameState,
-  activeMonsters: MCard[],
-  turn?: UserId,
-  players: player[],
-  TD?: TDCard,
-  Location?: LCard,
-  cardPool: ABCard[],
+  roundState: RoundState;
+  gameState: GameState;
+  activeMonsters: MCard[];
+  turn?: UserId;
+  players: player[];
+  TD?: TDCard;
+  Location?: LCard;
+  cardPool: ABCard[];
 };
 
 //nonstate variables
@@ -58,11 +58,11 @@ const abilityCardDeck: ABCard[] = [];
 const barbarianStarterDeck: ABCard[] = [];
 const wizardStarterDeck: ABCard[] = [];
 const rogueStarterDeck: ABCard[] = [];
-const paladinStarterDeck: ABCard[]=[];
+const paladinStarterDeck: ABCard[] = [];
 
 type PlayerDiscard = {
-  user: UserId,
-  pile: ABCard[],
+  user: UserId;
+  pile: ABCard[];
 };
 const playerDiscards: PlayerDiscard[] = [];
 
@@ -77,11 +77,30 @@ export class Impl implements Methods<InternalState> {
       TD: undefined,
       Location: undefined,
       cardPool: [],
-        };
+    };
   }
+
   joinGame(state: InternalState, userId: UserId, ctx: Context, request: IJoinGameRequest): Response {
-    return Response.error("Not implemented");
+    //guard conditions
+    if (state.players.length >= 4) Response.error("Too many users, cannot join");
+    if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
+    if (state.players.find((player) => player.id === userId) !== undefined) return Response.error("Already joined");
+
+    let newPlayer: player = {
+      id: userId,
+      name: request.name,
+      health: 10,
+      attack: 0,
+      ability: 0,
+      hand: [],
+      role: request.role,
+      gender: request.gender,
+      statusEffects: [],
+    };
+    state.players.push(newPlayer);
+    return Response.ok();
   }
+
   startGame(state: InternalState, userId: UserId, ctx: Context, request: IStartGameRequest): Response {
     return Response.error("Not implemented");
   }
@@ -91,7 +110,12 @@ export class Impl implements Methods<InternalState> {
   runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
     return Response.error("Not implemented");
   }
-  runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
+  runMonsterPassives(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IRunMonsterPassivesRequest
+  ): Response {
     return Response.error("Not implemented");
   }
   enableTD(state: InternalState, userId: UserId, ctx: Context, request: IEnableTDRequest): Response {
@@ -112,13 +136,28 @@ export class Impl implements Methods<InternalState> {
   playPlayerCard(state: InternalState, userId: UserId, ctx: Context, request: IPlayPlayerCardRequest): Response {
     return Response.error("Not implemented");
   }
-  enableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonsterDamageRequest): Response {
+  enableMonsterDamage(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IEnableMonsterDamageRequest
+  ): Response {
     return Response.error("Not implemented");
   }
-  applyMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IApplyMonsterDamageRequest): Response {
+  applyMonsterDamage(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IApplyMonsterDamageRequest
+  ): Response {
     return Response.error("Not implemented");
   }
-  disableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IDisableMonsterDamageRequest): Response {
+  disableMonsterDamage(
+    state: InternalState,
+    userId: UserId,
+    ctx: Context,
+    request: IDisableMonsterDamageRequest
+  ): Response {
     return Response.error("Not implemented");
   }
   enableCardPool(state: InternalState, userId: UserId, ctx: Context, request: IEnableCardPoolRequest): Response {
@@ -134,17 +173,17 @@ export class Impl implements Methods<InternalState> {
     return Response.error("Not implemented");
   }
   getUserState(state: InternalState, userId: UserId): UserState {
-    let userIndex = state.players.findIndex(p => p.id===userId);
-    let clientState: UserState={
+    let userIndex = state.players.findIndex((p) => p.id === userId);
+    let clientState: UserState = {
       me: state.players[userIndex],
-      others: state.players.filter(p=>p.id!=userId),
+      others: state.players.filter((p) => p.id != userId),
       roundState: state.roundState,
       activeMonsters: state.activeMonsters,
       location: state.Location,
       TDcard: state.TD,
       cardPool: state.cardPool,
     };
-    
+
     return clientState;
   }
 }
