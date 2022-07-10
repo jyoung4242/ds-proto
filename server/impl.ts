@@ -40,6 +40,7 @@ import {
 
 //importing decks
 import MonsterLibrary from "./lib/monster";
+import LocationLibrary from "./lib/locations";
 
 type InternalState = {
   roundState: RoundState;
@@ -127,6 +128,14 @@ export class Impl implements Methods<InternalState> {
       const myCard = monsterDeck.pop()!;
       state.activeMonsters.push(myCard);
     }
+
+    //Locations Deck
+    locationDeck = LocationLibrary.filter((card) => card.level != gameLevel);
+    //inverst order by sequence number
+    locationDeck.sort((a, b): number => {
+      return b.sequence - a.sequence;
+    });
+    state.Location = locationDeck.pop();
 
     return Response.ok();
   }
