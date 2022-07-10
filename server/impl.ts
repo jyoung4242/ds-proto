@@ -174,16 +174,28 @@ export class Impl implements Methods<InternalState> {
   }
   getUserState(state: InternalState, userId: UserId): UserState {
     let userIndex = state.players.findIndex((p) => p.id === userId);
-    let clientState: UserState = {
-      me: state.players[userIndex],
-      others: state.players.filter((p) => p.id != userId),
-      roundState: state.roundState,
-      activeMonsters: state.activeMonsters,
-      location: state.Location,
-      TDcard: state.TD,
-      cardPool: state.cardPool,
-    };
-
-    return clientState;
+    if (userIndex != -1) {
+      const clientState: UserState = {
+        me: state.players[userIndex],
+        others: state.players.filter((p) => p.id != userId),
+        roundState: state.roundState,
+        activeMonsters: state.activeMonsters,
+        location: state.Location,
+        TDcard: state.TD,
+        cardPool: state.cardPool,
+      };
+      return clientState;
+    } else {
+      const clientState: UserState = {
+        me: undefined,
+        others: [],
+        roundState: state.roundState,
+        activeMonsters: state.activeMonsters,
+        location: state.Location,
+        TDcard: state.TD,
+        cardPool: state.cardPool,
+      };
+      return clientState;
+    }
   }
 }

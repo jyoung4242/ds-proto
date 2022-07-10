@@ -106,7 +106,7 @@ types:
     gender: Gender
     statusEffects: StatusEffects[]
   UserState:
-    me: player
+    me: player?
     others: player[]
     roundState: RoundState
     activeMonsters: MCard[]
@@ -148,4 +148,3 @@ auth:
 userState: UserState
 
 error: string
-
