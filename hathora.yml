@@ -76,6 +76,7 @@ types:
     id: string
     title: string
     level: int
+    effectString: string
     ActiveEffect: Effect?
     PassiveEffect: Effect?
   ABCard:

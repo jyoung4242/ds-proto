@@ -41,6 +41,7 @@ import {
 //importing decks
 import MonsterLibrary from "./lib/monster";
 import LocationLibrary from "./lib/locations";
+import TDLibrary from "./lib/towerDefense";
 
 type InternalState = {
   roundState: RoundState;
@@ -119,8 +120,6 @@ export class Impl implements Methods<InternalState> {
     state.gameState = GameState.GameSetup;
     state.turn = state.players[0].id;
 
-    //TODO - load up decks
-
     //Monster Deck
     monsterDeck = MonsterLibrary.filter((card) => card.level <= gameLevel);
     monsterDeck = ctx.chance.shuffle(monsterDeck);
@@ -130,12 +129,20 @@ export class Impl implements Methods<InternalState> {
     }
 
     //Locations Deck
-    locationDeck = LocationLibrary.filter((card) => card.level != gameLevel);
+    locationDeck = LocationLibrary.filter((card) => card.level === gameLevel);
     //inverst order by sequence number
+    console.log(locationDeck);
     locationDeck.sort((a, b): number => {
       return b.sequence - a.sequence;
     });
     state.Location = locationDeck.pop();
+
+    //TD cards
+    towerDefenseDeck = TDLibrary.filter((card) => card.level === gameLevel);
+    towerDefenseDeck = ctx.chance.shuffle(towerDefenseDeck);
+    state.TD = towerDefenseDeck.pop();
+
+    //TODO - cardpool deck and deal
 
     return Response.ok();
   }
