@@ -71,6 +71,7 @@ let paladinCardDeck: ABCard[] = [];
 let rogueCardDeck: ABCard[] = [];
 
 const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
+let numberOfTDCardsForThisLocation: number;
 
 type PlayerDiscard = {
   user: UserId;
@@ -151,27 +152,29 @@ export class Impl implements Methods<InternalState> {
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
 
     const setTurnOrder = (): UserId[] => {
-      let arrayOfIDs: UserId[] = state.players.map((p, i) => {
-        return p.id;
-      });
-      console.log(arrayOfIDs);
+      let arrayOfIDs: UserId[] = state.players.map(p => p.id);
+      arrayOfIDs = ctx.chance.shuffle(arrayOfIDs);
       return arrayOfIDs;
     };
 
+    //Setting State and turn order
     state.gameState = GameState.GameSetup;
     state.turnOrder = setTurnOrder();
     state.turn = state.turnOrder[0];
 
-    //console.log(gameLevel, monsterDeck);
-    //console.log(numberMonstersActiveByLevel[gameLevel]);
     //Deal starting cards
     for (let index = 0; index < numberMonstersActiveByLevel[gameLevel]; index++) {
       const myCard = monsterDeck.pop()!; //Monster Cards
-      //console.log(myCard);
       state.activeMonsters.push(myCard);
     }
+
+    //Location Cards
     state.Location = locationDeck.pop(); //Location Cards
 
+    //set the TD number in case there's an iteration
+    if (state.Location) numberOfTDCardsForThisLocation = state.Location.td;
+
+    //Ability Cards
     for (let index = 0; index < 6; index++) {
       const myCard = abilityCardDeck.pop()!; //Ability Card Pool
       state.cardPool.push(myCard);
@@ -200,27 +203,88 @@ export class Impl implements Methods<InternalState> {
       }
     }
 
-    return Response.ok();
+    state.gameState = GameState.ReadyToStart;
+
+    //get name of user
+    let index = state.players.findIndex(p => p.id === state.turn);
+    let playerName: string;
+    if (index != -1) {
+      playerName = state.players[index].name;
+      ctx.broadcastEvent(`Ready To Start, its ${playerName}'s play`);
+      return Response.ok();
+    }
+
+    return Response.error("Error finding Player in state");
   }
 
   startTurn(state: InternalState, userId: UserId, ctx: Context, request: IStartTurnRequest): Response {
     //gaurd conditions
+    //not right gamestate
+    if (state.roundState != RoundState.idle) return Response.error("Roundstate is not idle, cannot start turn");
+    if (state.gameState != GameState.ReadyToStart) return Response.error("Cannot Start turn, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot start the turn, it is not your turn!");
+    state.roundState = RoundState.waitingPlayerPassives;
+    state.gameState = GameState.PlayersTurn;
+
+    //show TD card
+    state.TD = towerDefenseDeck.pop();
+
+    //get name of user
+    let index = state.players.findIndex(p => p.id === state.turn);
+    let playerName: string;
+    if (index != -1) {
+      playerName = state.players[index].name;
+      ctx.broadcastEvent(`${playerName} has started their turn`);
+      return Response.ok();
+    }
+    return Response.error("Error finding Player in state");
+  }
+
+  runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingPlayerPassives)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningPlayerPassives;
+    //TODO - cycle through user's passive status effects when that system is implemented
+    ctx.broadcastEvent(`Player Passives Complete`);
+    state.roundState = RoundState.waitingMonsterPassives;
+    return Response.ok();
+  }
+  runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingMonsterPassives)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningMonsterPassives;
+    //TODO - cycle through all active monsters and apply their passive effects
+    state.roundState = RoundState.waitingOnTD;
 
     return Response.ok();
   }
 
-  runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
-    return Response.error("Not implemented");
-  }
-  runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
-    return Response.error("Not implemented");
-  }
   enableTD(state: InternalState, userId: UserId, ctx: Context, request: IEnableTDRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingOnTD)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    ctx.sendEvent("ENABLE_TD", userId);
+    return Response.ok();
   }
+
   playTD(state: InternalState, userId: UserId, ctx: Context, request: IPlayTDRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingOnTD)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+
+    return Response.ok();
   }
+
   enableMonsters(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonstersRequest): Response {
     return Response.error("Not implemented");
   }
