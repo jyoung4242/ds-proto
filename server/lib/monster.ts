@@ -1,4 +1,4 @@
-import { MCard, Targets } from "../../api/types";
+import { MCard } from "../../api/types";
 let MonsterLibrary: MCard[] = [];
 export default MonsterLibrary = [
   {
@@ -10,12 +10,10 @@ export default MonsterLibrary = [
     effectstring: "When player discards, Health -1",
     ActiveEffect: undefined,
     PassiveEffect: {
-      target: Targets.ActiveHero,
-      callback: "discardLose1Health",
+      callback: "ifDiscardLose1Health",
     },
     rewardstring: "All players draw one",
     Rewards: {
-      target: Targets.AllHereos,
       callback: "allHereosDrawOne",
       userPrompt: "DrawOne",
     },
@@ -29,13 +27,11 @@ export default MonsterLibrary = [
     level: 1,
     effectstring: "Active Hero, -1 Health",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseOneHealth",
     },
     PassiveEffect: undefined,
-    rewardstring: "All players +1 Ability, +1 Health",
+    rewardstring: " +1 Health",
     Rewards: {
-      target: Targets.AllHereos,
       callback: "allHereosGain1Ability1Health",
     },
     StatusEffects: [],
@@ -49,12 +45,10 @@ export default MonsterLibrary = [
     effectstring: "-1 Health, when location token added",
     ActiveEffect: undefined,
     PassiveEffect: {
-      target: Targets.ActiveHero,
-      callback: "activeHeroLosesOneHealthLocationCurse",
+      callback: "ifActiveHeroLosesOneHealthLocationCurse",
     },
     rewardstring: "Remove one location point",
     Rewards: {
-      target: Targets.AllHereos,
       callback: "removeOneLocationPoint",
     },
     StatusEffects: [],

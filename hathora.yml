@@ -47,14 +47,8 @@ types:
     - NoDraw
     - LocationCursed
     - DiscardCurse
-  Targets:
-    - AllHereos
-    - ActiveHero
-    - OtherHero
-    - AnyHero
-    - RandomHero
+
   Effect:
-    target: Targets
     callback: string
     userPrompt: string?
   EffectType:
@@ -82,6 +76,7 @@ types:
   ABCard:
     id: string
     title: string
+    effectString: string
     type: AbilityCardTypes
     level: int
     cost: int

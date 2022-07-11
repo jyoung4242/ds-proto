@@ -7,7 +7,6 @@ import {
   RoundState,
   GameState,
   StatusEffects,
-  Targets,
   Effect,
   EffectType,
   MCard,
@@ -42,6 +41,11 @@ import {
 import MonsterLibrary from "./lib/monster";
 import LocationLibrary from "./lib/locations";
 import TDLibrary from "./lib/towerDefense";
+import AbilityLibrary from "./lib/ability";
+import BarbarianStarterDeck from "./lib/barbarian";
+import WizardStarterDeck from "./lib/wizard";
+import PaladinStarterDeck from "./lib/paladin";
+import RogueStarterDeck from "./lib/rogue";
 
 type InternalState = {
   roundState: RoundState;
@@ -59,13 +63,9 @@ let gameLevel: number;
 let monsterDeck: MCard[] = [];
 let towerDefenseDeck: TDCard[] = [];
 let locationDeck: LCard[] = [];
-const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
+let abilityCardDeck: ABCard[] = [];
 
-const abilityCardDeck: ABCard[] = [];
-const barbarianStarterDeck: ABCard[] = [];
-const wizardStarterDeck: ABCard[] = [];
-const rogueStarterDeck: ABCard[] = [];
-const paladinStarterDeck: ABCard[] = [];
+const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
 
 type PlayerDiscard = {
   user: UserId;
@@ -75,6 +75,25 @@ const playerDiscards: PlayerDiscard[] = [];
 
 export class Impl implements Methods<InternalState> {
   initialize(ctx: Context, request: IInitializeRequest): InternalState {
+    //Monster Deck
+    monsterDeck = MonsterLibrary.filter(card => card.level <= gameLevel);
+    monsterDeck = ctx.chance.shuffle(monsterDeck);
+
+    //Locations Deck
+    locationDeck = LocationLibrary.filter(card => card.level === gameLevel);
+    //inverst order by sequence number
+    locationDeck.sort((a, b): number => {
+      return b.sequence - a.sequence;
+    });
+
+    //TD cards
+    towerDefenseDeck = TDLibrary.filter(card => card.level === gameLevel);
+    towerDefenseDeck = ctx.chance.shuffle(towerDefenseDeck);
+
+    //Ability Cards
+    abilityCardDeck = AbilityLibrary.filter(card => card.level === gameLevel);
+    abilityCardDeck = ctx.chance.shuffle(abilityCardDeck);
+
     return {
       roundState: RoundState.idle,
       gameState: GameState.Lobby,
@@ -91,7 +110,7 @@ export class Impl implements Methods<InternalState> {
     //guard conditions
     if (state.players.length >= 4) Response.error("Too many users, cannot join");
     if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
-    if (state.players.find((player) => player.id === userId) !== undefined) return Response.error("Already joined");
+    if (state.players.find(player => player.id === userId) !== undefined) return Response.error("Already joined");
     if (request.level < 1 || request.level > 8) return Response.error("Invalid Level submitted, must be between 1 and 8");
 
     if (state.players.length === 0) {
@@ -120,29 +139,17 @@ export class Impl implements Methods<InternalState> {
     state.gameState = GameState.GameSetup;
     state.turn = state.players[0].id;
 
-    //Monster Deck
-    monsterDeck = MonsterLibrary.filter((card) => card.level <= gameLevel);
-    monsterDeck = ctx.chance.shuffle(monsterDeck);
+    //Deal starting cards
     for (let index = 0; index < numberMonstersActiveByLevel[gameLevel]; index++) {
-      const myCard = monsterDeck.pop()!;
+      const myCard = monsterDeck.pop()!; //Monster Cards
       state.activeMonsters.push(myCard);
     }
-
-    //Locations Deck
-    locationDeck = LocationLibrary.filter((card) => card.level === gameLevel);
-    //inverst order by sequence number
-    console.log(locationDeck);
-    locationDeck.sort((a, b): number => {
-      return b.sequence - a.sequence;
-    });
-    state.Location = locationDeck.pop();
-
-    //TD cards
-    towerDefenseDeck = TDLibrary.filter((card) => card.level === gameLevel);
-    towerDefenseDeck = ctx.chance.shuffle(towerDefenseDeck);
-    state.TD = towerDefenseDeck.pop();
-
-    //TODO - cardpool deck and deal
+    state.Location = locationDeck.pop(); //Location Cards
+    state.TD = towerDefenseDeck.pop(); //TD Cards
+    for (let index = 0; index < 6; index++) {
+      const myCard = abilityCardDeck.pop()!; //Ability Card Pool
+      state.cardPool.push(myCard);
+    }
 
     return Response.ok();
   }
@@ -197,11 +204,11 @@ export class Impl implements Methods<InternalState> {
     return Response.error("Not implemented");
   }
   getUserState(state: InternalState, userId: UserId): UserState {
-    let userIndex = state.players.findIndex((p) => p.id === userId);
+    let userIndex = state.players.findIndex(p => p.id === userId);
     if (userIndex != -1) {
       const clientState: UserState = {
         me: state.players[userIndex],
-        others: state.players.filter((p) => p.id != userId),
+        others: state.players.filter(p => p.id != userId),
         roundState: state.roundState,
         activeMonsters: state.activeMonsters,
         location: state.Location,

@@ -1,11 +1,10 @@
-import { Targets, TDCard } from "../../api/types";
+import { TDCard } from "../../api/types";
 let TDLibrary: TDCard[] = [];
 export default TDLibrary = [
   {
     id: "tripwire1",
     title: "Trip Wire",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseTwoHealth",
     },
     PassiveEffect: undefined,
@@ -16,7 +15,6 @@ export default TDLibrary = [
     id: "tripwire2",
     title: "Trip Wire",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseTwoHealth",
     },
     PassiveEffect: undefined,
@@ -27,7 +25,6 @@ export default TDLibrary = [
     id: "tripwire3",
     title: "Trip Wire",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseTwoHealth",
     },
     PassiveEffect: undefined,
@@ -38,7 +35,6 @@ export default TDLibrary = [
     id: "net1",
     title: "Net Trap",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "addOneLocationPoint",
     },
     PassiveEffect: undefined,
@@ -49,7 +45,6 @@ export default TDLibrary = [
     id: "net2",
     title: "Net Trap",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "addOneLocationPoint",
     },
     PassiveEffect: undefined,
@@ -60,7 +55,6 @@ export default TDLibrary = [
     id: "net3",
     title: "Net Trap",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "addOneLocationPoint",
     },
     PassiveEffect: undefined,
@@ -71,7 +65,6 @@ export default TDLibrary = [
     id: "pit1",
     title: "Pit Trap",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseOneHealth",
     },
     PassiveEffect: undefined,
@@ -82,7 +75,6 @@ export default TDLibrary = [
     id: "pit2",
     title: "Pit Trap",
     ActiveEffect: {
-      target: Targets.ActiveHero,
       callback: "loseOneHealth",
     },
     PassiveEffect: undefined,
@@ -94,7 +86,6 @@ export default TDLibrary = [
     title: "Quick Sand Trap",
     ActiveEffect: undefined,
     PassiveEffect: {
-      target: Targets.ActiveHero,
       callback: "noDraw",
     },
     level: 1,
@@ -105,7 +96,6 @@ export default TDLibrary = [
     title: "Quick Sand Trap",
     ActiveEffect: undefined,
     PassiveEffect: {
-      target: Targets.ActiveHero,
       callback: "noDraw",
     },
     level: 1,
