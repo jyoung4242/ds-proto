@@ -1,6 +1,6 @@
 import { ABCard, AbilityCardTypes } from "../../api/types";
-let PaladinStartingDeck: ABCard[] = [];
-export default PaladinStartingDeck = [
+let PaladinLibrary: ABCard[] = [];
+export default PaladinLibrary = [
   {
     id: "starterchant",
     title: "Holy Chant",

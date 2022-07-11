@@ -99,6 +99,8 @@ types:
     attack: int
     ability: int
     hand: ABCard[]
+    deck: ABCard[]
+    discard: ABCard[]
     role: Roles
     gender: Gender
     statusEffects: StatusEffects[]

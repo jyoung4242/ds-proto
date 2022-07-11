@@ -42,10 +42,10 @@ import MonsterLibrary from "./lib/monster";
 import LocationLibrary from "./lib/locations";
 import TDLibrary from "./lib/towerDefense";
 import AbilityLibrary from "./lib/ability";
-import BarbarianStarterDeck from "./lib/barbarian";
-import WizardStarterDeck from "./lib/wizard";
-import PaladinStarterDeck from "./lib/paladin";
-import RogueStarterDeck from "./lib/rogue";
+import BarbarianLibrary from "./lib/barbarian";
+import WizardLibrary from "./lib/wizard";
+import PaladinLibrary from "./lib/paladin";
+import RogueLibrary from "./lib/rogue";
 
 type InternalState = {
   roundState: RoundState;
@@ -64,6 +64,10 @@ let monsterDeck: MCard[] = [];
 let towerDefenseDeck: TDCard[] = [];
 let locationDeck: LCard[] = [];
 let abilityCardDeck: ABCard[] = [];
+let barbarianCardDeck: ABCard[] = [];
+let wizardCardDeck: ABCard[] = [];
+let paladinCardDeck: ABCard[] = [];
+let rogueCardDeck: ABCard[] = [];
 
 const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
 
@@ -87,12 +91,17 @@ export class Impl implements Methods<InternalState> {
     });
 
     //TD cards
-    towerDefenseDeck = TDLibrary.filter(card => card.level === gameLevel);
+    towerDefenseDeck = TDLibrary.filter(card => card.level <= gameLevel);
     towerDefenseDeck = ctx.chance.shuffle(towerDefenseDeck);
 
     //Ability Cards
-    abilityCardDeck = AbilityLibrary.filter(card => card.level === gameLevel);
+    abilityCardDeck = AbilityLibrary.filter(card => card.level <= gameLevel);
     abilityCardDeck = ctx.chance.shuffle(abilityCardDeck);
+
+    barbarianCardDeck = ctx.chance.shuffle(BarbarianLibrary);
+    wizardCardDeck = ctx.chance.shuffle(WizardLibrary);
+    paladinCardDeck = ctx.chance.shuffle(PaladinLibrary);
+    rogueCardDeck = ctx.chance.shuffle(RogueLibrary);
 
     return {
       roundState: RoundState.idle,
@@ -124,6 +133,8 @@ export class Impl implements Methods<InternalState> {
       attack: 0,
       ability: 0,
       hand: [],
+      deck: [],
+      discard: [],
       role: request.role,
       gender: request.gender,
       statusEffects: [],
@@ -145,17 +156,42 @@ export class Impl implements Methods<InternalState> {
       state.activeMonsters.push(myCard);
     }
     state.Location = locationDeck.pop(); //Location Cards
-    state.TD = towerDefenseDeck.pop(); //TD Cards
+
     for (let index = 0; index < 6; index++) {
       const myCard = abilityCardDeck.pop()!; //Ability Card Pool
       state.cardPool.push(myCard);
+    }
+
+    //setup each users hands based on role
+    for (const player of state.players) {
+      switch (player.role) {
+        case Roles.Barbarian:
+          player.deck = ctx.chance.shuffle(barbarianCardDeck);
+          break;
+        case Roles.Wizard:
+          player.deck = ctx.chance.shuffle(wizardCardDeck);
+          break;
+        case Roles.Paladin:
+          player.deck = ctx.chance.shuffle(paladinCardDeck);
+          break;
+        case Roles.Rogue:
+          player.deck = ctx.chance.shuffle(rogueCardDeck);
+          break;
+      }
+      //deal first 5 cards to hand
+      for (let cd = 0; cd < 5; cd++) {
+        let myCard = player.deck.pop();
+        if (myCard) player.hand.push(myCard);
+      }
     }
 
     return Response.ok();
   }
 
   startTurn(state: InternalState, userId: UserId, ctx: Context, request: IStartTurnRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+
+    return Response.ok();
   }
 
   runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {

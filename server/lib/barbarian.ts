@@ -1,6 +1,6 @@
 import { ABCard, AbilityCardTypes } from "../../api/types";
-let BarbarianStartingDeck: ABCard[] = [];
-export default BarbarianStartingDeck = [
+let BarbarianLibrary: ABCard[] = [];
+export default BarbarianLibrary = [
   {
     id: "startersword",
     title: "Sword",

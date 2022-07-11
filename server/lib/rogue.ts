@@ -1,6 +1,6 @@
 import { ABCard, AbilityCardTypes } from "../../api/types";
-let RogueStartingDeck: ABCard[] = [];
-export default RogueStartingDeck = [
+let RogueLibrary: ABCard[] = [];
+export default RogueLibrary = [
   {
     id: "starterhood",
     title: "Cowl",

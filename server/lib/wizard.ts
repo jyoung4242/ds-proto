@@ -1,6 +1,6 @@
 import { ABCard, AbilityCardTypes } from "../../api/types";
-let WizardStartingDeck: ABCard[] = [];
-export default WizardStartingDeck = [
+let WizardLibrary: ABCard[] = [];
+export default WizardLibrary = [
   {
     id: "starterrobes",
     title: "Wizard Robes",
