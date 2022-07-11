@@ -56,6 +56,7 @@ type InternalState = {
   TD?: TDCard;
   Location?: LCard;
   cardPool: ABCard[];
+  turnOrder: UserId[];
 };
 
 //nonstate variables
@@ -79,6 +80,35 @@ const playerDiscards: PlayerDiscard[] = [];
 
 export class Impl implements Methods<InternalState> {
   initialize(ctx: Context, request: IInitializeRequest): InternalState {
+    barbarianCardDeck = ctx.chance.shuffle(BarbarianLibrary);
+    wizardCardDeck = ctx.chance.shuffle(WizardLibrary);
+    paladinCardDeck = ctx.chance.shuffle(PaladinLibrary);
+    rogueCardDeck = ctx.chance.shuffle(RogueLibrary);
+
+    return {
+      roundState: RoundState.idle,
+      gameState: GameState.Lobby,
+      activeMonsters: [],
+      turn: undefined,
+      players: [],
+      TD: undefined,
+      Location: undefined,
+      cardPool: [],
+      turnOrder: [],
+    };
+  }
+
+  joinGame(state: InternalState, userId: UserId, ctx: Context, request: IJoinGameRequest): Response {
+    //guard conditions
+    if (state.players.length >= 4) Response.error("Too many users, cannot join");
+    if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
+    if (state.players.find(player => player.id === userId) !== undefined) return Response.error("Already joined");
+    if (request.level < 1 || request.level > 8) return Response.error("Invalid Level submitted, must be between 1 and 8");
+
+    if (state.players.length === 0) {
+      gameLevel = request.level;
+    }
+
     //Monster Deck
     monsterDeck = MonsterLibrary.filter(card => card.level <= gameLevel);
     monsterDeck = ctx.chance.shuffle(monsterDeck);
@@ -97,34 +127,6 @@ export class Impl implements Methods<InternalState> {
     //Ability Cards
     abilityCardDeck = AbilityLibrary.filter(card => card.level <= gameLevel);
     abilityCardDeck = ctx.chance.shuffle(abilityCardDeck);
-
-    barbarianCardDeck = ctx.chance.shuffle(BarbarianLibrary);
-    wizardCardDeck = ctx.chance.shuffle(WizardLibrary);
-    paladinCardDeck = ctx.chance.shuffle(PaladinLibrary);
-    rogueCardDeck = ctx.chance.shuffle(RogueLibrary);
-
-    return {
-      roundState: RoundState.idle,
-      gameState: GameState.Lobby,
-      activeMonsters: [],
-      turn: undefined,
-      players: [],
-      TD: undefined,
-      Location: undefined,
-      cardPool: [],
-    };
-  }
-
-  joinGame(state: InternalState, userId: UserId, ctx: Context, request: IJoinGameRequest): Response {
-    //guard conditions
-    if (state.players.length >= 4) Response.error("Too many users, cannot join");
-    if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
-    if (state.players.find(player => player.id === userId) !== undefined) return Response.error("Already joined");
-    if (request.level < 1 || request.level > 8) return Response.error("Invalid Level submitted, must be between 1 and 8");
-
-    if (state.players.length === 0) {
-      gameLevel = request.level;
-    }
 
     let newPlayer: Player = {
       id: userId,
@@ -147,12 +149,25 @@ export class Impl implements Methods<InternalState> {
     //gaurd conditions
     if (state.gameState != GameState.Lobby) return Response.error("Cannot Start game, its already started");
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
-    state.gameState = GameState.GameSetup;
-    state.turn = state.players[0].id;
 
+    const setTurnOrder = (): UserId[] => {
+      let arrayOfIDs: UserId[] = state.players.map((p, i) => {
+        return p.id;
+      });
+      console.log(arrayOfIDs);
+      return arrayOfIDs;
+    };
+
+    state.gameState = GameState.GameSetup;
+    state.turnOrder = setTurnOrder();
+    state.turn = state.turnOrder[0];
+
+    //console.log(gameLevel, monsterDeck);
+    //console.log(numberMonstersActiveByLevel[gameLevel]);
     //Deal starting cards
     for (let index = 0; index < numberMonstersActiveByLevel[gameLevel]; index++) {
       const myCard = monsterDeck.pop()!; //Monster Cards
+      //console.log(myCard);
       state.activeMonsters.push(myCard);
     }
     state.Location = locationDeck.pop(); //Location Cards
@@ -250,6 +265,8 @@ export class Impl implements Methods<InternalState> {
         location: state.Location,
         TDcard: state.TD,
         cardPool: state.cardPool,
+        turn: state.turn,
+        turnOrder: state.turnOrder,
       };
       return clientState;
     } else {
@@ -261,6 +278,8 @@ export class Impl implements Methods<InternalState> {
         location: state.Location,
         TDcard: state.TD,
         cardPool: state.cardPool,
+        turn: state.turn,
+        turnOrder: state.turnOrder,
       };
       return clientState;
     }

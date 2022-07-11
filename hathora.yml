@@ -112,6 +112,8 @@ types:
     location: LCard?
     TDcard: TDCard?
     cardPool: ABCard[]
+    turnOrder: UserId[]
+    turn: UserId?
 
 methods:
   joinGame:
