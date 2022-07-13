@@ -98,3 +98,11 @@ export const getActivePlayerName = (players: Player[], turn: UserId): string => 
   let index = players.findIndex(p => p.id === turn);
   return players[index].name;
 };
+
+export const getNumberOfActiveMonstersWithActiveEvents = (monsters: MCard[]): number => {
+  let tempNumber = 0;
+  monsters.forEach(m => {
+    if (m.ActiveEffect) tempNumber += 1;
+  });
+  return tempNumber;
+};

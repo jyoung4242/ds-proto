@@ -49,6 +49,7 @@ import RogueLibrary from "./lib/rogue";
 import {
   dealPlayerCardsFromDeck,
   getActivePlayerName,
+  getNumberOfActiveMonstersWithActiveEvents,
   setPlayerDeckbyRole,
   setTurnOrder,
   setupAbilityCardDeck,
@@ -237,7 +238,7 @@ export class Impl implements Methods<InternalState> {
     if (numberOfTDCardsForThisLocation > 1) {
       numberOfTDCardsForThisLocation -= 1;
       state.roundState = RoundState.waitingOnTD;
-      //TODO - discard TD and put next card there
+      state.TD = towerDefenseDeck.pop();
     } else {
       state.roundState = RoundState.waitingOnMonster;
       //discard TD
@@ -252,42 +253,41 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+
     ctx.broadcastEvent("ENABLE_Monster");
 
-    numgerOfActiveMonstersThatHaveActiveEvents = 0;
-    //check for monsters that have active effects
-    state.activeMonsters.forEach(m => {
-      if (m.ActiveEffect) numgerOfActiveMonstersThatHaveActiveEvents += 1;
-    });
-
+    //setup looping index for monsters with active effects, used in next method
+    numgerOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
     if (numgerOfActiveMonstersThatHaveActiveEvents === 0) {
-      ctx.broadcastEvent("NO MONSTERS");
+      ctx.broadcastEvent("NO MONSTERS READY");
       state.roundState = RoundState.waitingOnPlayer;
+      return Response.ok();
     }
-
+    state.roundState = RoundState.activeRunningMonster;
     return Response.ok();
   }
+
   playMonster(state: InternalState, userId: UserId, ctx: Context, request: IPlayMonsterRequest): Response {
     //gaurd conditions
-    if (state.roundState != RoundState.waitingOnMonster)
+    if (state.roundState != RoundState.activeRunningMonster)
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
-    state.roundState = RoundState.activeRunningMonster;
 
     ctx.broadcastEvent("Monster card played");
     let cardPlayed = request.cardID;
 
     //TODO - add both/all Monster effects here
 
+    //Decrement counter until all monsters played
     numgerOfActiveMonstersThatHaveActiveEvents -= 1;
-    if (numgerOfActiveMonstersThatHaveActiveEvents > 0) {
-      state.roundState = RoundState.waitingOnMonster;
-      ctx.broadcastEvent("another monster card needs played");
-    } else {
+    if (numgerOfActiveMonstersThatHaveActiveEvents == 0) {
       state.roundState = RoundState.waitingOnPlayer;
       ctx.broadcastEvent("Ready for players cards");
+      return Response.ok();
     }
+
+    ctx.broadcastEvent("another monster card needs played");
     return Response.ok();
   }
 
