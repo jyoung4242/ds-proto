@@ -465,6 +465,7 @@ export class Impl implements Methods<InternalState> {
     //if monster damage reached zero, monster defeated
     if (state.activeMonsters[cardIndex].damage == 0) {
       //TODO - Monster Defeated
+      //TODO - End Game conditions
     }
     //reduce hero's attack
     state.players[playerIndex].attack -= 1;
@@ -484,8 +485,40 @@ export class Impl implements Methods<InternalState> {
   }
 
   endRound(state: InternalState, userId: UserId, ctx: Context, request: IEndRoundRequest): Response {
-    return Response.error("Not implemented");
+    if (state.roundState != RoundState.waitingOnEndTurn)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+    //redeal hand for user
+
+    //test to see if 5 cards in deck, if not... reshuffle discard
+    if (state.players[playerIndex].deck.length < 5) {
+      state.players[playerIndex].deck = [
+        ...state.players[playerIndex].deck,
+        ...ctx.chance.shuffle(state.players[playerIndex].discard),
+      ];
+    }
+    state.players[playerIndex].discard = [];
+
+    //deal 5 cards to hand
+    for (let cd = 0; cd < 5; cd++) {
+      let myCard = state.players[playerIndex].deck.pop();
+      if (myCard) state.players[playerIndex].hand.push(myCard);
+    }
+
+    //shift turn via turn order
+    let numberOfPlayers = state.players.length;
+    let turnIndex = state.turnOrder.findIndex(userId);
+    if (turnIndex - 1 == numberOfPlayers) turnIndex = 0; //next player is turnOrder 0
+    else turnIndex += 1; //next player is next index
+    state.turn = state.turnOrder[turnIndex];
+
+    ctx.broadcastEvent("Ready for next player");
+    state.roundState = RoundState.waitingOnEndTurn;
+    return Response.ok();
   }
+
   getUserState(state: InternalState, userId: UserId): UserState {
     let userIndex = state.players.findIndex(p => p.id === userId);
     if (userIndex != -1) {
