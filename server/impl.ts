@@ -168,7 +168,6 @@ export class Impl implements Methods<InternalState> {
 
   startTurn(state: InternalState, userId: UserId, ctx: Context, request: IStartTurnRequest): Response {
     //gaurd conditions
-    //not right gamestate
     if (state.roundState != RoundState.idle) return Response.error("Roundstate is not idle, cannot start turn");
     if (state.gameState != GameState.ReadyToStart) return Response.error("Cannot Start turn, game is not ready");
     if (userId != state.turn) return Response.error("You cannot start the turn, it is not your turn!");
@@ -179,14 +178,9 @@ export class Impl implements Methods<InternalState> {
     state.TD = towerDefenseDeck.pop();
 
     //get name of user
-    let index = state.players.findIndex(p => p.id === state.turn);
-    let playerName: string;
-    if (index != -1) {
-      playerName = state.players[index].name;
-      ctx.broadcastEvent(`${playerName} has started their turn`);
-      return Response.ok();
-    }
-    return Response.error("Error finding Player in state");
+    let playerName = getActivePlayerName(state.players, state.turn);
+    ctx.broadcastEvent(`${playerName} has started their turn`);
+    return Response.ok();
   }
 
   runPlayerPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunPlayerPassivesRequest): Response {
@@ -195,9 +189,10 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
-
     state.roundState = RoundState.activeRunningPlayerPassives;
+
     //TODO - cycle through user's passive status effects when that system is implemented
+
     ctx.broadcastEvent(`Player Passives Complete`);
     state.roundState = RoundState.waitingMonsterPassives;
     return Response.ok();
@@ -209,9 +204,10 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningMonsterPassives;
-    //TODO - cycle through all active monsters and apply their passive effects
-    state.roundState = RoundState.waitingOnTD;
 
+    //TODO - cycle through all active monsters and apply their passive effects
+
+    state.roundState = RoundState.waitingOnTD;
     return Response.ok();
   }
 
