@@ -46,6 +46,19 @@ import BarbarianLibrary from "./lib/barbarian";
 import WizardLibrary from "./lib/wizard";
 import PaladinLibrary from "./lib/paladin";
 import RogueLibrary from "./lib/rogue";
+import {
+  dealPlayerCardsFromDeck,
+  getActivePlayerName,
+  setPlayerDeckbyRole,
+  setTurnOrder,
+  setupAbilityCardDeck,
+  setupActiveMonsters,
+  setupCardPool,
+  setupLocationDeck,
+  setupMonsterDeck,
+  setupNewPlayer,
+  setupTowerDefenseDeck,
+} from "./lib/util";
 
 type InternalState = {
   roundState: RoundState;
@@ -65,10 +78,10 @@ let monsterDeck: MCard[] = [];
 let towerDefenseDeck: TDCard[] = [];
 let locationDeck: LCard[] = [];
 let abilityCardDeck: ABCard[] = [];
-let barbarianCardDeck: ABCard[] = [];
-let wizardCardDeck: ABCard[] = [];
-let paladinCardDeck: ABCard[] = [];
-let rogueCardDeck: ABCard[] = [];
+export let barbarianCardDeck: ABCard[] = [];
+export let wizardCardDeck: ABCard[] = [];
+export let paladinCardDeck: ABCard[] = [];
+export let rogueCardDeck: ABCard[] = [];
 
 const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
 let numberOfTDCardsForThisLocation: number = 0;
@@ -105,45 +118,21 @@ export class Impl implements Methods<InternalState> {
     if (state.players.length >= 4) Response.error("Too many users, cannot join");
     if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
     if (state.players.find(player => player.id === userId) !== undefined) return Response.error("Already joined");
-    if (request.level < 1 || request.level > 8) return Response.error("Invalid Level submitted, must be between 1 and 8");
+    if ((request.level < 1 || request.level > 8) && state.players.length == 0)
+      return Response.error("Invalid Level submitted, must be between 1 and 8");
 
+    //level param ONLY matters on first submission, afterwards ignore param
     if (state.players.length === 0) {
       gameLevel = request.level;
+      //Setup Decks, should only be done on first player joined
+      monsterDeck = setupMonsterDeck(MonsterLibrary, gameLevel, ctx);
+      locationDeck = setupLocationDeck(LocationLibrary, gameLevel);
+      towerDefenseDeck = setupTowerDefenseDeck(TDLibrary, gameLevel, ctx);
+      abilityCardDeck = setupAbilityCardDeck(AbilityLibrary, gameLevel, ctx);
     }
 
-    //Monster Deck
-    monsterDeck = MonsterLibrary.filter(card => card.level <= gameLevel);
-    monsterDeck = ctx.chance.shuffle(monsterDeck);
-
-    //Locations Deck
-    locationDeck = LocationLibrary.filter(card => card.level === gameLevel);
-    //inverst order by sequence number
-    locationDeck.sort((a, b): number => {
-      return b.sequence - a.sequence;
-    });
-
-    //TD cards
-    towerDefenseDeck = TDLibrary.filter(card => card.level <= gameLevel);
-    towerDefenseDeck = ctx.chance.shuffle(towerDefenseDeck);
-
-    //Ability Cards
-    abilityCardDeck = AbilityLibrary.filter(card => card.level <= gameLevel);
-    abilityCardDeck = ctx.chance.shuffle(abilityCardDeck);
-
-    let newPlayer: Player = {
-      id: userId,
-      name: request.name,
-      health: 10,
-      attack: 0,
-      ability: 0,
-      hand: [],
-      deck: [],
-      discard: [],
-      role: request.role,
-      gender: request.gender,
-      statusEffects: [],
-    };
-    state.players.push(newPlayer);
+    //add player
+    state.players.push(setupNewPlayer(userId, request));
     return Response.ok();
   }
 
@@ -152,70 +141,29 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.Lobby) return Response.error("Cannot Start game, its already started");
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
 
-    const setTurnOrder = (): UserId[] => {
-      let arrayOfIDs: UserId[] = state.players.map(p => p.id);
-      arrayOfIDs = ctx.chance.shuffle(arrayOfIDs);
-      return arrayOfIDs;
-    };
-
     //Setting State and turn order
     state.gameState = GameState.GameSetup;
-    state.turnOrder = setTurnOrder();
+    state.turnOrder = setTurnOrder(state.players, ctx);
     state.turn = state.turnOrder[0];
 
     //Deal starting cards
-    for (let index = 0; index < numberMonstersActiveByLevel[gameLevel]; index++) {
-      const myCard = monsterDeck.pop()!; //Monster Cards
-      state.activeMonsters.push(myCard);
-    }
-
-    //Location Cards
+    state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
     state.Location = locationDeck.pop(); //Location Cards
-
-    //set the TD number in case there's an iteration
-    if (state.Location) numberOfTDCardsForThisLocation = state.Location.td;
-
-    //Ability Cards
-    for (let index = 0; index < 6; index++) {
-      const myCard = abilityCardDeck.pop()!; //Ability Card Pool
-      state.cardPool.push(myCard);
-    }
+    if (state.Location) numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
+    state.cardPool = setupCardPool(AbilityLibrary); //Ability Cards - cardpool
 
     //setup each users hands based on role
     for (const player of state.players) {
-      switch (player.role) {
-        case Roles.Barbarian:
-          player.deck = ctx.chance.shuffle(barbarianCardDeck);
-          break;
-        case Roles.Wizard:
-          player.deck = ctx.chance.shuffle(wizardCardDeck);
-          break;
-        case Roles.Paladin:
-          player.deck = ctx.chance.shuffle(paladinCardDeck);
-          break;
-        case Roles.Rogue:
-          player.deck = ctx.chance.shuffle(rogueCardDeck);
-          break;
-      }
-      //deal first 5 cards to hand
-      for (let cd = 0; cd < 5; cd++) {
-        let myCard = player.deck.pop();
-        if (myCard) player.hand.push(myCard);
-      }
+      player.deck = setPlayerDeckbyRole(player.role, ctx);
+      player.hand = dealPlayerCardsFromDeck(5, player.deck);
     }
-
-    state.gameState = GameState.ReadyToStart;
 
     //get name of user
-    let index = state.players.findIndex(p => p.id === state.turn);
-    let playerName: string;
-    if (index != -1) {
-      playerName = state.players[index].name;
-      ctx.broadcastEvent(`Ready To Start, its ${playerName}'s play`);
-      return Response.ok();
-    }
+    let playerName = getActivePlayerName(state.players, state.turn);
+    ctx.broadcastEvent(`Ready To Start, its ${playerName}'s play`);
 
-    return Response.error("Error finding Player in state");
+    state.gameState = GameState.ReadyToStart;
+    return Response.ok();
   }
 
   startTurn(state: InternalState, userId: UserId, ctx: Context, request: IStartTurnRequest): Response {
@@ -509,13 +457,14 @@ export class Impl implements Methods<InternalState> {
 
     //shift turn via turn order
     let numberOfPlayers = state.players.length;
-    let turnIndex = state.turnOrder.findIndex(userId);
+    let turnIndex = state.turnOrder.findIndex(u => u == userId);
     if (turnIndex - 1 == numberOfPlayers) turnIndex = 0; //next player is turnOrder 0
     else turnIndex += 1; //next player is next index
     state.turn = state.turnOrder[turnIndex];
 
     ctx.broadcastEvent("Ready for next player");
-    state.roundState = RoundState.waitingOnEndTurn;
+    state.roundState = RoundState.idle;
+    state.gameState = GameState.ReadyToStart;
     return Response.ok();
   }
 
