@@ -71,7 +71,8 @@ let paladinCardDeck: ABCard[] = [];
 let rogueCardDeck: ABCard[] = [];
 
 const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
-let numberOfTDCardsForThisLocation: number;
+let numberOfTDCardsForThisLocation: number = 0;
+let numgerOfActiveMonstersThatHaveActiveEvents: number = 0;
 
 type PlayerDiscard = {
   user: UserId;
@@ -246,6 +247,7 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+
     state.roundState = RoundState.activeRunningPlayerPassives;
     //TODO - cycle through user's passive status effects when that system is implemented
     ctx.broadcastEvent(`Player Passives Complete`);
@@ -271,7 +273,7 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
-    ctx.sendEvent("ENABLE_TD", userId);
+    ctx.broadcastEvent("ENABLE_TD");
     return Response.ok();
   }
 
@@ -281,40 +283,206 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningTDEffects;
 
+    ctx.broadcastEvent("TD card played");
+    let cardPlayed = request.cardID;
+
+    //TODO - add both/all TD effects here
+
+    if (numberOfTDCardsForThisLocation > 1) {
+      numberOfTDCardsForThisLocation -= 1;
+      state.roundState = RoundState.waitingOnTD;
+      //TODO - discard TD and put next card there
+    } else {
+      state.roundState = RoundState.waitingOnMonster;
+      //discard TD
+      state.TD = undefined;
+    }
     return Response.ok();
   }
 
   enableMonsters(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonstersRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingOnMonster)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    ctx.broadcastEvent("ENABLE_Monster");
+
+    numgerOfActiveMonstersThatHaveActiveEvents = 0;
+    //check for monsters that have active effects
+    state.activeMonsters.forEach(m => {
+      if (m.ActiveEffect) numgerOfActiveMonstersThatHaveActiveEvents += 1;
+    });
+
+    if (numgerOfActiveMonstersThatHaveActiveEvents === 0) {
+      ctx.broadcastEvent("NO MONSTERS");
+      state.roundState = RoundState.waitingOnPlayer;
+    }
+
+    return Response.ok();
   }
   playMonster(state: InternalState, userId: UserId, ctx: Context, request: IPlayMonsterRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingOnMonster)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningMonster;
+
+    ctx.broadcastEvent("Monster card played");
+    let cardPlayed = request.cardID;
+
+    //TODO - add both/all Monster effects here
+
+    numgerOfActiveMonstersThatHaveActiveEvents -= 1;
+    if (numgerOfActiveMonstersThatHaveActiveEvents > 0) {
+      state.roundState = RoundState.waitingOnMonster;
+      ctx.broadcastEvent("another monster card needs played");
+    } else {
+      state.roundState = RoundState.waitingOnPlayer;
+      ctx.broadcastEvent("Ready for players cards");
+    }
+    return Response.ok();
   }
+
   enablePlayer(state: InternalState, userId: UserId, ctx: Context, request: IEnablePlayerRequest): Response {
-    return Response.error("Not implemented");
+    //gaurd conditions
+    if (state.roundState != RoundState.waitingOnPlayer)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    ctx.broadcastEvent("ENABLE_Player");
+    return Response.ok();
   }
+
   playPlayerCard(state: InternalState, userId: UserId, ctx: Context, request: IPlayPlayerCardRequest): Response {
-    return Response.error("Not implemented");
+    //guard conditions
+    if (state.roundState != RoundState.waitingOnPlayer)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningPlayer;
+
+    ctx.broadcastEvent("Player Card Played");
+    let cardPlayed = request.cardID;
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+
+    //TODO - Process active events of players cards
+
+    //remove card from hand and discard
+    const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
+    state.players[playerIndex].discard.push(state.players[playerIndex].hand[cardindex]);
+    state.players[playerIndex].hand.splice(cardindex, 1);
+
+    //if cards remain, wait on next player card to be played
+    if (state.players[playerIndex].hand.length) {
+      state.roundState = RoundState.waitingOnPlayer;
+    } else {
+      state.roundState = RoundState.waitingToBuyCard;
+    }
+    return Response.ok();
   }
+
+  enableCardPool(state: InternalState, userId: UserId, ctx: Context, request: IEnableCardPoolRequest): Response {
+    //guard conditions
+    if (state.roundState != RoundState.waitingToBuyCard)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeBuyingCard;
+    ctx.broadcastEvent("Show Card Pool");
+    return Response.ok();
+  }
+
+  buyFromCardPool(state: InternalState, userId: UserId, ctx: Context, request: IBuyFromCardPoolRequest): Response {
+    //guard conditions
+    if (state.roundState != RoundState.activeBuyingCard)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    //if player can afford card
+    const cardPurchased = request.cardID;
+    const cardIndex = state.cardPool.findIndex(c => c.id === cardPurchased);
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+
+    if (state.players[playerIndex].ability < state.cardPool[cardIndex].cost)
+      return Response.error("Cost of selected card exceeds players ability points");
+
+    ctx.broadcastEvent("card purchased");
+
+    //we got the card and player, and they can afford it,
+    //move card from pool to players discard
+    let cardToMove = state.cardPool.splice(cardIndex, 1);
+    state.players[playerIndex].discard.concat(cardToMove);
+    //replace that card in pool form ability deck
+    let cardToDeal = abilityCardDeck.pop();
+    if (cardToDeal) state.cardPool.push(cardToDeal);
+
+    return Response.ok();
+  }
+
+  closeCardPool(state: InternalState, userId: UserId, ctx: Context, request: ICloseCardPoolRequest): Response {
+    //guard conditions
+    if (state.roundState != RoundState.activeBuyingCard)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.waitingOnApplyingDamage;
+    ctx.broadcastEvent("Close Card Pool");
+    return Response.ok();
+  }
+
   enableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonsterDamageRequest): Response {
-    return Response.error("Not implemented");
+    //guard conditions
+    if (state.roundState != RoundState.waitingOnApplyingDamage)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    ctx.broadcastEvent("Ready to apply damage");
+    state.roundState = RoundState.activeApplyingDamage;
+    return Response.ok();
   }
   applyMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IApplyMonsterDamageRequest): Response {
-    return Response.error("Not implemented");
+    //guard conditions
+    if (state.roundState != RoundState.waitingOnApplyingDamage)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+
+    ctx.broadcastEvent("Applying Damage");
+    let cardPlayed = request.cardID;
+    const cardIndex = state.activeMonsters.findIndex(m => m.id === cardPlayed);
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+
+    if (state.players[playerIndex].attack == 0) return Response.error("You have no damage to apply");
+
+    //we have monster card, players has attack to give
+
+    //apply damage
+    state.activeMonsters[cardIndex].damage += 1;
+    //if monster damage reached zero, monster defeated
+    if (state.activeMonsters[cardIndex].damage == 0) {
+      //TODO - Monster Defeated
+    }
+    //reduce hero's attack
+    state.players[playerIndex].attack -= 1;
+
+    return Response.ok();
   }
+
   disableMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IDisableMonsterDamageRequest): Response {
-    return Response.error("Not implemented");
+    //guard conditions
+    if (state.roundState != RoundState.activeApplyingDamage)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    ctx.broadcastEvent("Ready to End Turn");
+    state.roundState = RoundState.waitingOnEndTurn;
+    return Response.ok();
   }
-  enableCardPool(state: InternalState, userId: UserId, ctx: Context, request: IEnableCardPoolRequest): Response {
-    return Response.error("Not implemented");
-  }
-  buyFromCardPool(state: InternalState, userId: UserId, ctx: Context, request: IBuyFromCardPoolRequest): Response {
-    return Response.error("Not implemented");
-  }
-  closeCardPool(state: InternalState, userId: UserId, ctx: Context, request: ICloseCardPoolRequest): Response {
-    return Response.error("Not implemented");
-  }
+
   endRound(state: InternalState, userId: UserId, ctx: Context, request: IEndRoundRequest): Response {
     return Response.error("Not implemented");
   }
