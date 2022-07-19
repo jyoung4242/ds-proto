@@ -1,0 +1,35 @@
+.lobbyscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: blue;
+  width: var(--game-width);
+  height: var(--game-height);
+}
+
+.titlescreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: lightgreen;
+  width: var(--game-width);
+  height: var(--game-height);
+}
+
+.charscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: lightcyan;
+  width: var(--game-width);
+  height: var(--game-height);
+}
+
+.gamescreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  width: var(--game-width);
+  height: var(--game-height);
+}

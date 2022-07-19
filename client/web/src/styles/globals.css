@@ -1,6 +1,28 @@
+:root {
+  --game-width: 1280px;
+  --game-height: 720px;
+}
+
 body {
-  background-color: rgb(57, 76, 76);
+  background-color: rgb(60, 69, 69);
   box-sizing: border-box;
   padding: 0;
   margin: 0%;
+}
+
+#App {
+  width: var(--game-width);
+  height: var(--game-height);
+  margin: 0 auto;
+  border: 25px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 25;
+  transform: translateY(10%);
+  padding: 0;
+}
+
+.container {
+  width: var(--game-width);
+  height: var(--game-height);
+  padding: 0;
 }
