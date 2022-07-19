@@ -423,6 +423,9 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+    if (state.players[playerIndex].attack > 0) return Response.error("You still have damage left");
+
     ctx.broadcastEvent("Ready to End Turn");
     state.roundState = RoundState.waitingOnEndTurn;
     return Response.ok();
