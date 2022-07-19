@@ -57,12 +57,18 @@ class GameContainer {
     },
 
     screenSwitch: async (model: iComponentModel, newScreen: Router) => {
+      console.log("entered");
       SceneTransitionComponent.model.fadeIn(SceneTransitionComponent.model);
+      console.log("waiting");
       await utils.wait(2000);
-      SceneTransitionComponent.model.fadeOut(SceneTransitionComponent.model);
+      console.log("switching");
       model.myRoute = newScreen;
+      console.log("fading out");
+      SceneTransitionComponent.model.fadeOut(SceneTransitionComponent.model);
+      console.log("waiting");
       await utils.wait(2000);
       SceneTransitionComponent.model.reset(SceneTransitionComponent.model);
+      console.log("done");
     },
   };
 }

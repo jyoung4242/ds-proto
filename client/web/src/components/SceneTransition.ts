@@ -10,20 +10,20 @@ export type iSceneTransitionModel = {
 class SceneTransition {
   componentName: string = "mySceneTransition";
   template: string = `
-    <div class="\${classString}" >
+    <div class="\${mySceneTransition.classString}" >
         <div></div>
     </div>
     `;
   model: iSceneTransitionModel = {
-    classString: "",
+    classString: "normal",
     fadeIn: model => {
-      model.classString = "sceneTransition";
+      model.classString = "normal sceneTransition";
     },
     fadeOut: model => {
-      model.classString = "sceneTransition fade-out";
+      model.classString = "normal sceneTransition fade-out";
     },
     reset: model => {
-      model.classString = "";
+      model.classString = "normal";
     },
   };
 }

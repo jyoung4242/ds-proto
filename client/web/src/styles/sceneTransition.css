@@ -1,17 +1,20 @@
 .sceneTransition {
+  background-color: #ffffff;
+  opacity: 0;
+  z-index: 2;
+  animation: scene-transition-fade-in 0.8s forwards;
+}
+
+.normal {
   position: absolute;
   top: 0;
   left: 0;
   width: var(--game-width);
   height: var(--game-height);
-  background: #ffffff;
-  opacity: 0;
-  z-index: 2;
-  animation: scene-transition-fade-in 2s forwards;
 }
 
-.sceneTransition.fade-out {
-  animation: scene-transition-fade-out 2s forwards;
+.sceneTransition .fade-out {
+  animation: scene-transition-fade-out 0.8s forwards;
 }
 
 @keyframes scene-transition-fade-in {
