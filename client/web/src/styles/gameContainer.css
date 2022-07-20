@@ -2,7 +2,8 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: blue;
+  /*background-color: blue;*/
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
 }
@@ -11,16 +12,19 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: lightgreen;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
+  font-family: demonFont;
+  font-size: xx-large;
+  color: white;
 }
 
 .charscreen {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: lightcyan;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
 }
@@ -29,7 +33,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-color: black;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
 }

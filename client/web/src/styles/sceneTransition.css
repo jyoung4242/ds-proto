@@ -13,7 +13,7 @@
   height: var(--game-height);
 }
 
-.sceneTransition .fade-out {
+.sceneTransition.fade-out {
   animation: scene-transition-fade-out 0.8s forwards;
 }
 

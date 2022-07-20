@@ -1,5 +1,6 @@
 import { utils } from "../utils";
-import { SceneTransitionComponent, iSceneTransitionModel } from "./SceneTransition";
+import { SceneTransitionComponent } from "./SceneTransition";
+import { Title } from "./title";
 
 export enum Router {
   Title,
@@ -8,15 +9,6 @@ export enum Router {
   Game,
 }
 
-export type iComponentModel = {
-  myRoute: Router;
-  isTitle: boolean;
-  isLobby: boolean;
-  isCharacter: boolean;
-  isGame: boolean;
-  screenSwitch: Function;
-};
-
 class GameContainer {
   componentName: string = "myContainer";
   template: string = `
@@ -24,7 +16,7 @@ class GameContainer {
         ${SceneTransitionComponent.template}
         
         <div class="titlescreen" \${ === myContainer.isTitle}>
-          <div></div>
+          ${Title.template}
         </div>
         
         <div class="lobbyscreen" \${ === myContainer.isLobby}>
@@ -40,36 +32,5 @@ class GameContainer {
         </div>
     </div>
     `;
-
-  model: iComponentModel = {
-    myRoute: Router.Title,
-    get isTitle() {
-      return this.myRoute === Router.Title;
-    },
-    get isLobby() {
-      return this.myRoute === Router.Lobby;
-    },
-    get isCharacter() {
-      return this.myRoute === Router.Character;
-    },
-    get isGame() {
-      return this.myRoute === Router.Game;
-    },
-
-    screenSwitch: async (model: iComponentModel, newScreen: Router) => {
-      console.log("entered");
-      SceneTransitionComponent.model.fadeIn(SceneTransitionComponent.model);
-      console.log("waiting");
-      await utils.wait(2000);
-      console.log("switching");
-      model.myRoute = newScreen;
-      console.log("fading out");
-      SceneTransitionComponent.model.fadeOut(SceneTransitionComponent.model);
-      console.log("waiting");
-      await utils.wait(2000);
-      SceneTransitionComponent.model.reset(SceneTransitionComponent.model);
-      console.log("done");
-    },
-  };
 }
 export const GameComponent = new GameContainer();

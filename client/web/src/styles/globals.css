@@ -1,6 +1,13 @@
+@font-face {
+  font-family: demonFont;
+  src: url("../assets/KELMSCOT.TTF");
+}
+
 :root {
   --game-width: 1280px;
   --game-height: 720px;
+  --background-start: #1e29f2;
+  --background-end: #101f6b;
 }
 
 body {

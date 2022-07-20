@@ -1,24 +1,18 @@
 import { UI, UIView } from "peasy-ui";
-import { GameComponent, Router, SceneTransitionComponent, iComponentModel, iSceneTransitionModel } from "./components/index";
+import { State } from "./state/state";
+import { GameComponent } from "./components/index";
 import "./styles/index";
+import { utils } from "./utils";
 
 const myApp = document.getElementById("App");
-
 const uiStringTemplate = `
     ${GameComponent.template}
 `;
+const state = new State();
+utils.init(state.state);
 
-const model = {
-  [GameComponent.componentName]: GameComponent.model,
-  [SceneTransitionComponent.componentName]: SceneTransitionComponent.model,
-};
 let myUI: UIView;
-myUI = UI.create(myApp, uiStringTemplate, model);
+myUI = UI.create(myApp, uiStringTemplate, state.state);
 
-let intervalID = setInterval(() => {
-  UI.update();
-}, 1000 / 60);
-
-setTimeout(() => GameComponent.model.screenSwitch(model.myContainer, Router.Lobby), 3000);
-setTimeout(() => GameComponent.model.screenSwitch(model.myContainer, Router.Character), 8000);
-setTimeout(() => GameComponent.model.screenSwitch(model.myContainer, Router.Game), 12000);
+//for event monitoring
+setInterval(() => UI.update(), 100);
