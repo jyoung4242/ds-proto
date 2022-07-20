@@ -1,5 +1,5 @@
 import { utils } from "../utils";
-import { Router, SceneTransitionComponent } from "../components";
+import { Router } from "../components";
 
 export class State {
   state: any;
@@ -25,7 +25,6 @@ export class State {
         },
 
         screenSwitch: async (newScreen: Router) => {
-          this.state.myTitle.title = "He's funny";
           this.state.mySceneTransition.fadeIn();
           await utils.wait(800);
           console.log(this.state);
