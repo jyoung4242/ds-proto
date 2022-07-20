@@ -1,6 +1,6 @@
-import { GameComponent } from "./gameContainer";
-import { SceneTransitionComponent } from "./SceneTransition";
-import { Title } from "./title";
+import { GameContainer } from "./gameContainer";
+import { SceneTransition } from "./SceneTransition";
+import { TitleComponent } from "./title";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";

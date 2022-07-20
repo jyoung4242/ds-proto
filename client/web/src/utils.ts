@@ -1,6 +1,6 @@
 import { HathoraClient, HathoraConnection, UpdateArgs } from "../../.hathora/client";
 import { AnonymousUserData } from "../../../api/base";
-import { GameComponent, Router } from "./components/index";
+import { Router } from "./components/index";
 
 /**********************************************************
  * Hathora Client variables

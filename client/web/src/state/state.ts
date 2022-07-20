@@ -26,11 +26,10 @@ export class State {
 
         screenSwitch: async (newScreen: Router) => {
           this.state.mySceneTransition.fadeIn();
-          await utils.wait(800);
-          console.log(this.state);
+          await utils.wait(900);
           this.state.myContainer.myRoute = newScreen;
           this.state.mySceneTransition.fadeOut();
-          await utils.wait(800);
+          await utils.wait(900);
           this.state.mySceneTransition.reset();
         },
       },
@@ -54,23 +53,19 @@ export class State {
           this.state.mySceneTransition.classString = "normal";
         },
       },
+      myLobby: {
+        title: "Lobby",
+        subtitle: "Select next option",
+        createGame: () => {
+          console.log("Creating Game");
+        },
+        joinGame: () => {
+          console.log("Joining Game");
+        },
+        logout: () => {
+          console.log("Logging Out");
+        },
+      },
     };
-  }
-
-  emit() {
-    const event = new CustomEvent("STATECHANGE");
-    document.dispatchEvent(event);
-  }
-
-  call(key: string, cb: string) {
-    this.state[key][cb];
-  }
-
-  mutateState(key: string, value: any): string {
-    if (this.state[key] === undefined) return "state not defined";
-    if (this.state[key] === value) return "state did not change";
-    this.state[key] = value;
-    this.emit();
-    return "state updated";
   }
 }

@@ -1,11 +1,16 @@
-class TitleComponent {
+export class TitleComponent {
   componentName: string = "myTitle";
-  template: string = `
+  template: string;
+  localState: any;
+  constructor(state) {
+    this.localState = state;
+    console.log("state", this.localState);
+    this.template = `
   <div class="mainTitle"><span>\${myTitle.title}</span></div>
   <div class="subTitle"><span>\${myTitle.subtitle}</span></div>
   <div>
     <button class="titleButton" \${click@=>myTitle.login}>LOGIN</button
   </div>
     `;
+  }
 }
-export const Title = new TitleComponent();
