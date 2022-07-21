@@ -37,34 +37,30 @@ export class State {
       myTitle: {
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
-        login: () => {
-          utils.login();
-        },
+        login: () => utils.login(),
       },
       mySceneTransition: {
         classString: "normal",
-        fadeIn: () => {
-          this.state.mySceneTransition.classString = "normal sceneTransition";
-        },
-        fadeOut: () => {
-          this.state.mySceneTransition.classString = "normal sceneTransition fade-out";
-        },
-        reset: () => {
-          this.state.mySceneTransition.classString = "normal";
-        },
+        fadeIn: () => (this.state.mySceneTransition.classString = "normal sceneTransition"),
+        fadeOut: () => (this.state.mySceneTransition.classString = "normal sceneTransition fade-out"),
+        reset: () => (this.state.mySceneTransition.classString = "normal"),
       },
       myLobby: {
         title: "Lobby",
-        subtitle: "Select next option",
+        subtitle: "Choose to create game or join",
+        isJoining: false,
+        gameID: "",
         createGame: () => {
           console.log("Creating Game");
         },
         joinGame: () => {
-          console.log("Joining Game");
+          this.state.myLobby.isJoining = true;
         },
         logout: () => {
-          console.log("Logging Out");
+          this.state.playerData.username = "";
+          this.state.myContainer.screenSwitch(Router.Title);
         },
+        connect: () => {},
       },
     };
   }

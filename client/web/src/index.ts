@@ -16,5 +16,4 @@ const uiStringTemplate = `
 let myUI: UIView;
 myUI = UI.create(myApp, uiStringTemplate, state.state);
 
-//for event monitoring
 setInterval(() => UI.update(), 100);

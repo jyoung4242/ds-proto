@@ -4,13 +4,15 @@ export class TitleComponent {
   localState: any;
   constructor(state) {
     this.localState = state;
-    console.log("state", this.localState);
     this.template = `
-  <div class="mainTitle"><span>\${myTitle.title}</span></div>
-  <div class="subTitle"><span>\${myTitle.subtitle}</span></div>
-  <div>
-    <button class="titleButton" \${click@=>myTitle.login}>LOGIN</button
-  </div>
-    `;
+    <div class="mainTitle">
+      <span>\${myTitle.title}</span>
+    </div>
+    <div class="subTitle">
+      <span>\${myTitle.subtitle}</span>
+    </div>
+    <div>
+      <button class="titleButton" \${click@=>myTitle.login}>LOGIN</button>
+    </div>`;
   }
 }

@@ -1,0 +1,110 @@
+.mainLobby {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  border: 25px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 25;
+  margin: 0 auto;
+  transform: translateY(50%);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-content: center;
+}
+
+.mainLobby > span {
+  text-align: center;
+}
+
+.subLobby {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 30px;
+  border: 25px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 25;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-content: center;
+  animation: blink 1.5s infinite;
+}
+
+.subLobby > span {
+  text-align: center;
+  font-size: large;
+}
+
+.lobbyButton {
+  font-family: demonFont;
+  border: 5px rgb(211, 211, 211) solid;
+  border-radius: 5px;
+  background-color: #00000000;
+  color: rgb(211, 211, 211);
+  font-size: large;
+  width: 150px;
+  height: 60px;
+  padding: 10px 10px;
+  cursor: pointer;
+}
+
+.buttonflex {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 100px;
+  justify-content: space-between;
+  transform: translate(-50%, 30%);
+}
+
+.loginText {
+  top: 10px;
+  left: 10px;
+  position: fixed;
+  margin-left: 5px;
+  font-size: 20px;
+}
+
+.joinflex {
+  width: 700px;
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  display: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -170%);
+}
+
+.b4 {
+  transform: translateY(-25%);
+}
+
+.joinGameText {
+  height: 25px;
+}
+
+.lobbyButton:hover {
+  background-color: rgb(211, 211, 211);
+  color: var(--background-start);
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
