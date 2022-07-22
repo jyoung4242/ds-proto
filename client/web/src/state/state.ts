@@ -25,12 +25,13 @@ export class State {
         },
 
         screenSwitch: async (newScreen: Router) => {
-          this.state.mySceneTransition.fadeIn();
-          await utils.wait(900);
+          //this.state.mySceneTransition.fadeIn();
+          //await utils.wait(900);
           this.state.myContainer.myRoute = newScreen;
-          this.state.mySceneTransition.fadeOut();
-          await utils.wait(900);
-          this.state.mySceneTransition.reset();
+          //this.state.mySceneTransition.fadeOut();
+          //await utils.wait(900);
+          //this.state.mySceneTransition.reset();
+          console.log(this.state.myContainer.myRoute);
         },
       },
 

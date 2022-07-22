@@ -24,12 +24,12 @@ export const utils = {
     );
   },
   async login() {
-    if (sessionStorage.getItem("token") === null) {
-      sessionStorage.setItem("token", await client.loginAnonymous());
-    }
-    token = sessionStorage.getItem("token");
-    user = HathoraClient.getUserFromToken(token);
-    localState.playerData.username = user.name;
+    //if (sessionStorage.getItem("token") === null) {
+    //sessionStorage.setItem("token", await client.loginAnonymous());
+    //}
+    //token = sessionStorage.getItem("token");
+    //user = HathoraClient.getUserFromToken(token);
+    localState.playerData.username = "testname"; //user.name;
     localState.myContainer.screenSwitch(Router.Lobby);
   },
   emitEvent(name: string, detail: CustomEventInit) {
