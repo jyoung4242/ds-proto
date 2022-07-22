@@ -10,7 +10,9 @@ utils.init(state.state);
 const GameComponent = new GameContainer(state.state);
 
 const uiStringTemplate = `
-    ${GameComponent.template}
+    <div>
+        ${GameComponent.template}
+    </div>
 `;
 
 let myUI: UIView;

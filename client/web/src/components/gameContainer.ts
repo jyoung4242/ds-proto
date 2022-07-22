@@ -23,26 +23,18 @@ export class GameContainer {
     this.Lobby = new LobbyComponent(state);
     this.SceneTransitionComponent = new SceneTransition(state);
     this.template = `
-    <div class="container" >
+    <div class="container">
         ${this.SceneTransitionComponent.template}
         
-        <div class="titlescreen" \${=== myContainer.isTitle}>
-          <div class="mainTitle">
-            <span>\${myTitle.title}</span>
-          </div>
-          <div class="">
-            <span>\${myTitle.subtitle}</span>
-          </div>
-          <div>
-            <button class="titleButton" \${click@=>myTitle.login}>LOGIN</button>
-          </div>
+        <div class="titlescreen" \${===myContainer.isTitle}>
+          ${this.Title.template}
         </div>
         
-        <div class="lobbyscreen" \${=== myContainer.isLobby}>
-          <button class="lobbyButton" \${click@=>myLobby.logout}>Click</button>
+        <div class="lobbyscreen" \${===myContainer.isLobby}>
+          ${this.Lobby.template}
         </div>
         
-        <div class="charscreen" \${=== myContainer.isCharacter}>
+        <div class="charscreen" \${===myContainer.isCharacter}>
           <div></div>
         </div>
         

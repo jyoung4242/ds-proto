@@ -5,10 +5,10 @@ export class TitleComponent {
   constructor(state) {
     this.localState = state;
     this.template = `
-    <div class="mainTitle">
+    <div class="mainTitle" >
       <span>\${myTitle.title}</span>
     </div>
-    <div class="subTitle">
+    <div class="subTitle" >
       <span>\${myTitle.subtitle}</span>
     </div>
     <div>
