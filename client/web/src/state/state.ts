@@ -200,6 +200,9 @@ export class State {
           }
         },
       },
+      myChat: {
+        messages: [],
+      },
     };
   }
 }
