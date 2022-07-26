@@ -1,0 +1,51 @@
+.stg_Screentitle {
+  position: relative;
+  top: 20px;
+  margin: 0 auto;
+  bottom: 650px;
+  text-align: center;
+}
+
+.stg_Container {
+  position: relative;
+  top: 30px;
+  left: 300px;
+  width: 640px;
+  height: 520px;
+  border: 20px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 20;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  flex-direction: column;
+}
+
+.stg_buttonflex {
+  position: relative;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.stg_PlayerEntry {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  border: 3px solid rgb(211, 211, 211);
+  border-radius: 5px;
+  box-shadow: 5px 5px black;
+  min-height: 100px;
+  padding: 8px;
+}
+
+.stg_textSpan {
+  transform: translateY(35%);
+  font-size: x-large;
+}

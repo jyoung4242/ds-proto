@@ -2,7 +2,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
   font-family: demonFont;
@@ -14,7 +13,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
   font-family: demonFont;
@@ -26,7 +24,6 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   width: var(--game-width);
   height: var(--game-height);
   font-family: demonFont;
@@ -38,7 +35,17 @@
   position: absolute;
   top: 0;
   left: 0;
-  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  width: var(--game-width);
+  height: var(--game-height);
+  font-family: demonFont;
+  font-size: xx-large;
+  color: white;
+}
+
+.stagingScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: var(--game-width);
   height: var(--game-height);
   font-family: demonFont;

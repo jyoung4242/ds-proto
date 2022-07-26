@@ -1,0 +1,173 @@
+.CP_container {
+  position: relative;
+  top: 0%;
+  left: 0%;
+  width: var(--game-width);
+  height: var(--game-height);
+  display: block;
+}
+
+.CP_CardModal {
+  position: fixed;
+  border: 15px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 15;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  border-radius: 20px;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 640px;
+  height: 400px;
+  display: grid;
+  grid-template-rows: 10px 1fr 10px 1fr 10px;
+  grid-template-columns: 10px 1fr 10px 1fr 10px 1fr 10px;
+  box-shadow: 5px 5px black;
+  animation: 0.75s ease-in-out 0s 1 slideInFromLeft;
+}
+
+.exit {
+  animation: 0.75s ease-in-out 0s 1 slideOutToLeft;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translate(-150%, -50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-50%, -50%);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToLeft {
+  0% {
+    transform: translateX(-50%, -50%);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-150%, -50%);
+    opacity: 0;
+  }
+}
+
+.CP_cardspot {
+  width: 100px;
+  aspect-ratio: 1/1.5;
+  border: 1px solid rgb(211, 211, 211);
+  border-radius: 5px;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 8px 3px rgba(0, 0, 0, 125);
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.CP_cardspot:hover {
+  transform: translate(-52%, -52%);
+  box-shadow: 15px 10px rgba(0, 0, 0, 125);
+}
+
+.CPspot1 {
+  grid-column-start: 2;
+  grid-column-end: span 1;
+  grid-row-start: 2;
+  grid-row-end: span 1;
+}
+
+.CPspot2 {
+  grid-column-start: 4;
+  grid-column-end: span 1;
+  grid-row-start: 2;
+  grid-row-end: span 1;
+}
+
+.CPspot3 {
+  grid-column-start: 6;
+  grid-column-end: span 1;
+  grid-row-start: 2;
+  grid-row-end: span 1;
+}
+
+.CPspot4 {
+  grid-column-start: 2;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.CPspot5 {
+  grid-column-start: 4;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.CPspot6 {
+  grid-column-start: 6;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+/* Modal Stylings */
+
+.CP_modal_ack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  z-index: 3;
+  display: none;
+}
+
+.CP_Modal_Inner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: 350px;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  border: 15px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 15;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  border-radius: 20px;
+}
+
+.CP_Modaltitle {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  text-align: center;
+}
+
+.CP_buttonflex {
+  position: fixed;
+  top: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  width: 350px;
+  height: 50px;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+.CP_backgroundtint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  background-color: rgb(211, 211, 211);
+  opacity: 0.6;
+}
