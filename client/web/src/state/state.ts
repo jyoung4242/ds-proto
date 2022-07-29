@@ -1,5 +1,6 @@
 import { utils } from "../utils";
 import { Router } from "../components";
+import { Character } from "../components/character";
 import bmale from "../assets/people/ff_barbarian.png";
 import bfemale from "../assets/people/ff_barbarian_w.png";
 import wmale from "../assets/people/ff_wizard.png";
@@ -8,6 +9,7 @@ import rmale from "../assets/people/ff_rogue.png";
 import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
+import { Gender, Roles } from "../../../../api/types";
 
 export class State {
   state: any;
@@ -201,7 +203,72 @@ export class State {
         },
       },
       myChat: {
-        messages: [],
+        messages: [
+          {
+            type: "chat_system",
+            message: "System Messages Here",
+            messageID: 0,
+          },
+          {
+            type: "chat_user",
+            message: "User:  Messages Here",
+            messageID: 1,
+          },
+          {
+            type: "chat_other",
+            message: "Other: Messages Here",
+            messageID: 2,
+          },
+        ],
+        isActive: false,
+        numUnreadMessages: 2,
+        sendMessage: () => {},
+        toggleChat: (event, model) => {
+          console.log("clicked", model.myChat.isActive);
+          if (model.myChat.isActive === true) model.myChat.isActive = false;
+          else model.myChat.isActive = true;
+        },
+        get showPill() {
+          return this.numUnreadMessages > 0;
+        },
+      },
+      mypUI: {
+        test: (event, model) => {
+          model.mypUI.allPlayers[0].coin += 1;
+        },
+        test1: (event, model) => {
+          model.mypUI.allPlayers[0].attack += 1;
+        },
+        test2: (event, model) => {
+          model.mypUI.allPlayers[0].coin = 0;
+          model.mypUI.allPlayers[0].attack = 0;
+        },
+        allPlayers: [
+          new Character({
+            name: "conan",
+            role: Roles.Barbarian,
+            index: 1,
+            gender: Gender.Male,
+          }),
+          new Character({
+            name: "regis",
+            role: Roles.Rogue,
+            index: 2,
+            gender: Gender.Male,
+          }),
+          new Character({
+            name: "merla",
+            role: Roles.Wizard,
+            gender: Gender.Female,
+            index: 3,
+          }),
+          new Character({
+            name: "daryl",
+            role: Roles.Paladin,
+            gender: Gender.Male,
+            index: 4,
+          }),
+        ],
       },
     };
   }

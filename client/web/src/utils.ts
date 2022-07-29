@@ -61,38 +61,29 @@ export const utils = {
       icon: iconMap[icontype],
       timeout: 5000,
       timerID: null,
-      close: (event, model) => {
-        console.log("event: ", event);
-        console.log("model: ", model);
-
-        let elem = event.target;
-        let id = elem.dataset.id;
-        let containerElem = document.querySelector(`[data-sid=\"${id}\"]`);
+      close: (event, model, element) => {
+        let containerElem = document.querySelector(`[data-sid=\"${element.dataset.id}\"]`);
         containerElem.classList.add("toast_entry_close");
-        let responseArray = id.split("msg-");
+        let responseArray = element.dataset.id.split("msg-");
         let msgIndex = parseInt(responseArray[1]);
         setTimeout(() => {
           localState.state.myToast.messages.splice(msgIndex, 1);
         }, 750);
       },
-      hover: (event, model) => {
-        let elem = event.target;
-        elem.classList.remove("bloom");
-        let id = elem.dataset.id;
-        let nextElem = document.querySelector(`[data-tid=\"${id}\"]`);
+      hover: (event, model, element) => {
+        element.classList.remove("bloom");
+        let nextElem = document.querySelector(`[data-tid=\"${element.dataset.id}\"]`);
         nextElem.classList.add("wide");
         model.timerID = setTimeout(() => {
-          let spanElem = document.querySelector(`[data-sid=\"${id}\"]`);
+          let spanElem = document.querySelector(`[data-sid=\"${element.dataset.id}\"]`);
           spanElem.classList.remove("hidden");
           model.timerID = null;
         }, 200);
       },
-      leave: (event, model) => {
-        let elem = event.target;
-        let id = elem.dataset.id;
-        let nextElem = document.querySelector(`[data-tid=\"${id}\"]`);
+      leave: (event, model, element) => {
+        let nextElem = document.querySelector(`[data-tid=\"${element.dataset.id}\"]`);
         nextElem.classList.remove("wide");
-        let spanElem = document.querySelector(`[data-sid=\"${id}\"]`);
+        let spanElem = document.querySelector(`[data-sid=\"${element.dataset.id}\"]`);
         if (model.timerID) {
           clearTimeout(model.timerID);
           model.timerID = null;

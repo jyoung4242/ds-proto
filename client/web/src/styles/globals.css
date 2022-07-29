@@ -8,6 +8,10 @@
   --game-height: 720px;
   --background-start: #1e29f2;
   --background-end: #101f6b;
+  --angle1: 0;
+  --angle2: 0;
+  --angle3: 0;
+  --angle4: 0;
 }
 
 body {

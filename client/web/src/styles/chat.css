@@ -1,0 +1,132 @@
+.chat_Component {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 350px;
+  height: var(--game-height);
+  overflow: hidden;
+  pointer-events: none;
+  padding: 0;
+}
+
+.chat_messageContainer {
+  position: fixed;
+  left: 5px;
+  top: 5px;
+  bottom: 45px;
+  width: 350px;
+  overflow: hidden;
+  z-index: 3;
+  padding: 0;
+  background-color: rgba(165, 197, 208, 0.5);
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 10px;
+}
+
+.chat_message_innerContainer {
+  position: fixed;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  left: 5px;
+  top: 5px;
+  bottom: 45px;
+  width: 350px;
+  border-radius: 10px;
+  padding: 0;
+}
+
+.chat_iconContainer {
+  position: fixed;
+  left: 15px;
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.chat_inputtext {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bolder;
+  font-size: medium;
+  border: 1px rgba(255, 255, 255, 0.5) solid;
+  text-align: center;
+  border-radius: 5px;
+  position: absolute;
+  left: 5px;
+  bottom: 10px;
+  width: 300px;
+  height: 35px;
+}
+
+.chat_input_icon {
+  position: absolute;
+  right: 6px;
+  bottom: 17px;
+  cursor: pointer;
+}
+
+.chat_unreadpill {
+  position: fixed;
+  left: 35px;
+  bottom: 28px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: red;
+  color: rgb(221, 221, 221);
+  font-size: small;
+  flex-direction: column;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  cursor: pointer;
+  pointer-events: all;
+}
+.chat_unreadpill > span {
+  text-align: center;
+}
+
+/* message type stylings*/
+
+.chat_system {
+  color: rgb(221, 221, 221);
+  align-self: center;
+  border: solid 1px rgb(221, 221, 221);
+  background-color: darkcyan;
+  border-radius: 10px;
+  margin: 3px;
+  width: 97%;
+  font-size: small;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+.chat_user {
+  align-self: flex-start;
+  padding-left: 5px;
+  color: rgb(221, 221, 221);
+  border: solid 1px rgb(221, 221, 221);
+  background-color: rgb(139, 174, 31);
+  border-radius: 10px;
+  margin: 3px;
+  width: 80%;
+  font-size: small;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+}
+
+.chat_other {
+  align-self: flex-end;
+  color: rgb(221, 221, 221);
+  border: solid 1px rgb(221, 221, 221);
+  background-color: rgb(190, 83, 243);
+  border-radius: 10px;
+  margin: 3px;
+  width: 80%;
+  font-size: small;
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: right;
+  padding-right: 5px;
+}
