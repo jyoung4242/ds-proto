@@ -13,11 +13,11 @@
   align-content: center;
 }
 
-.mainLobby > span {
+.mainLobby>span {
   text-align: center;
 }
 
-.subLobby {
+.moe {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -32,10 +32,10 @@
   justify-content: center;
   flex-direction: column;
   align-content: center;
-  animation: blink 1.5s infinite;
+  /*  animation: blink 1.5s infinite; */
 }
 
-.subLobby > span {
+.moe>span {
   text-align: center;
   font-size: large;
 }

@@ -13,11 +13,11 @@
   align-content: center;
 }
 
-.mainTitle > span {
+.mainTitle>span {
   text-align: center;
 }
 
-.subTitle {
+.larry {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -32,10 +32,10 @@
   justify-content: center;
   flex-direction: column;
   align-content: center;
-  animation: blink 1.5s infinite;
+  /* animation: blink 1.5s infinite; */
 }
 
-.subTitle > span {
+.larry>span {
   text-align: center;
   font-size: large;
 }
@@ -66,9 +66,11 @@
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }

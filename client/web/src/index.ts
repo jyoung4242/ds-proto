@@ -14,16 +14,16 @@ let state = {
   myContainer: {
     myRoute: Router.Title,
     get isTitle() {
-      return this.myRoute === Router.Title;
+      return state.myContainer.myRoute === Router.Title;
     },
     get isLobby() {
-      return this.myRoute === Router.Lobby;
+      return state.myContainer.myRoute === Router.Lobby;
     },
     get isCharacter() {
-      return this.myRoute === Router.Character;
+      return state.myContainer.myRoute === Router.Character;
     },
     get isGame() {
-      return this.myRoute === Router.Game;
+      return state.myContainer.myRoute === Router.Game;
     },
 
     screenSwitch: async (newScreen: Router) => {
@@ -74,7 +74,7 @@ const uiStringTemplate = `
     <div class="container">
         <div \${===myContainer.isTitle} class="titlescreen">
             <div class="mainTitle"> <span> \${myTitle.title}</span> </div>
-            <div class="subTitle"> <span> \${myTitle.subtitle} </span></div>
+            <div class="larry"> <span> \${myTitle.subtitle} </span></div>
             <div>
                 <button \${click@=>myTitle.login} class="titleButton" >LOGIN</button>
             </div>
@@ -82,7 +82,7 @@ const uiStringTemplate = `
         
         <div \${===myContainer.isLobby} class="lobbyscreen">
             <div class="mainLobby"> <span> \${myLobby.title} </span> </div>
-            <div class="subLobby"><span>\${myLobby.subtitle}</span> </div>
+            <div class="moe"><span>\${myLobby.subtitle}</span> </div>
             
             <div class="buttonflex">
                 <button class="lobbyButton b1" \${click@=>myLobby.createGame}>Create New Game</button>
