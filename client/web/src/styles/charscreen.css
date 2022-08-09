@@ -1,0 +1,201 @@
+.charscreentitle {
+  position: relative;
+  top: 100px;
+  margin: 0 auto;
+  bottom: 600px;
+  text-align: center;
+}
+
+.charscreenContainer {
+  position: relative;
+  top: 110px;
+  left: 300px;
+  width: 640px;
+  height: 400px;
+  border: 20px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 20;
+  border-radius: 20px;
+}
+
+.cs_modaldiv {
+  width: 640px;
+  height: 400px;
+  display: grid;
+  grid-template-rows: 30px 40px 20px 150px 5px 150px 30px;
+  grid-template-columns: 60px 150px 20px 60px 60px 150px 20px 60px 60px;
+}
+
+.cs_modaldiv2 {
+  width: 640px;
+  height: 400px;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.cs_letter {
+  text-align: center;
+  color: rgb(211, 211, 211);
+  width: 40px;
+  margin: 0;
+  padding: 0;
+}
+
+.cs_inputsdiv {
+  grid-column-start: 2;
+  grid-column-end: span 8;
+  grid-row-start: 2;
+  grid-row-end: span 1;
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.cs_inputname {
+  width: 300px;
+  height: 35px;
+  border-radius: 10px;
+  color: var(--background-start);
+  font-size: large;
+  text-align: center;
+  font-family: demonFont;
+  background-color: rgb(211, 211, 211);
+  text-transform: uppercase;
+}
+.switchcontainer {
+  width: 200px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.cs_MFselectordiv {
+  background-color: rgb(211, 211, 211);
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  display: flex;
+
+  align-content: center;
+  justify-content: left;
+}
+
+.cs_selectorButton {
+  margin-top: 1px;
+  margin-left: 5px;
+  margin-right: 5px;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 2px 2px 5px black;
+  pointer-events: none;
+}
+
+.barbutton {
+  grid-column-start: 2;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.wizbutton {
+  grid-column-start: 2;
+  grid-column-end: span 1;
+  grid-row-start: 6;
+  grid-row-end: span 1;
+}
+
+.rogbutton {
+  grid-column-start: 6;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.palbutton {
+  grid-column-start: 6;
+  grid-column-end: span 1;
+  grid-row-start: 6;
+  grid-row-end: span 1;
+}
+
+.cs_barbarian_sprite {
+  grid-column-start: 4;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.cs_wizard_sprite {
+  grid-column-start: 4;
+  grid-column-end: span 1;
+  grid-row-start: 6;
+  grid-row-end: span 1;
+}
+
+.cs_rogue_sprite {
+  grid-column-start: 8;
+  grid-column-end: span 1;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+}
+
+.cs_paladin_sprite {
+  grid-column-start: 8;
+  grid-column-end: span 1;
+  grid-row-start: 6;
+  grid-row-end: span 1;
+}
+
+.csbuttonflex {
+  position: relative;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 400px;
+  height: 60px;
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+}
+
+/* Confirmation Modal stylings*/
+
+.cs_modal2_title {
+  text-align: center;
+  font-size: x-large;
+  grid-column-start: 2;
+  grid-column-end: span 6;
+  grid-row-start: 1;
+  grid-row-end: span 1;
+}
+.cs_modal2_prompt {
+  font-size: large;
+  text-align: center;
+  grid-column-start: 2;
+  grid-column-end: span 6;
+  grid-row-start: 3;
+  grid-row-end: span 1;
+  text-transform: uppercase;
+}
+.cs_modal2_image {
+  grid-column-start: 4;
+  grid-column-end: span 2;
+  grid-row-start: 4;
+  grid-row-end: span 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cs_modal2_buttondiv {
+  display: flex;
+  justify-content: space-evenly;
+  align-content: center;
+  grid-column-start: 2;
+  grid-column-end: span 6;
+  grid-row-start: 7;
+  grid-row-end: span 1;
+  justify-items: center;
+}

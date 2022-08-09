@@ -1,10 +1,11 @@
 import { UI, UIView } from "peasy-ui";
 import { State } from "./state/state";
-import { GameContainer, Router } from "./components/index";
+import { GameContainer } from "./components/index";
 import "./styles/index";
 import { utils } from "./utils";
 
 const myApp = document.getElementById("App");
+<<<<<<< HEAD
 //const state = new State();
 
 let state = {
@@ -66,11 +67,15 @@ let state = {
     connect: () => {},
   },
 };
+=======
+const state = new State();
+>>>>>>> new-content
 
 utils.init(state);
-//const GameComponent = new GameContainer(state);
+const GameComponent = new GameContainer(state);
 
 const uiStringTemplate = `
+<<<<<<< HEAD
     <div class="container">
         <div \${===myContainer.isTitle} class="titlescreen">
             <div class="mainTitle"> <span> \${myTitle.title}</span> </div>
@@ -98,21 +103,16 @@ const uiStringTemplate = `
                 <span>Logged in as: \${playerData.username}</span>
             </div>
         </div>
+=======
+    <div>
+        ${GameComponent.template}
+>>>>>>> new-content
     </div>
 `;
 
 let myUI: UIView;
-myUI = UI.create(myApp, uiStringTemplate, state);
+myUI = UI.create(myApp, uiStringTemplate, state.state);
 
-setInterval(() => UI.update(), 100);
+setInterval(() => UI.update(), 1000 / 60);
 
-/**
- * 
-        <div \${===myContainer.isCharacter} class="charscreen" >
-            <div></div>
-        </div>
-        
-        <div \${=== myContainer.isGame} class="gamescreen" >
-            <div></div>
-        </div>
- */
+state.state.playerData.username = "test username";

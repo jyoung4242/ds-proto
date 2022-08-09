@@ -6,5 +6,3 @@ declare global {
     model: object;
   }
 }
-
-declare module "*.png";

@@ -8,6 +8,10 @@
   --game-height: 720px;
   --background-start: #1e29f2;
   --background-end: #101f6b;
+  --angle1: 0;
+  --angle2: 0;
+  --angle3: 0;
+  --angle4: 0;
 }
 
 body {
@@ -21,11 +25,14 @@ body {
   width: var(--game-width);
   height: var(--game-height);
   margin: 0 auto;
-  border: 25px solid;
+  border: 15px solid;
   border-image: url("../assets/border.svg");
-  border-image-slice: 25;
+  border-image-slice: 15;
   transform: translateY(10%);
   padding: 0;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  border-radius: 20px;
+  overflow: hidden;
 }
 
 .container {
