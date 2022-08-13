@@ -1,5 +1,5 @@
 import { utils } from "../utils";
-import { Router } from "../components";
+import { Router, Card } from "../components";
 import { Character } from "../components/character";
 import bmale from "../assets/people/ff_barbarian.png";
 import bfemale from "../assets/people/ff_barbarian_w.png";
@@ -10,7 +10,14 @@ import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 import { Gender, Roles } from "../../../../api/types";
-
+import { UpdateArgs } from "../../../.hathora/client";
+import userIcon from "../assets/toast/whiteuser.png";
+import locationIcon from "../assets/toast/whitebuilding.png";
+import monsterIcon from "../assets/toast/whitemonster.png";
+import cardIcon from "../assets/toast/whitecard.png";
+import effectIcon from "../assets/toast/whiteeffect.png";
+const MOUSELIMIT = 10;
+let mouseCount = 0;
 export class State {
   state: any;
 
@@ -82,16 +89,46 @@ export class State {
         title: "Lobby",
         subtitle: "Choose to create game or join",
         isJoining: false,
+        isDisabled: true,
+        validationCSSstring: "joinGameText",
         gameID: "",
+        get buttonEnable() {
+          return this.isDisabled;
+        },
         createGame: () => {
           console.log("Creating Game");
+          utils.createGame();
         },
-        joinGame: () => {
-          this.state.myLobby.isJoining = true;
+        joinGame: (event, model) => {
+          if (model.myLobby.isJoining) {
+            model.myLobby.isJoining = false;
+          } else {
+            model.myLobby.isJoining = true;
+          }
         },
         logout: () => {
           this.state.playerData.username = "";
           this.state.myContainer.screenSwitch(Router.Title);
+        },
+        validate: (event, model) => {
+          const validateGameID = (id: string): boolean => {
+            const regex = new RegExp("^[a-zA-Z0-9]{11,12}$");
+            return regex.test(id);
+          };
+
+          //step one, read the input
+          let mystring = this.state.myLobby.gameID;
+          //step two, qualify the input
+          let valStatus = validateGameID(mystring);
+          //step three, do something to the UI to indicate pass/fail
+          if (valStatus) {
+            //update UI
+            model.myLobby.isDisabled = false;
+            model.myLobby.validationCSSstring = "joinGameText goodData";
+          } else {
+            model.myLobby.isDisabled = true;
+            model.myLobby.validationCSSstring = "joinGameText badData";
+          }
         },
         connect: () => {},
       },
@@ -177,29 +214,58 @@ export class State {
           '<a href="https://www.flaticon.com/free-icons/card" title="card icons">Card icons created by Pixel perfect - Flaticon</a>',
       },
       myToast: {
-        interval: 3000,
         intervalID: null,
         messages: [],
+        addToast: (icontype: "user" | "location" | "monster" | "card" | "effect", msg: string, event, model, element) => {
+          let iconMap = {
+            user: userIcon,
+            location: locationIcon,
+            monster: monsterIcon,
+            card: cardIcon,
+            effect: effectIcon,
+          };
 
+          let config = {
+            msg: msg,
+            img: iconMap[icontype],
+            timeOut: 5000,
+            close: (_event, model, _element, _at, context) => {
+              context.$parent.$model.myToast.messages = context.$parent.$model.myToast.messages.filter(m => m !== model.msg);
+            },
+            hover: (_event, _model, element) => {
+              const prnt = element.parentElement;
+              prnt.classList.remove("bloom");
+            },
+          };
+          this.state.myToast.messages.push(config);
+        },
         test: () => {
           let number = Math.floor(Math.random() * 5);
           switch (number) {
             case 0:
-              utils.toastMessage("monster", "Monster Attacks Player");
+              //utils.toastMessage("monster", "Monster Attacks Player");
+              this.state.myToast.addToast("monster", "Monster Attacks Player");
+
               break;
             case 1:
-              utils.toastMessage("user", "User 3 Turn to play");
+              //utils.toastMessage("user", "User 3 Turn to play");
+              this.state.myToast.addToast("user", "User 3 Turn to play");
               break;
             case 2:
-              utils.toastMessage("location", "Location point added");
+              //utils.toastMessage("location", "Location point added");
+              this.state.myToast.addToast("location", "Location point added");
+
               break;
             case 3:
-              utils.toastMessage("effect", "Passive Effect was triggered");
+              //utils.toastMessage("effect", "Passive Effect was triggered");
+              this.state.myToast.addToast("effect", "Passive Effect was triggered");
               break;
             case 4:
-              utils.toastMessage("card", "Card was played");
+              //utils.toastMessage("card", "Card was played");
+              this.state.myToast.addToast("card", "Card was played");
               break;
           }
+          console.log("test: ", this.state.myToast.messages);
         },
       },
       myChat: {
@@ -233,6 +299,40 @@ export class State {
         },
       },
       mypUI: {
+        clear: (event, model) => (model.myHand.isVisible = false),
+        checkHover: (event, model) => {
+          mouseCount += 1;
+          if (mouseCount >= MOUSELIMIT) {
+            mouseCount = 0;
+            model.myHand.hand = [];
+            model.myHand.isVisible = false;
+            model.mypUI.allPlayers.forEach((p, i) => {
+              if (p.isHovered()) {
+                switch (i) {
+                  case 0:
+                    model.myHand.hand = [...model.myHand.player1Hand];
+                    model.myHand.footer = `${p.name.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+                    break;
+                  case 1:
+                    model.myHand.hand = [...model.myHand.player2Hand];
+                    model.myHand.footer = `${p.name.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+                    break;
+                  case 2:
+                    model.myHand.hand = [...model.myHand.player3Hand];
+                    model.myHand.footer = `${p.name.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+                    break;
+                  case 3:
+                    model.myHand.hand = [...model.myHand.player4Hand];
+                    model.myHand.footer = `${p.name.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+                    break;
+                }
+              }
+            });
+            if (model.myHand.hand.length != 0) model.myHand.isVisible = true;
+          }
+        },
+        turn: 1,
+
         test: (event, model) => {
           model.mypUI.allPlayers[0].coin += 1;
         },
@@ -243,33 +343,250 @@ export class State {
           model.mypUI.allPlayers[0].coin = 0;
           model.mypUI.allPlayers[0].attack = 0;
         },
+        test3: (event, model) => {
+          model.myToast.test(Math.floor(Math.random() * 4));
+        },
+        test4: (event, model, element) => {
+          model.mypUI.turn = parseInt(element.value);
+          console.log(model);
+          model.mypUI.allPlayers.forEach(player => (player.bloomStatus = ""));
+          model.mypUI.allPlayers[model.mypUI.turn].bloomStatus = "playerBloom";
+          console.log(model.mypUI.allPlayers[model.mypUI.turn]);
+        },
         allPlayers: [
           new Character({
             name: "conan",
             role: Roles.Barbarian,
             index: 1,
             gender: Gender.Male,
+            bloomStatus: "playerBloom",
           }),
           new Character({
             name: "regis",
             role: Roles.Rogue,
             index: 2,
             gender: Gender.Male,
+            bloomStatus: "",
           }),
           new Character({
             name: "merla",
             role: Roles.Wizard,
             gender: Gender.Female,
             index: 3,
+            bloomStatus: "",
           }),
           new Character({
             name: "daryl",
             role: Roles.Paladin,
             gender: Gender.Male,
             index: 4,
+            bloomStatus: "",
           }),
         ],
       },
+      myHand: {
+        isVisible: false,
+        player1Hand: [
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+        ],
+        player2Hand: [
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+        ],
+        player3Hand: [
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+        ],
+        player4Hand: [
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+          new Card({
+            state: this.state,
+            type: "ability",
+            title: "TestCard",
+            level: 1,
+            description: "my test card",
+          }),
+        ],
+        footer: "Player 1 Hand",
+        hand: [],
+      },
     };
+  }
+
+  updateArgs(update: UpdateArgs) {
+    console.log("");
+  }
+
+  onError() {
+    console.log("");
   }
 }

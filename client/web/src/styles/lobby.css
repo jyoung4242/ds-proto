@@ -13,11 +13,11 @@
   align-content: center;
 }
 
-.mainLobby>span {
+.mainLobby > span {
   text-align: center;
 }
 
-.moe {
+.sLobby {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -35,7 +35,7 @@
   animation: blink 1.5s infinite;
 }
 
-.moe>span {
+.sLobby > span {
   text-align: center;
   font-size: large;
 }
@@ -51,6 +51,13 @@
   height: 60px;
   padding: 10px 10px;
   cursor: pointer;
+}
+
+.lobbyButton:disabled {
+  border: 5px rgb(211, 211, 211) solid;
+  background-color: rgb(211, 211, 211);
+  color: black;
+  opacity: 0.5;
 }
 
 .buttonflex {
@@ -90,6 +97,15 @@
 
 .joinGameText {
   height: 25px;
+  font-weight: bolder;
+}
+
+.goodData {
+  border: 4px solid lime;
+}
+
+.badData {
+  border: 4px solid red;
 }
 
 .lobbyButton:hover {

@@ -1,11 +1,11 @@
 import { Gender, Roles } from "../../../../api/types";
-import bmale from "../assets/people/ff_barbarian.png";
+import bmale from "../assets/people/barbarian_m.png";
 import bfemale from "../assets/people/ff_barbarian_w.png";
 import wmale from "../assets/people/ff_wizard.png";
-import wfemale from "../assets/people/ff_wizard_w.png";
-import rmale from "../assets/people/ff_rogue.png";
+import wfemale from "../assets/people/wizard_female.png";
+import rmale from "../assets/people/rogue_male.png";
 import rfemale from "../assets/people/ff_rogue_w.png";
-import pmale from "../assets/people/ff_paladin.png";
+import pmale from "../assets/people/paladin_male.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 
 export class Character {
@@ -17,6 +17,8 @@ export class Character {
   index: number;
   role: Roles;
   gender: Gender;
+  bloomStatus: "";
+  hovered: boolean;
 
   roleMap = {
     [Roles.Barbarian]: {
@@ -53,6 +55,8 @@ export class Character {
     this.role = config.role || Roles.Barbarian;
     this.gender = config.gender || Gender.Male;
     this.img = this.roleMap[this.role][this.gender];
+    this.bloomStatus = config.bloomStatus;
+    this.hovered = false;
   }
 
   addHealth(num: number) {
@@ -79,4 +83,14 @@ export class Character {
     myUI.style.setProperty(`--angle${this.index}`, `${0}`);
     myUI.style.stroke = "lime";
   }
+  clearHover = () => {
+    this.hovered = false;
+  };
+
+  setHover = () => {
+    this.hovered = true;
+  };
+  isHovered = () => {
+    return this.hovered;
+  };
 }

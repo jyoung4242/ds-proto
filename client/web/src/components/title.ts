@@ -8,7 +8,7 @@ export class TitleComponent {
     <div class="mainTitle" >
       <span>\${myTitle.title}</span>
     </div>
-    <div class="subTitle" >
+    <div class="STitle" >
       <span>\${myTitle.subtitle}</span>
     </div>
     <div>

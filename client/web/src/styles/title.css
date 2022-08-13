@@ -13,11 +13,11 @@
   align-content: center;
 }
 
-.mainTitle>span {
+.mainTitle > span {
   text-align: center;
 }
 
-.larry {
+.STitle {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -35,7 +35,7 @@
   animation: blink 1.5s infinite;
 }
 
-.larry>span {
+.STitle > span {
   text-align: center;
   font-size: large;
 }

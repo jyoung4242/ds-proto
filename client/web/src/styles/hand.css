@@ -1,0 +1,39 @@
+.hand_container {
+  min-width: 100%;
+  min-height: 230px;
+  position: fixed;
+  top: 59%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.hand {
+  position: absolute;
+  width: 800px;
+  height: 150%;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  flex-wrap: wrap-reverse;
+  row-gap: 10px;
+  column-gap: 5px;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.footer {
+  position: absolute;
+  width: 800px;
+  height: 8%;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 25;
+  border-radius: 25px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: medium;
+}

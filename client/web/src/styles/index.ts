@@ -10,3 +10,5 @@ import "./cardPool.css";
 import "./toast.css";
 import "./chat.css";
 import "./playerUI.css";
+import "./hand.css";
+import "./card.css";

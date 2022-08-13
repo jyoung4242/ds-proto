@@ -1,0 +1,33 @@
+.card_container {
+  aspect-ratio: 1/1.5;
+  width: 115px;
+
+  border: 1px solid white;
+  border-radius: 5px;
+  box-shadow: 5px 5px 4px 1px rgba(0, 0, 0, 0.5);
+  background-color: #fbfaf5;
+  margin-right: 10px;
+  color: #101f6b;
+  font-size: small;
+  position: relative;
+}
+
+.card_title {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.card_level {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.card_desc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: xx-small;
+}

@@ -9,6 +9,8 @@ import { Game } from "./game";
 import { Toast } from "./toast";
 import { Chat } from "./chat";
 import { pUI } from "./playerUI";
+import { Hand } from "./hand";
+import { Card } from "./card";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -21,3 +23,5 @@ export * from "./chat";
 export * from "./cardPool";
 export * from "./toast";
 export * from "./playerUI";
+export * from "./hand";
+export * from "./card";

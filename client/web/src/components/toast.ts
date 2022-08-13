@@ -2,18 +2,18 @@ export class Toast {
   componentName: string = "myGameScreen";
   intervalID: NodeJS.Timer;
   template: string = `
-      <div class="toast_container">
-        <div data-cid="msg-\${message.$index}" class="toast_entry" \${message <=* myToast.messages}>
-            <div data-tid="msg-\${message.$index}" class="toast_message">
-                <span class="hidden" data-sid="msg-\${message.$index}">\${message.message}</span>
+  <div class="container">
+    <div class="toast_container">
+        <div  class="toast_entry" \${msg<=*myToast.messages} >
+            <div id="elm_\${msg.$index}"  class="toast_img_container bloom">
+                    <img \${mouseover@=>msg.hover} class="toast_img" src="\${msg.img}" alt=""/>    
             </div>
-            <div data-id="msg-\${message.$index}" $\{mouseenter@=>message.hover} $\{mouseleave@=>message.leave} class="toast_img_container bloom">
-                <img class="toast_img" src="\${message.icon}" alt=""/>    
-            </div>
-            <div data-id="msg-\${message.$index}" class="toast_close" \${click@=>message.close}>X</div>
+            <div  class="toast_message">\${msg.msg}</div>
+            <div \${click@=>msg.close} class="toast_close">X</div>
         </div>
-      </div>
-        `;
+    </div>
+  </div>
+  `;
 
   localState: any;
   constructor(state) {
@@ -22,25 +22,24 @@ export class Toast {
 
   init() {
     this.localState.state.myToast.intervalID = setInterval(() => {
-      //work backwards through messages
-      if (this.localState.state.myToast.messages.length) {
-        for (let index = this.localState.state.myToast.messages.length - 1; index > -1; index--) {
-          //test if its being hovered
-          let hoverElement = document.querySelector(`[data-tid=\"msg-${index}\"]`);
-          if (!hoverElement.classList.contains("wide")) {
-            if (this.localState.state.myToast.messages[index].timeout <= 0) {
-              //toast message can be removed from array, time'd out
-              let hideElement = document.querySelector(`[data-cid=\"msg-${index}\"]`);
-              hideElement.classList.add("toast_entry_close");
-              setTimeout(() => {
-                this.localState.state.myToast.messages.splice(index, 1);
-              }, 750);
-            } else {
-              this.localState.state.myToast.messages[index].timeout -= 500;
+      //update all toast timers
+      const numMessages = this.localState.state.myToast.messages.length;
+      if (numMessages > 0) {
+        for (let index = numMessages - 1; index >= 0; index--) {
+          let elm = document.getElementById(`elm_${index}`);
+          if (!this.isHover(elm)) {
+            console.log(this.localState.state.myToast.messages[index].timeOut);
+            this.localState.state.myToast.messages[index].timeOut -= 500;
+
+            if (this.localState.state.myToast.messages[index].timeOut <= 0) {
+              console.log("here");
+              this.localState.state.myToast.messages.splice(index, 1);
             }
           }
         }
       }
     }, 500);
   }
+
+  isHover = e => e.parentElement.querySelector(":hover") === e;
 }

@@ -1,13 +1,13 @@
 .toast_container {
   position: fixed;
   right: 0;
-  top: 0;
-  width: 200px;
+  top: 10px;
+  width: 210px;
   height: var(--game-height);
-  display: flex;
+  /*  display: flex;
   flex-direction: column;
   justify-content: end;
-  align-content: flex-start;
+  align-content: flex-start; */
   margin: 10px;
 }
 
@@ -15,11 +15,18 @@
   display: flex;
   margin-bottom: 25px;
   justify-content: flex-end;
-  animation: slide-in-from-right 0.75s;
 }
 
-.toast_entry_close {
-  animation: slide-out-to-right 0.75s forwards;
+.toast_entry:hover > .toast_message {
+  animation: slide-in-from-right 0.75s forwards;
+}
+
+.toast_entry.pui-adding {
+  animation: slide-in-from-right 0.75s forwards;
+}
+
+.toast_entry.pui-removing {
+  animation: slide-out-to-right 0.75s;
 }
 
 @keyframes slide-in-from-right {
@@ -33,6 +40,7 @@
   }
   100% {
     transform: translateX(0%);
+    opacity: 1;
   }
 }
 
@@ -53,12 +61,13 @@
 }
 
 .toast_message {
+  order: 1;
   position: relative;
   top: 0;
   left: 0;
-  width: 0px;
+  width: 150px;
   height: 38px;
-  text-align: left;
+  text-align: center;
   font-family: demonFont;
   font-size: small;
   margin-right: 10px;
@@ -67,37 +76,34 @@
   flex-direction: column;
   justify-content: center;
   z-index: 2;
-  transition: width 0.2s ease-in-out;
-}
-
-.wide {
-  width: 100px;
   border: 5px solid;
   border-image: url("../assets/border.svg");
-  border-image-slice: 20;
+  border-image-slice: 25;
   border-radius: 5px;
-  box-shadow: 5px 5px 5px black;
-}
-
-.hidden {
-  display: none;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5);
+  color: white;
+  opacity: 0;
+  transform: translateX(200%);
+  transition: transform opacity 0.5s ease-in-out;
 }
 
 .toast_img {
-  width: 30px;
-  height: 30px;
+  min-width: 26px;
+  height: 26px;
   position: relative;
   right: 0;
   bottom: 0;
-  margin: 2px;
+  margin: auto;
   z-index: 3;
+  flex-shrink: 0;
 }
 
 .toast_img_container {
+  order: 2;
   border: 2px solid white;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
   overflow: hidden;
   box-shadow: 5px 5px 5px black;
   display: flex;
@@ -106,23 +112,25 @@
 }
 
 .toast_close {
+  order: 3;
   position: relative;
   right: 0;
   top: 0;
-  transform: translate(-50%, -25%);
-  width: 15px;
-  height: 15px;
-  border: 50%;
+  transform: translate(-35%, -50%);
+  width: 20px;
+  height: 20px;
+  /* border: 50%; */
   overflow: hidden;
   color: white;
   font-family: demonFont;
   font-size: large;
   transition: color 0.3s;
+  z-index: 4;
 }
 .toast_close:hover {
   color: red;
 }
 
 .bloom {
-  box-shadow: 0px 0px 8px 1px white;
+  box-shadow: 0px 0px 8px 3px white;
 }
