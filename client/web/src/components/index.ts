@@ -11,6 +11,7 @@ import { Chat } from "./chat";
 import { pUI } from "./playerUI";
 import { Hand } from "./hand";
 import { Card } from "./card";
+import { Location } from "./location";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -25,3 +26,4 @@ export * from "./toast";
 export * from "./playerUI";
 export * from "./hand";
 export * from "./card";
+export * from "./location";

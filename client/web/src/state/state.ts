@@ -16,6 +16,7 @@ import locationIcon from "../assets/toast/whitebuilding.png";
 import monsterIcon from "../assets/toast/whitemonster.png";
 import cardIcon from "../assets/toast/whitecard.png";
 import effectIcon from "../assets/toast/whiteeffect.png";
+
 const MOUSELIMIT = 10;
 let mouseCount = 0;
 export class State {
@@ -353,6 +354,11 @@ export class State {
           model.mypUI.allPlayers[model.mypUI.turn].bloomStatus = "playerBloom";
           console.log(model.mypUI.allPlayers[model.mypUI.turn]);
         },
+        test5: (event, model, element) => {
+          model.myLocation.addPoint(1, model);
+          /* if (model.myLocation.isVisible) model.myLocation.isVisible = false;
+          else model.myLocation.isVisible = true; */
+        },
         allPlayers: [
           new Character({
             name: "conan",
@@ -578,6 +584,25 @@ export class State {
         ],
         footer: "Player 1 Hand",
         hand: [],
+      },
+      myLocation: {
+        isVisible: true,
+        level: 1,
+        health: 6,
+        damage: 0,
+        title: "Cellar",
+        sequence: 1,
+        addPoint: (pts, model) => {
+          if (model.myLocation.damage < model.myLocation.health) {
+            model.myLocation.damage += pts;
+            if (model.myLocation.damage == model.myLocation.health) alert("location lost"); //do something here
+          }
+        },
+        removePoint: (pts, model) => {
+          if (model.myLocation.damage - pts >= 0) {
+            model.myLocation.damage -= pts;
+          }
+        },
       },
     };
   }

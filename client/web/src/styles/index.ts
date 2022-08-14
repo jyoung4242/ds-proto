@@ -12,3 +12,4 @@ import "./chat.css";
 import "./playerUI.css";
 import "./hand.css";
 import "./card.css";
+import "./location.css";

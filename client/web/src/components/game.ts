@@ -7,7 +7,7 @@ import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 
-import { CardPool, Toast, Chat, pUI, Hand } from "../components/index";
+import { CardPool, Toast, Chat, pUI, Hand, Location } from "../components/index";
 
 export class Game {
   componentName: string = "myGameScreen";
@@ -18,6 +18,7 @@ export class Game {
   chat: any;
   pui: any;
   hand: any;
+  location: any;
 
   constructor(state) {
     this.localState = state;
@@ -27,12 +28,14 @@ export class Game {
     this.toast.init();
     this.pui = new pUI(state);
     this.hand = new Hand(state);
+    this.location = new Location(state);
 
     this.template = `
     <button class="lobbyButton" \${click@=>mypUI.test}> coin</button>
     <button class="lobbyButton" \${click@=>mypUI.test1}> Attk</button>
     <button class="lobbyButton" \${click@=>mypUI.test2}>Reset</button>
     <button class="lobbyButton" \${click@=>mypUI.test3}>Toast!</button>
+    <button class="lobbyButton" \${click@=>mypUI.test5}>Location</button>
     <label for="turn" id="lblturn">Player turn</label>
     <select \${change@=>mypUI.test4} name="playerturn" id="turn">
         <option value="0">Player 1</option>
@@ -45,6 +48,7 @@ export class Game {
     ${this.chat.template}
     ${this.pui.template}
     ${this.hand.template}
+    ${this.location.template}
     `;
   }
 }
