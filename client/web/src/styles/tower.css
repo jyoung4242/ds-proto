@@ -1,0 +1,69 @@
+.td_container {
+  position: absolute;
+  border: 25px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 25;
+  width: 210px;
+  aspect-ratio: 3/2;
+  top: 100px;
+  right: 50px;
+}
+
+.td_rel_container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.td_title {
+  font-size: small;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.td_card {
+  position: absolute;
+  border: 1px solid white;
+  border-radius: 10px;
+  width: 200px;
+  aspect-ratio: 3/2;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fbfaf5;
+  color: #101f6b;
+  font-size: small;
+  transition: width 0.3s ease-in-out;
+  box-shadow: 5px 5px 8px 3px #00000080;
+}
+
+.td_card_title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  font-size: xx-large;
+  text-align: center;
+}
+
+.td_card_level {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: small;
+  text-align: center;
+}
+
+.td_card_desc {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: x-small;
+  text-align: center;
+  width: 100%;
+}

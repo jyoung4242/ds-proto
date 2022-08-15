@@ -604,6 +604,12 @@ export class State {
           }
         },
       },
+      myTowerD: {
+        isVisible: true,
+        title: "Net Trap",
+        level: 1,
+        desc: "Add 1 influence point to location",
+      },
     };
   }
 

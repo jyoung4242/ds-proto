@@ -12,6 +12,7 @@ import { pUI } from "./playerUI";
 import { Hand } from "./hand";
 import { Card } from "./card";
 import { Location } from "./location";
+import { Tower } from "./towerD";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -27,3 +28,4 @@ export * from "./playerUI";
 export * from "./hand";
 export * from "./card";
 export * from "./location";
+export * from "./towerD";

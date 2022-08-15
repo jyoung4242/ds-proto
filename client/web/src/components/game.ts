@@ -7,7 +7,7 @@ import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 
-import { CardPool, Toast, Chat, pUI, Hand, Location } from "../components/index";
+import { CardPool, Toast, Chat, pUI, Hand, Location, Tower } from "../components/index";
 
 export class Game {
   componentName: string = "myGameScreen";
@@ -19,6 +19,7 @@ export class Game {
   pui: any;
   hand: any;
   location: any;
+  towerD: any;
 
   constructor(state) {
     this.localState = state;
@@ -29,6 +30,7 @@ export class Game {
     this.pui = new pUI(state);
     this.hand = new Hand(state);
     this.location = new Location(state);
+    this.towerD = new Tower(state);
 
     this.template = `
     <button class="lobbyButton" \${click@=>mypUI.test}> coin</button>
@@ -49,6 +51,7 @@ export class Game {
     ${this.pui.template}
     ${this.hand.template}
     ${this.location.template}
+    ${this.towerD.template}
     `;
   }
 }
