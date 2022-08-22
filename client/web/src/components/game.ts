@@ -36,19 +36,9 @@ export class Game {
     this.settings = new Settings(state);
 
     this.template = `
-    <button class="lobbyButton" \${click@=>mypUI.test}> coin</button>
-    <button class="lobbyButton" \${click@=>mypUI.test1}> Attk</button>
-    <button class="lobbyButton" \${click@=>mypUI.test2}>Reset</button>
-    <button class="lobbyButton" \${click@=>mypUI.test3}>Toast!</button>
-    <button class="lobbyButton" \${click@=>mypUI.test5}>Location</button>
+    
     <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
-    <label for="turn" id="lblturn">Player turn</label>
-    <select \${change@=>mypUI.test4} name="playerturn" id="turn">
-        <option value="0">Player 1</option>
-        <option value="1">Player 2</option>
-        <option value="2">Player 3</option>
-        <option value="3">Player 4</option>
-    </select>
+    
     ${this.cardPool.template}
     ${this.toast.template}
     ${this.chat.template}

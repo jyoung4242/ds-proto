@@ -336,31 +336,7 @@ export class State {
         showOptions: (event, model) => {
           model.mySettings.showModal = true;
         },
-        test: (event, model) => {
-          model.mypUI.allPlayers[0].coin += 1;
-        },
-        test1: (event, model) => {
-          model.mypUI.allPlayers[0].attack += 1;
-        },
-        test2: (event, model) => {
-          model.mypUI.allPlayers[0].coin = 0;
-          model.mypUI.allPlayers[0].attack = 0;
-        },
-        test3: (event, model) => {
-          model.myToast.test(Math.floor(Math.random() * 4));
-        },
-        test4: (event, model, element) => {
-          model.mypUI.turn = parseInt(element.value);
-          console.log(model);
-          model.mypUI.allPlayers.forEach(player => (player.bloomStatus = ""));
-          model.mypUI.allPlayers[model.mypUI.turn].bloomStatus = "playerBloom";
-          console.log(model.mypUI.allPlayers[model.mypUI.turn]);
-        },
-        test5: (event, model, element) => {
-          model.myLocation.addPoint(1, model);
-          /* if (model.myLocation.isVisible) model.myLocation.isVisible = false;
-          else model.myLocation.isVisible = true; */
-        },
+
         allPlayers: [
           new Character({
             name: "conan",
@@ -641,36 +617,6 @@ export class State {
           console.log(tempObj);
           localStorage.setItem("DSsettings", JSON.stringify(tempObj));
           model.mySettings.showModal = false;
-        },
-        updateChat: (_event, model) => {
-          const chatSheet = document.styleSheets[10];
-          const UMrules: CSSRule = chatSheet.cssRules[9];
-          if (UMrules instanceof CSSStyleRule) {
-            UMrules.style.backgroundColor = model.mySettings.chatUM;
-          }
-
-          const sysMessageStyle = chatSheet.cssRules[8];
-          if (sysMessageStyle instanceof CSSStyleRule) {
-            sysMessageStyle.style.backgroundColor = model.mySettings.chatSM;
-          }
-
-          const otherMessageStyle = chatSheet.cssRules[10];
-          if (otherMessageStyle instanceof CSSStyleRule) {
-            otherMessageStyle.style.backgroundColor = model.mySettings.chatOM;
-          }
-
-          const bgStyle = chatSheet.cssRules[2];
-          if (bgStyle instanceof CSSStyleRule) {
-            bgStyle.style.backgroundColor = model.mySettings.chatBG;
-            bgStyle.style.opacity = model.mySettings.chatOP;
-          }
-
-          console.log("bgStyle: ", bgStyle);
-        },
-        updateColor: (_event, model, element) => {
-          let app = document.getElementById("App");
-          console.log(model.mySettings.beginningColor, model.mySettings.endingColor);
-          app.style.backgroundImage = `linear-gradient(to bottom right, ${model.mySettings.beginningColor}, ${model.mySettings.endingColor})`;
         },
       },
     };

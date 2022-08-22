@@ -12,6 +12,11 @@
   --angle2: 0;
   --angle3: 0;
   --angle4: 0;
+  --chatUM: #8bae1f;
+  --chatOM: #be53f3;
+  --chatSM: #008b8b;
+  --chatBG: #000000;
+  --chatOP: 0.5;
 }
 
 body {
@@ -21,7 +26,7 @@ body {
   margin: 0%;
 }
 
-#App {
+.app {
   width: var(--game-width);
   height: var(--game-height);
   margin: 0 auto;
