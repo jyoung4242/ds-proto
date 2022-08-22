@@ -333,7 +333,9 @@ export class State {
           }
         },
         turn: 1,
-
+        showOptions: (event, model) => {
+          model.mySettings.showModal = true;
+        },
         test: (event, model) => {
           model.mypUI.allPlayers[0].coin += 1;
         },
@@ -609,6 +611,67 @@ export class State {
         title: "Net Trap",
         level: 1,
         desc: "Add 1 influence point to location",
+      },
+      mySettings: {
+        showModal: false,
+        beginningColor: "#2c34d6",
+        endingColor: "#101f6b",
+        gameSpeed: 5,
+        sfxGain: 5,
+        bgmGain: 5,
+        chatUM: "#8BAE1F",
+        chatSM: "008b8b",
+        chatOM: "#be53f3",
+        chatBG: "#000000",
+        chatOP: 0.5,
+        closeModal: (_event, model) => {
+          let tempObj = {
+            chatOM: model.mySettings.chatOM,
+            chatUM: model.mySettings.chatUM,
+            chatOP: model.mySettings.chatOP,
+            chatBG: model.mySettings.chatBG,
+            chatSM: model.mySettings.chatSM,
+            GS: model.mySettings.gameSpeed,
+            sfx: model.mySettings.sfxGain,
+            bgm: model.mySettings.bgmGain,
+            bColor: model.mySettings.beginningColor,
+            eColor: model.mySettings.endingColor,
+          };
+
+          console.log(tempObj);
+          localStorage.setItem("DSsettings", JSON.stringify(tempObj));
+          model.mySettings.showModal = false;
+        },
+        updateChat: (_event, model) => {
+          const chatSheet = document.styleSheets[10];
+          const UMrules: CSSRule = chatSheet.cssRules[9];
+          if (UMrules instanceof CSSStyleRule) {
+            UMrules.style.backgroundColor = model.mySettings.chatUM;
+          }
+
+          const sysMessageStyle = chatSheet.cssRules[8];
+          if (sysMessageStyle instanceof CSSStyleRule) {
+            sysMessageStyle.style.backgroundColor = model.mySettings.chatSM;
+          }
+
+          const otherMessageStyle = chatSheet.cssRules[10];
+          if (otherMessageStyle instanceof CSSStyleRule) {
+            otherMessageStyle.style.backgroundColor = model.mySettings.chatOM;
+          }
+
+          const bgStyle = chatSheet.cssRules[2];
+          if (bgStyle instanceof CSSStyleRule) {
+            bgStyle.style.backgroundColor = model.mySettings.chatBG;
+            bgStyle.style.opacity = model.mySettings.chatOP;
+          }
+
+          console.log("bgStyle: ", bgStyle);
+        },
+        updateColor: (_event, model, element) => {
+          let app = document.getElementById("App");
+          console.log(model.mySettings.beginningColor, model.mySettings.endingColor);
+          app.style.backgroundImage = `linear-gradient(to bottom right, ${model.mySettings.beginningColor}, ${model.mySettings.endingColor})`;
+        },
       },
     };
   }

@@ -6,8 +6,9 @@ import rmale from "../assets/people/ff_rogue.png";
 import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
+import settings from "../assets/options/whitemenu.png";
 
-import { CardPool, Toast, Chat, pUI, Hand, Location, Tower } from "../components/index";
+import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings } from "../components/index";
 
 export class Game {
   componentName: string = "myGameScreen";
@@ -20,6 +21,7 @@ export class Game {
   hand: any;
   location: any;
   towerD: any;
+  settings: any;
 
   constructor(state) {
     this.localState = state;
@@ -31,6 +33,7 @@ export class Game {
     this.hand = new Hand(state);
     this.location = new Location(state);
     this.towerD = new Tower(state);
+    this.settings = new Settings(state);
 
     this.template = `
     <button class="lobbyButton" \${click@=>mypUI.test}> coin</button>
@@ -38,6 +41,7 @@ export class Game {
     <button class="lobbyButton" \${click@=>mypUI.test2}>Reset</button>
     <button class="lobbyButton" \${click@=>mypUI.test3}>Toast!</button>
     <button class="lobbyButton" \${click@=>mypUI.test5}>Location</button>
+    <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
     <label for="turn" id="lblturn">Player turn</label>
     <select \${change@=>mypUI.test4} name="playerturn" id="turn">
         <option value="0">Player 1</option>
@@ -52,6 +56,7 @@ export class Game {
     ${this.hand.template}
     ${this.location.template}
     ${this.towerD.template}
+    ${this.settings.template}
     `;
   }
 }

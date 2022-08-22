@@ -13,6 +13,7 @@ import { Hand } from "./hand";
 import { Card } from "./card";
 import { Location } from "./location";
 import { Tower } from "./towerD";
+import { Settings } from "./settings";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -29,3 +30,4 @@ export * from "./hand";
 export * from "./card";
 export * from "./location";
 export * from "./towerD";
+export * from "./settings";

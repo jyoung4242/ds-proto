@@ -1,0 +1,360 @@
+.settings_container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  z-index: 999999;
+}
+
+.setting_relative_container {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+}
+
+.settings_inner_container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 560px;
+  border: 15px solid;
+  border-radius: 5px;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 15;
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.settings_inner_cont_rel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.settings_background_mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.setting_title {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  height: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+.settings_chat_cont {
+  position: absolute;
+  min-width: 475px;
+  min-height: 50px;
+  top: 50px;
+}
+
+.settings_chat_rel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.settings_chat_label {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 25px;
+  font-size: large;
+}
+
+.settings_chat_um_label {
+  position: absolute;
+  top: 30px;
+  left: 150px;
+  width: 100px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_um_color {
+  position: absolute;
+  top: 25px;
+  left: 275px;
+  width: 50px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_sys_label {
+  position: absolute;
+  top: 65px;
+  left: 150px;
+  width: 110px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_sys_color {
+  position: absolute;
+  top: 60px;
+  left: 275px;
+  width: 50px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_om_label {
+  position: absolute;
+  top: 100px;
+  left: 150px;
+  width: 100px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_om_color {
+  position: absolute;
+  top: 95px;
+  left: 275px;
+  width: 50px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_bg_label {
+  position: absolute;
+  top: 135px;
+  left: 150px;
+  width: 50px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_bg_color {
+  position: absolute;
+  top: 130px;
+  left: 275px;
+  width: 50px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_op_label {
+  position: absolute;
+  top: 170px;
+  left: 150px;
+  width: 100px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_chat_op_color {
+  position: absolute;
+  top: 160px;
+  left: 275px;
+  width: 180px;
+  height: 25px;
+  font-size: small;
+}
+
+.settings_screen_color_cont {
+  position: absolute;
+  top: 260px;
+  left: 20px;
+}
+
+.settings_screen_color_label {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 0px;
+  width: 130px;
+  font-size: large;
+}
+
+.settings_screen_color_label_end {
+  position: absolute;
+  color: #ddddff;
+  top: 25px;
+  left: 270px;
+  font-size: small;
+}
+
+.settings_screen_color_label_beg {
+  position: absolute;
+  color: #ddddff;
+  top: 25px;
+  left: 130px;
+  font-size: small;
+}
+
+.settings_screen_color_color_end {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 330px;
+  font-size: small;
+}
+
+.settings_screen_color_color_beg {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 210px;
+  font-size: small;
+}
+
+.settings_gamespeed_cont {
+  position: absolute;
+  top: 320px;
+  left: 20px;
+}
+
+.settings_gamespeed_label {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 0px;
+  width: 120px;
+  font-size: large;
+}
+
+.settings_gamespeed_label_low {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 130px;
+  font-size: small;
+}
+
+.settings_gamespeed_slider {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 180px;
+  width: 200px;
+  font-size: small;
+}
+
+.settings_gamespeed_label_high {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 400px;
+  font-size: small;
+}
+
+.settings_sfx_cont {
+  position: absolute;
+  top: 380px;
+  left: 0px;
+}
+
+.settings_sfx_label {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 20px;
+  width: 110px;
+  font-size: large;
+}
+
+.settings_sfx_slider {
+  position: absolute;
+  color: #ddddff;
+  top: 17px;
+  left: 240px;
+  width: 160px;
+  font-size: small;
+}
+
+.settings_sfx_icon {
+  position: absolute;
+  top: 15px;
+  left: 155px;
+  width: 25px;
+  height: 25px;
+}
+
+.settings_sfx_label_low {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 200px;
+  font-size: small;
+}
+
+.settings_sfx_label_high {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 420px;
+  font-size: small;
+}
+
+.settings_bgm_cont {
+  position: absolute;
+  top: 435px;
+  left: 0px;
+}
+
+.settings_bgm_label {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 20px;
+  width: 120px;
+  font-size: large;
+}
+
+.settings_bgm_label_low {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 200px;
+  font-size: small;
+}
+.settings_bgm_range_slider {
+  position: absolute;
+  color: #ddddff;
+  top: 17px;
+  left: 240px;
+  width: 160px;
+  font-size: small;
+}
+
+.settings_bgm_label_high {
+  position: absolute;
+  color: #ddddff;
+  top: 20px;
+  left: 420px;
+  font-size: small;
+}
+
+.settings_bgm_icon {
+  position: absolute;
+  top: 15px;
+  left: 155px;
+  width: 25px;
+  height: 25px;
+}
+
+.settings_ok {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 50px;
+  padding: 10px 10px;
+}
