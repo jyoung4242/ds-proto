@@ -20,15 +20,15 @@ if (localStorage.getItem("DSsettings")) {
   state.state.mySettings.gameSpeed = settings.GS;
   state.state.mySettings.sfxGain = settings.sfx;
   state.state.mySettings.bgmGain = settings.bgm;
-  state.state.mySettings.updateChat(null, state.state);
-  state.state.mySettings.updateColor(null, state.state);
 }
 console.log("state: ", state);
 utils.init(state);
 const GameComponent = new GameContainer(state);
 
+const globalCSSvars = `--background-start: \${mySettings.beginningColor}; --background-end: \${mySettings.endingColor}; --chatUM: \${mySettings.chatUM};--chatOM: \${mySettings.chatOM};--chatSM: \${mySettings.chatSM};--chatOP: \${mySettings.chatOP};--chatBG: \${mySettings.chatBG}`;
+
 const uiStringTemplate = `
-  <div>
+  <div class="app" style="${globalCSSvars}">
     ${GameComponent.template}
   </div>
 `;
