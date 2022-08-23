@@ -15,6 +15,7 @@
 
 .mainTitle > span {
   text-align: center;
+  text-shadow: 2px 2px black;
 }
 
 .STitle {
@@ -33,6 +34,7 @@
   flex-direction: column;
   align-content: center;
   animation: blink 1.5s infinite;
+  text-shadow: 2px 2px black;
 }
 
 .STitle > span {
@@ -55,6 +57,8 @@
   height: 60px;
   padding: 10px 10px;
   cursor: pointer;
+  text-shadow: 2px 2px black;
+  box-shadow: 2px 2px 1px 1px black;
 }
 
 .titleButton:hover {
@@ -74,4 +78,12 @@
   100% {
     opacity: 0;
   }
+}
+
+.titleHelp {
+  position: fixed;
+  top: 5px;
+  right: 5px;
+  width: 25px;
+  height: 25px;
 }

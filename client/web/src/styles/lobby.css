@@ -15,6 +15,7 @@
 
 .mainLobby > span {
   text-align: center;
+  text-shadow: 2px 2px black;
 }
 
 .sLobby {
@@ -38,6 +39,7 @@
 .sLobby > span {
   text-align: center;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .lobbyButton {
@@ -51,6 +53,8 @@
   height: 60px;
   padding: 10px 10px;
   cursor: pointer;
+  box-shadow: 2px 2px 1px 1px black;
+  text-shadow: 1px 1px black;
 }
 
 .lobbyButton:disabled {
@@ -77,6 +81,7 @@
   position: fixed;
   margin-left: 5px;
   font-size: 20px;
+  text-shadow: 1px 1px black;
 }
 
 .joinflex {

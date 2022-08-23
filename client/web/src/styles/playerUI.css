@@ -114,6 +114,7 @@
   right: 10px;
   width: 20px;
   height: 20px;
+  text-shadow: 2px 2px black;
 }
 
 .pui_atk_text {
@@ -122,6 +123,7 @@
   left: 10px;
   width: 20px;
   height: 20px;
+  text-shadow: 2px 2px black;
 }
 
 .playerBloom {

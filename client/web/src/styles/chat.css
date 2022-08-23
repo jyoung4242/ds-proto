@@ -105,6 +105,7 @@
   font-family: Arial, Helvetica, sans-serif;
   text-align: center;
   z-index: 10;
+  text-shadow: 1px 1px black;
 }
 
 .chat_user {
@@ -120,6 +121,7 @@
   font-family: Arial, Helvetica, sans-serif;
   text-align: left;
   z-index: 10;
+  text-shadow: 1px 1px black;
 }
 
 .chat_other {
@@ -135,4 +137,5 @@
   text-align: right;
   padding-right: 5px;
   z-index: 10;
+  text-shadow: 1px 1px black;
 }

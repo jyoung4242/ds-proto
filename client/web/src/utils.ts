@@ -32,13 +32,13 @@ export const utils = {
     );
   },
   async login() {
-    /* if (sessionStorage.getItem("token") === null) {
+    if (sessionStorage.getItem("token") === null) {
       sessionStorage.setItem("token", await client.loginAnonymous());
     }
     token = sessionStorage.getItem("token");
     user = HathoraClient.getUserFromToken(token);
-    console.log("data: ", user, localState); */
-    localState.state.playerData.username = "testname"; //user.name;
+    console.log("data: ", user, localState);
+    localState.state.playerData.username = "testname"; //; //user.name
     localState.state.myContainer.screenSwitch(Router.Lobby);
   },
   emitEvent(name: string, detail: CustomEventInit) {

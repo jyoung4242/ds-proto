@@ -58,7 +58,7 @@ export class State {
         turnOrder: [],
       },
       myContainer: {
-        myRoute: Router.Game,
+        myRoute: Router.Title,
         get isTitle() {
           return this.myRoute === Router.Title;
         },
@@ -628,6 +628,34 @@ export class State {
           console.log(tempObj);
           localStorage.setItem("DSsettings", JSON.stringify(tempObj));
           model.mySettings.showModal = false;
+        },
+      },
+      myHelp: {
+        isVisible: false,
+        pageNum: 1,
+        numPages: 2,
+        closeModal: (_event, model) => {
+          model.myHelp.isVisible = false;
+        },
+        showModal: (_event, model) => {
+          model.myHelp.pageNum = 1;
+          model.myHelp.isVisible = true;
+        },
+        get page1() {
+          return this.pageNum === 1;
+        },
+        get page2() {
+          return this.pageNum === 2;
+        },
+        back: (_event, model) => {
+          if (model.myHelp.pageNum > 1) {
+            model.myHelp.pageNum -= 1;
+          }
+        },
+        next: (_event, model) => {
+          if (model.myHelp.pageNum < model.myHelp.numPages) {
+            model.myHelp.pageNum += 1;
+          }
         },
       },
     };

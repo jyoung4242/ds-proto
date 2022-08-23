@@ -54,6 +54,7 @@
   height: 30px;
   text-align: center;
   width: 100%;
+  text-shadow: 2px 2px black;
 }
 
 .settings_chat_cont {
@@ -75,6 +76,7 @@
   top: 20px;
   left: 25px;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .settings_chat_um_label {
@@ -84,6 +86,8 @@
   width: 100px;
   height: 25px;
   font-size: small;
+  text-shadow: 2px 2px black;
+  color: #ddddff;
 }
 
 .settings_chat_um_color {
@@ -102,6 +106,8 @@
   width: 110px;
   height: 25px;
   font-size: small;
+  text-shadow: 2px 2px black;
+  color: #ddddff;
 }
 
 .settings_chat_sys_color {
@@ -120,6 +126,8 @@
   width: 100px;
   height: 25px;
   font-size: small;
+  text-shadow: 2px 2px black;
+  color: #ddddff;
 }
 
 .settings_chat_om_color {
@@ -138,6 +146,8 @@
   width: 50px;
   height: 25px;
   font-size: small;
+  text-shadow: 2px 2px black;
+  color: #ddddff;
 }
 
 .settings_chat_bg_color {
@@ -156,6 +166,8 @@
   width: 100px;
   height: 25px;
   font-size: small;
+  text-shadow: 2px 2px black;
+  color: #ddddff;
 }
 
 .settings_chat_op_color {
@@ -180,6 +192,7 @@
   left: 0px;
   width: 130px;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .settings_screen_color_label_end {
@@ -188,6 +201,7 @@
   top: 25px;
   left: 270px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_screen_color_label_beg {
@@ -196,6 +210,7 @@
   top: 25px;
   left: 130px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_screen_color_color_end {
@@ -227,6 +242,7 @@
   left: 0px;
   width: 120px;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .settings_gamespeed_label_low {
@@ -235,6 +251,7 @@
   top: 20px;
   left: 130px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_gamespeed_slider {
@@ -252,6 +269,7 @@
   top: 20px;
   left: 400px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_sfx_cont {
@@ -267,6 +285,7 @@
   left: 20px;
   width: 110px;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .settings_sfx_slider {
@@ -292,6 +311,7 @@
   top: 20px;
   left: 200px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_sfx_label_high {
@@ -300,6 +320,7 @@
   top: 20px;
   left: 420px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_bgm_cont {
@@ -315,6 +336,7 @@
   left: 20px;
   width: 120px;
   font-size: large;
+  text-shadow: 2px 2px black;
 }
 
 .settings_bgm_label_low {
@@ -323,6 +345,7 @@
   top: 20px;
   left: 200px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 .settings_bgm_range_slider {
   position: absolute;
@@ -339,6 +362,7 @@
   top: 20px;
   left: 420px;
   font-size: small;
+  text-shadow: 2px 2px black;
 }
 
 .settings_bgm_icon {
