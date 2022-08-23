@@ -633,7 +633,7 @@ export class State {
       myHelp: {
         isVisible: false,
         pageNum: 1,
-        numPages: 2,
+        numPages: 4,
         closeModal: (_event, model) => {
           model.myHelp.isVisible = false;
         },
@@ -646,6 +646,12 @@ export class State {
         },
         get page2() {
           return this.pageNum === 2;
+        },
+        get page3() {
+          return this.pageNum === 3;
+        },
+        get page4() {
+          return this.pageNum === 4;
         },
         back: (_event, model) => {
           if (model.myHelp.pageNum > 1) {
