@@ -8,7 +8,7 @@ import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 import settings from "../assets/options/whitemenu.png";
 
-import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings } from "../components/index";
+import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings, Monster } from "../components/index";
 
 export class Game {
   componentName: string = "myGameScreen";
@@ -22,6 +22,7 @@ export class Game {
   location: any;
   towerD: any;
   settings: any;
+  monster: any;
 
   constructor(state) {
     this.localState = state;
@@ -34,6 +35,7 @@ export class Game {
     this.location = new Location(state);
     this.towerD = new Tower(state);
     this.settings = new Settings(state);
+    this.monster = new Monster(state);
 
     this.template = `
     
@@ -47,6 +49,7 @@ export class Game {
     ${this.location.template}
     ${this.towerD.template}
     ${this.settings.template}
+    ${this.monster.template}
     `;
   }
 }

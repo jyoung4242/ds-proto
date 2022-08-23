@@ -36,6 +36,7 @@
   color: #101f6b;
   font-size: small;
   transition: width 0.3s ease-in-out;
+  box-shadow: 5px 5px 8px 3px #00000080;
 }
 
 .loc_card_title {

@@ -40,7 +40,17 @@ export class State {
       gameData: {
         otherPlayers: [],
         roundState: 0,
-        activeMonsters: [],
+        activeMonsters: [
+          {
+            id: "kobalt",
+            title: "Kobalt",
+            health: 5,
+            damage: 0,
+            desc: "Active Hero: -1 Health",
+            reward: "All Hereos: +1 Health",
+            level: 1,
+          },
+        ],
         location: {},
         TDcard: {},
         cardPool: [],
@@ -588,6 +598,7 @@ export class State {
         level: 1,
         desc: "Add 1 influence point to location",
       },
+      myMonster: {},
       mySettings: {
         showModal: false,
         beginningColor: "#2c34d6",

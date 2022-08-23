@@ -14,6 +14,7 @@ import { Card } from "./card";
 import { Location } from "./location";
 import { Tower } from "./towerD";
 import { Settings } from "./settings";
+import { Monster } from "./monsterarea";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -31,3 +32,4 @@ export * from "./card";
 export * from "./location";
 export * from "./towerD";
 export * from "./settings";
+export * from "./monsterarea";

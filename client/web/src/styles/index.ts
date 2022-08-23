@@ -15,3 +15,4 @@ import "./card.css";
 import "./location.css";
 import "./tower.css";
 import "./settings.css";
+import "./monster.css";
