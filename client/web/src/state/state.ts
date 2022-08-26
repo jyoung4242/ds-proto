@@ -17,6 +17,10 @@ import monsterIcon from "../assets/toast/whitemonster.png";
 import cardIcon from "../assets/toast/whitecard.png";
 import effectIcon from "../assets/toast/whiteeffect.png";
 
+import discard from "../assets/hud/statusEffect_discard.png";
+import nodraw from "../assets/hud/statusEffect_nodraw.png";
+import location from "../assets/hud/statusEffect_location.png";
+
 const MOUSELIMIT = 10;
 let mouseCount = 0;
 export class State {
@@ -354,6 +358,12 @@ export class State {
             index: 1,
             gender: Gender.Male,
             bloomStatus: "playerBloom",
+            statusEffects: [
+              {
+                img: discard,
+                text: "Lose 1 Health if Discard",
+              },
+            ],
           }),
           new Character({
             name: "regis",
@@ -361,6 +371,7 @@ export class State {
             index: 2,
             gender: Gender.Male,
             bloomStatus: "",
+            statusEffects: [],
           }),
           new Character({
             name: "merla",
@@ -368,6 +379,7 @@ export class State {
             gender: Gender.Female,
             index: 3,
             bloomStatus: "",
+            statusEffects: [],
           }),
           new Character({
             name: "daryl",
@@ -375,6 +387,7 @@ export class State {
             gender: Gender.Male,
             index: 4,
             bloomStatus: "",
+            statusEffects: [],
           }),
         ],
       },

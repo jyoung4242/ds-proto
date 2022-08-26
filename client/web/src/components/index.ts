@@ -15,6 +15,7 @@ import { Location } from "./location";
 import { Tower } from "./towerD";
 import { Settings } from "./settings";
 import { Monster } from "./monsterarea";
+import { StatusEffect } from "./statusEffect";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -33,3 +34,4 @@ export * from "./location";
 export * from "./towerD";
 export * from "./settings";
 export * from "./monsterarea";
+export * from "./statusEffect";
