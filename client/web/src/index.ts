@@ -6,7 +6,7 @@ import { utils } from "./utils";
 
 const myApp = document.getElementById("App");
 let state = new State();
-console.log("state: ", state);
+
 if (localStorage.getItem("DSsettings")) {
   let settings = JSON.parse(localStorage.getItem("DSsettings"));
   console.log(settings);
@@ -21,7 +21,7 @@ if (localStorage.getItem("DSsettings")) {
   state.state.mySettings.sfxGain = settings.sfx;
   state.state.mySettings.bgmGain = settings.bgm;
 }
-console.log("state: ", state);
+
 utils.init(state);
 const GameComponent = new GameContainer(state);
 

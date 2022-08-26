@@ -8,6 +8,7 @@ import monsterIcon from "./assets/toast/whitemonster.png";
 import cardIcon from "./assets/toast/whitecard.png";
 import effectIcon from "./assets/toast/whiteeffect.png";
 import { IInitializeRequest } from "../../../api/types";
+import { BGM, SFX } from "./sound";
 
 /**********************************************************
  * Hathora Client variables
@@ -17,6 +18,8 @@ let token: string;
 let user: AnonymousUserData;
 let myConnection: HathoraConnection;
 let roomID: StateId;
+let bgm = new BGM();
+let sfx = new SFX();
 
 let localState;
 
@@ -37,12 +40,12 @@ export const utils = {
     }
     token = sessionStorage.getItem("token");
     user = HathoraClient.getUserFromToken(token);
-    console.log("data: ", user, localState);
-    localState.state.playerData.username = "testname"; //; //user.name
+    localState.state.playerData.username = user.name; //"testname"; //
+    //titlesong.play();
+    bgm.play("title");
     localState.state.myContainer.screenSwitch(Router.Lobby);
   },
   emitEvent(name: string, detail: CustomEventInit) {
-    console.log("now here");
     const event = new CustomEvent(name, {
       detail,
     });
@@ -52,12 +55,19 @@ export const utils = {
     const config: IInitializeRequest = {};
     roomID = "";
     roomID = await client.create(token, config);
-    console.log("room: ", roomID);
+
     if (roomID != "") localState.state.myContainer.screenSwitch(Router.Character);
   },
   async joinGame(roomID: string) {
     const config: IInitializeRequest = {};
     client.connect(token, roomID, localState.updateArgs, localState.onError);
     if (roomID != "") localState.state.myContainer.screenSwitch(Router.Character);
+  },
+  playGameMusic() {
+    //titlesong.fade(0.5, 0, 0.25);
+    //gamesong.play();
+  },
+  playSound(sound: string) {
+    sfx.play(sound);
   },
 };

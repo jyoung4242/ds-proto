@@ -7,6 +7,10 @@ import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/ff_paladin.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 
+import discard from "../assets/hud/statusEffect_discard.png";
+import nodraw from "../assets/hud/statusEffect_nodraw.png";
+import location from "../assets/hud/statusEffect_location.png";
+
 import atk from "../assets/hud/attackicon.png";
 import coin from "../assets/hud/stackofcoin.png";
 

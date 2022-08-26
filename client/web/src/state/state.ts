@@ -58,7 +58,7 @@ export class State {
         turnOrder: [],
       },
       myContainer: {
-        myRoute: Router.Title,
+        myRoute: Router.Game,
         get isTitle() {
           return this.myRoute === Router.Title;
         },
@@ -88,7 +88,10 @@ export class State {
       myTitle: {
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
-        login: () => utils.login(),
+        login: () => {
+          utils.playSound("button");
+          utils.login();
+        },
       },
       mySceneTransition: {
         classString: "normal",
@@ -107,10 +110,12 @@ export class State {
           return this.isDisabled;
         },
         createGame: () => {
+          utils.playSound("button");
           console.log("Creating Game");
           utils.createGame();
         },
         joinGame: (event, model) => {
+          utils.playSound("button");
           if (model.myLobby.isJoining) {
             model.myLobby.isJoining = false;
           } else {
@@ -118,6 +123,7 @@ export class State {
           }
         },
         logout: () => {
+          utils.playSound("button");
           this.state.playerData.username = "";
           this.state.myContainer.screenSwitch(Router.Title);
         },
@@ -211,6 +217,7 @@ export class State {
           console.log("clicked back");
         },
         start: () => {
+          utils.playGameMusic();
           console.log("clicked start");
         },
         logout: () => {
@@ -254,25 +261,18 @@ export class State {
           let number = Math.floor(Math.random() * 5);
           switch (number) {
             case 0:
-              //utils.toastMessage("monster", "Monster Attacks Player");
               this.state.myToast.addToast("monster", "Monster Attacks Player");
-
               break;
             case 1:
-              //utils.toastMessage("user", "User 3 Turn to play");
               this.state.myToast.addToast("user", "User 3 Turn to play");
               break;
             case 2:
-              //utils.toastMessage("location", "Location point added");
               this.state.myToast.addToast("location", "Location point added");
-
               break;
             case 3:
-              //utils.toastMessage("effect", "Passive Effect was triggered");
               this.state.myToast.addToast("effect", "Passive Effect was triggered");
               break;
             case 4:
-              //utils.toastMessage("card", "Card was played");
               this.state.myToast.addToast("card", "Card was played");
               break;
           }
@@ -612,6 +612,7 @@ export class State {
         chatBG: "#000000",
         chatOP: 0.5,
         closeModal: (_event, model) => {
+          utils.playSound("button");
           let tempObj = {
             chatOM: model.mySettings.chatOM,
             chatUM: model.mySettings.chatUM,
@@ -635,9 +636,11 @@ export class State {
         pageNum: 1,
         numPages: 4,
         closeModal: (_event, model) => {
+          utils.playSound("button");
           model.myHelp.isVisible = false;
         },
         showModal: (_event, model) => {
+          utils.playSound("button");
           model.myHelp.pageNum = 1;
           model.myHelp.isVisible = true;
         },
@@ -654,11 +657,13 @@ export class State {
           return this.pageNum === 4;
         },
         back: (_event, model) => {
+          utils.playSound("button");
           if (model.myHelp.pageNum > 1) {
             model.myHelp.pageNum -= 1;
           }
         },
         next: (_event, model) => {
+          utils.playSound("button");
           if (model.myHelp.pageNum < model.myHelp.numPages) {
             model.myHelp.pageNum += 1;
           }
