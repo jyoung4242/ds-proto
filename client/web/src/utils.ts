@@ -67,7 +67,10 @@ export const utils = {
   async joinGame(roomID: string) {
     const config: IInitializeRequest = {};
     myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
-    if (roomID != "") localState.state.myContainer.screenSwitch(Router.Character);
+    if (roomID != "") {
+      localState.state.gameData.gameID = roomID;
+      localState.state.myContainer.screenSwitch(Router.Character);
+    }
   },
   async leaveRoom() {
     if (roomID == "") return;

@@ -1,14 +1,14 @@
 import { utils } from "../utils";
 import { Router, Card } from "../components";
 import { Character } from "../components/character";
-import bmale from "../assets/people/ff_barbarian.png";
-import bfemale from "../assets/people/ff_barbarian_w.png";
-import wmale from "../assets/people/ff_wizard.png";
-import wfemale from "../assets/people/ff_wizard_w.png";
-import rmale from "../assets/people/ff_rogue.png";
-import rfemale from "../assets/people/ff_rogue_w.png";
-import pmale from "../assets/people/ff_paladin.png";
-import pfemale from "../assets/people/ff_paladin_w.png";
+import bmale from "../assets/people/barbarian_m.png";
+import bfemale from "../assets/people/barbarian_w.png";
+import wmale from "../assets/people/wizard.png";
+import wfemale from "../assets/people/wizard_female.png";
+import rmale from "../assets/people/rogue_male.png";
+import rfemale from "../assets/people/rogue_w.png";
+import pmale from "../assets/people/paladin_male.png";
+import pfemale from "../assets/people/paladin_w.png";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
 import userIcon from "../assets/toast/whiteuser.png";
@@ -30,6 +30,7 @@ export class State {
     this.state = {
       playerData: {
         username: "",
+        name: "",
         id: "",
         health: 10,
         attack: 0,
@@ -137,7 +138,7 @@ export class State {
         },
         validate: (event, model) => {
           const validateGameID = (id: string): boolean => {
-            const regex = new RegExp("^[a-zA-Z0-9]{11,12}$");
+            const regex = new RegExp("^[a-zA-Z0-9]{11,13}$");
             return regex.test(id);
           };
 
@@ -155,7 +156,10 @@ export class State {
             model.myLobby.validationCSSstring = "joinGameText badData";
           }
         },
-        connect: () => {},
+        connect: (_event, model) => {
+          console.log("gameID: ", model.myLobby.gameID);
+          utils.joinGame(model.myLobby.gameID);
+        },
       },
       myCharscreen: {
         characterName: "Enter Character Name",
@@ -165,9 +169,9 @@ export class State {
         selectRogue: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
-          model.myCharscreen.role = "rogue";
+          model.myCharscreen.role = Roles.Rogue;
           let gender;
-          model.myCharscreen.isMale ? (gender = true) : (gender = false);
+          model.myCharscreen.isMale ? (gender = Gender.Male) : (gender = Gender.Female);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = rmale;
           else model.myCharscreen.imgSource = rfemale;
           model.myCharscreen.isModalShowing = true;
@@ -176,9 +180,9 @@ export class State {
         selectBarbarian: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
-          model.myCharscreen.role = "barbarian";
+          model.myCharscreen.role = Roles.Barbarian;
           let gender;
-          model.myCharscreen.isMale ? (gender = true) : (gender = false);
+          model.myCharscreen.isMale ? (gender = Gender.Male) : (gender = Gender.Female);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = bmale;
           else model.myCharscreen.imgSource = bfemale;
           model.myCharscreen.isModalShowing = true;
@@ -187,9 +191,9 @@ export class State {
         selectWizard: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
-          model.myCharscreen.role = "wizard";
+          model.myCharscreen.role = Roles.Wizard;
           let gender;
-          model.myCharscreen.isMale ? (gender = true) : (gender = false);
+          model.myCharscreen.isMale ? (gender = Gender.Male) : (gender = Gender.Female);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = wmale;
           else model.myCharscreen.imgSource = wfemale;
           model.myCharscreen.isModalShowing = true;
@@ -198,9 +202,9 @@ export class State {
         selectPaladin: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
-          model.myCharscreen.role = "paladin";
+          model.myCharscreen.role = Roles.Paladin;
           let gender;
-          model.myCharscreen.isMale ? (gender = true) : (gender = false);
+          model.myCharscreen.isMale ? (gender = Gender.Male) : (gender = Gender.Female);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = pmale;
           else model.myCharscreen.imgSource = pfemale;
           model.myCharscreen.isModalShowing = true;
@@ -243,12 +247,7 @@ export class State {
         imgSource: null,
       },
       myStaging: {
-        group: [
-          { index: 1, name: "short", img: bmale },
-          { index: 2, name: "mediumnam", img: wfemale },
-          { index: 3, name: "longnameeeee", img: rmale },
-          { index: 4, name: "OMG this is redicio", img: pfemale },
-        ],
+        group: [],
         back: () => {
           console.log("clicked back");
         },
@@ -746,7 +745,7 @@ export class State {
       this.state.turn = update.state.turn;
       this.state.activeMonsters = update.state.activeMonsters;
       if (update.state.me) {
-        this.state.playerData.username = update.state.me.name;
+        this.state.playerData.name = update.state.me.name;
         this.state.playerData.id = update.state.me.id;
         this.state.playerData.health = update.state.me.health;
         this.state.playerData.attack = update.state.me.attack;
@@ -758,6 +757,45 @@ export class State {
         this.state.playerData.gender = update.state.me.gender;
         this.state.playerData.statusEffects = update.state.me.statusEffects;
       }
+
+      let roleMap = {
+        [Roles.Barbarian]: {
+          [Gender.Male]: bmale,
+          [Gender.Female]: bfemale,
+        },
+        [Roles.Wizard]: {
+          [Gender.Male]: wmale,
+          [Gender.Female]: wfemale,
+        },
+        [Roles.Rogue]: {
+          [Gender.Male]: rmale,
+          [Gender.Female]: rfemale,
+        },
+        [Roles.Paladin]: {
+          [Gender.Male]: pmale,
+          [Gender.Female]: pfemale,
+        },
+      };
+
+      console.log("gender: ", this.state.playerData.gender);
+      console.log("role: ", this.state.playerData.role);
+      console.log("rolemap: ", roleMap);
+
+      this.state.myStaging.group.length = 0;
+      this.state.myStaging.group.push({
+        index: 1,
+        name: this.state.playerData.name,
+        img: roleMap[this.state.playerData.role][this.state.playerData.gender],
+      });
+
+      this.state.gameData.otherPlayers.forEach((player, index) => {
+        this.state.myStaging.group.push({
+          index: index + 2,
+          name: player.name,
+          img: roleMap[player.role][player.gender],
+        });
+      });
+      console.log("group: ", this.state.myStaging.group);
     }
   };
 

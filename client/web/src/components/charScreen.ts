@@ -65,7 +65,7 @@ export class CharScreen {
     
     <div class="loginText">
           <p>Logged in as: \${playerData.username}</p>
-          <p>Game ID is \${gameData.gameID}</p>
+          <p>Game ID is \${myLobby.gameID}</p>
     </div>
       `;
 
