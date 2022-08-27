@@ -26,6 +26,6 @@
   },
   "dependencies": {
     "howler": "^2.2.3",
-    "peasy-ui": "^0.9.9"
+    "peasy-ui": "^0.9.10"
   }
 }

@@ -5,6 +5,7 @@
   width: var(--game-width);
   height: var(--game-height);
   display: block;
+  z-index: 6;
 }
 
 .CP_CardModal {

@@ -1,0 +1,77 @@
+.SE_container {
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 280px;
+  height: 280px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+}
+
+.SE_rel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.SE_status_effect {
+  position: absolute;
+  right: 0;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+}
+
+.SE_status_effect_img {
+  width: 25px;
+  height: 25px;
+  animation: pulse 1.1s linear infinite;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0px 0px 8px 3px white;
+  }
+  50% {
+    box-shadow: 0px 0px 9px 4px white;
+  }
+  100% {
+    box-shadow: 0px 0px 8px 3px white;
+  }
+}
+
+.SE_status_effect_img + .tooltip {
+  visibility: hidden;
+  width: 150px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  pointer-events: none;
+
+  /* Position the tooltip */
+  position: absolute;
+  font-size: medium;
+  z-index: 2;
+  top: -70px;
+  left: -50px;
+}
+
+.SE_status_effect_img:hover + .tooltip {
+  visibility: visible;
+}
+
+.SE_status_effect_cont {
+  position: absolute;
+  height: 28px;
+  transform-origin: 0 50%;
+  width: 110px;
+  transform: rotate(0deg);
+  top: 126px;
+  left: 140px;
+  z-index: 3;
+}
