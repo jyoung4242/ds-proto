@@ -7,7 +7,7 @@ import locationIcon from "./assets/toast/whitebuilding.png";
 import monsterIcon from "./assets/toast/whitemonster.png";
 import cardIcon from "./assets/toast/whitecard.png";
 import effectIcon from "./assets/toast/whiteeffect.png";
-import { IInitializeRequest } from "../../../api/types";
+import { Gender, IInitializeRequest, Roles } from "../../../api/types";
 import { BGM, SFX } from "./sound";
 
 /**********************************************************
@@ -20,6 +20,9 @@ let myConnection: HathoraConnection;
 let roomID: StateId;
 let bgm = new BGM();
 let sfx = new SFX();
+let role: Roles;
+let gender: Gender;
+let nickname: string;
 
 let localState;
 
@@ -41,7 +44,6 @@ export const utils = {
     token = sessionStorage.getItem("token");
     user = HathoraClient.getUserFromToken(token);
     localState.state.playerData.username = user.name; //"testname"; //
-    //titlesong.play();
     bgm.play("title");
     localState.state.myContainer.screenSwitch(Router.Lobby);
   },
@@ -56,12 +58,28 @@ export const utils = {
     roomID = "";
     roomID = await client.create(token, config);
 
-    if (roomID != "") localState.state.myContainer.screenSwitch(Router.Character);
+    if (roomID != "") {
+      localState.state.gameData.gameID = roomID;
+      localState.state.myContainer.screenSwitch(Router.Character);
+      myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
+    }
   },
   async joinGame(roomID: string) {
     const config: IInitializeRequest = {};
-    client.connect(token, roomID, localState.updateArgs, localState.onError);
+    myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
     if (roomID != "") localState.state.myContainer.screenSwitch(Router.Character);
+  },
+  async leaveRoom() {
+    if (roomID == "") return;
+    myConnection.disconnect();
+    roomID = "";
+  },
+  async findMatch() {
+    console.log("here");
+    let response = await client.findMatch(token, {}, 2, numPlayers => {
+      console.log("Found", numPlayers);
+    });
+    console.log("result response: ", response);
   },
   playGameMusic() {
     //titlesong.fade(0.5, 0, 0.25);
@@ -69,5 +87,19 @@ export const utils = {
   },
   playSound(sound: string) {
     sfx.play(sound);
+  },
+  chooseChar(newname: string, newrole: Roles, newgender: Gender) {
+    role = newrole;
+    gender = newgender;
+    nickname = newname;
+  },
+  async enterGame() {
+    let rslt = await myConnection.joinGame({
+      role: role,
+      name: nickname,
+      gender: gender,
+      level: 1,
+    });
+    console.log("joing game response ", rslt);
   },
 };

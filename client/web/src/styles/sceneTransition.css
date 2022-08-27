@@ -1,7 +1,7 @@
 .sceneTransition {
   background-color: #ffffff;
   opacity: 0;
-  z-index: 2;
+  z-index: 9999999;
   animation: scene-transition-fade-in 0.8s forwards;
 }
 

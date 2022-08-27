@@ -60,9 +60,10 @@ export class State {
         cardPool: [],
         turn: 0,
         turnOrder: [],
+        gameID: undefined,
       },
       myContainer: {
-        myRoute: Router.Game,
+        myRoute: Router.Title,
         get isTitle() {
           return this.myRoute === Router.Title;
         },
@@ -85,7 +86,6 @@ export class State {
           this.state.mySceneTransition.fadeOut();
           await utils.wait(900);
           this.state.mySceneTransition.reset();
-          console.log(this.state.myContainer.myRoute);
         },
       },
 
@@ -126,6 +126,10 @@ export class State {
             model.myLobby.isJoining = true;
           }
         },
+        findGame: () => {
+          console.log("Finding Game");
+          utils.findMatch();
+        },
         logout: () => {
           utils.playSound("button");
           this.state.playerData.username = "";
@@ -155,45 +159,73 @@ export class State {
       },
       myCharscreen: {
         characterName: "Enter Character Name",
+        selectText: (_event, _model, element) => {
+          element.select();
+        },
         selectRogue: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
           model.myCharscreen.role = "rogue";
+          let gender;
+          model.myCharscreen.isMale ? (gender = true) : (gender = false);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = rmale;
           else model.myCharscreen.imgSource = rfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectBarbarian: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
           model.myCharscreen.role = "barbarian";
+          let gender;
+          model.myCharscreen.isMale ? (gender = true) : (gender = false);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = bmale;
           else model.myCharscreen.imgSource = bfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectWizard: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
           model.myCharscreen.role = "wizard";
+          let gender;
+          model.myCharscreen.isMale ? (gender = true) : (gender = false);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = wmale;
           else model.myCharscreen.imgSource = wfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectPaladin: (event, model) => {
           //gaurd conditions
           if (model.myCharscreen.characterName == "Enter Character Name") return;
           model.myCharscreen.role = "paladin";
+          let gender;
+          model.myCharscreen.isMale ? (gender = true) : (gender = false);
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = pmale;
           else model.myCharscreen.imgSource = pfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
-        goBack: () => {},
-        logout: () => {},
+        goBack: () => {
+          utils.playSound("button");
+          utils.leaveRoom();
+          this.state.myContainer.screenSwitch(Router.Lobby);
+        },
+        logout: () => {
+          utils.leaveRoom();
+          utils.playSound("button");
+          this.state.playerData.username = "";
+          this.state.myContainer.screenSwitch(Router.Title);
+        },
         cancelSelection: (event, model) => {
           model.myCharscreen.isModalShowing = false;
           model.myCharscreen.characterName = "Enter Character Name";
           model.myCharscreen.switchPosition = "left";
           model.myCharscreen.isMale = true;
+        },
+        enterGame: () => {
+          utils.enterGame();
+          this.state.myContainer.screenSwitch(Router.Staging);
         },
         toggleGender: (event, model) => {
           if (this.state.myCharscreen.isMale) {
@@ -704,11 +736,34 @@ export class State {
     };
   }
 
-  updateArgs(update: UpdateArgs) {
-    console.log("");
-  }
+  updateArgs = (update: UpdateArgs) => {
+    if (this) {
+      console.log(update);
+      this.state.gameData.otherPlayers = update.state.others;
+      this.state.gameData.roundState = update.state.roundState;
+      this.state.gameData.cardPool = update.state.cardPool;
+      this.state.gameData.turnOrder = update.state.turnOrder;
+      this.state.turn = update.state.turn;
+      this.state.activeMonsters = update.state.activeMonsters;
+      if (update.state.me) {
+        this.state.playerData.username = update.state.me.name;
+        this.state.playerData.id = update.state.me.id;
+        this.state.playerData.health = update.state.me.health;
+        this.state.playerData.attack = update.state.me.attack;
+        this.state.playerData.ability = update.state.me.ability;
+        this.state.playerData.hand = update.state.me.hand;
+        this.state.playerData.deck = update.state.me.deck;
+        this.state.playerData.discard = update.state.me.discard;
+        this.state.playerData.role = update.state.me.role;
+        this.state.playerData.gender = update.state.me.gender;
+        this.state.playerData.statusEffects = update.state.me.statusEffects;
+      }
+    }
+  };
 
   onError() {
     console.log("");
   }
 }
+
+//TODO - left off at staging and pulling dummy data now that your updating state

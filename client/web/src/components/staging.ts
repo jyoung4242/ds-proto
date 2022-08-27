@@ -17,8 +17,9 @@ export class StagingComponent {
   </div>
   
   <div class="loginText">
-        <span>Logged in as: \${playerData.username}</span>
-  </div>
+  <p>Logged in as: \${playerData.username}</p>
+  <p>Game ID is \${gameData.gameID}</p>
+</div>
   `;
 
   localState: any;

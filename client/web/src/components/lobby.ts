@@ -7,6 +7,7 @@ export class LobbyComponent {
     <div class="buttonflex">
       <button class="lobbyButton b1" \${click@=>myLobby.createGame}>Create New Game</button>
       <button class="lobbyButton b2" \${click@=>myLobby.joinGame}>Join Existing Game</button>
+      
       <button class="lobbyButton b3" \${click@=>myLobby.logout}>Logout</button>
     </div>
     <div class="joinflex" \${===myLobby.isJoining}>
@@ -22,3 +23,5 @@ export class LobbyComponent {
     this.localState = state;
   }
 }
+
+//<button class="lobbyButton b2" \${click@=>myLobby.findGame}>Find Existing Game</button>

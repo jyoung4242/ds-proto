@@ -1,11 +1,11 @@
-import bmale from "../assets/people/ff_barbarian.png";
-import bfemale from "../assets/people/ff_barbarian_w.png";
-import wmale from "../assets/people/ff_wizard.png";
-import wfemale from "../assets/people/ff_wizard_w.png";
-import rmale from "../assets/people/ff_rogue.png";
-import rfemale from "../assets/people/ff_rogue_w.png";
-import pmale from "../assets/people/ff_paladin.png";
-import pfemale from "../assets/people/ff_paladin_w.png";
+import bmale from "../assets/people/barbarian_m.png";
+import bfemale from "../assets/people/barbarian_w.png";
+import wmale from "../assets/people/wizard.png";
+import wfemale from "../assets/people/wizard_female.png";
+import rmale from "../assets/people/rogue_male.png";
+import rfemale from "../assets/people/rogue_w.png";
+import pmale from "../assets/people/paladin_male.png";
+import pfemale from "../assets/people/paladin_w.png";
 
 export class CharScreen {
   componentName: string = "myCharscreen";
@@ -15,7 +15,7 @@ export class CharScreen {
     <div class="charscreenContainer">
       <div class="cs_modaldiv" \${!==myCharscreen.isModalShowing}>
           <div class="cs_inputsdiv">
-            <input class="cs_inputname"  type="text"  \${value<=>myCharscreen.characterName}/>
+            <input class="cs_inputname"  type="text" \${focus@=>myCharscreen.selectText} \${value<=>myCharscreen.characterName}/>
             <div class="switchcontainer">
                 <div class="cs_letter">M</div>
                 <div class="cs_MFselectordiv" style="justify-content:\${myCharscreen.switchPosition};" \${click@=>myCharscreen.toggleGender}>
@@ -59,12 +59,13 @@ export class CharScreen {
     </div>
           
     <div class="csbuttonflex">
-        <button class="lobbyButton " \${click@=>myCharscreen.joinGame}>Back</button>
+        <button class="lobbyButton " \${click@=>myCharscreen.goBack}>Back</button>
         <button class="lobbyButton " \${click@=>myCharscreen.logout}>Logout</button>
     </div>
     
     <div class="loginText">
-          <span>Logged in as: \${playerData.username}</span>
+          <p>Logged in as: \${playerData.username}</p>
+          <p>Game ID is \${gameData.gameID}</p>
     </div>
       `;
 
