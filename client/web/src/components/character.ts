@@ -8,6 +8,13 @@ import rfemale from "../assets/people/ff_rogue_w.png";
 import pmale from "../assets/people/paladin_male.png";
 import pfemale from "../assets/people/ff_paladin_w.png";
 
+type iStatusMessage = {
+  img: string;
+  test: string;
+  angle: number;
+  negAngle?: number;
+};
+
 export class Character {
   attack: number;
   health: number;
@@ -19,6 +26,7 @@ export class Character {
   gender: Gender;
   bloomStatus: "";
   hovered: boolean;
+  statusEffects: Array<iStatusMessage>;
 
   roleMap = {
     [Roles.Barbarian]: {
@@ -57,6 +65,7 @@ export class Character {
     this.img = this.roleMap[this.role][this.gender];
     this.bloomStatus = config.bloomStatus;
     this.hovered = false;
+    this.statusEffects = config.statusEffects;
   }
 
   addHealth(num: number) {
@@ -93,4 +102,19 @@ export class Character {
   isHovered = () => {
     return this.hovered;
   };
+
+  addStatusMessage(msg: iStatusMessage) {
+    this.statusEffects.push(msg);
+
+    //reset ALL the angles of each status
+    this.statusEffects.forEach((se, index) => {
+      const startingRotation = -90 - ((this.statusEffects.length - 1) * 25) / 2;
+      const indexedRotation = index * 25;
+      const rotation = startingRotation + indexedRotation;
+      se.angle = rotation;
+      se.negAngle = -rotation;
+    });
+  }
+
+  removeStatusMessage(msg: iStatusMessage) {}
 }

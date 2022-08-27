@@ -24,7 +24,7 @@ export class pUI {
     this.template = `
     <div class="pui_Container" \${mouseout@=>mypUI.clear} \${mousemove@=>mypUI.checkHover}>
         <div class="pui_playerContainer"  \${player<=*mypUI.allPlayers}>
-            <div >
+            
                 ${this.statusEffect.template}
                 <p class="pui_coin_text">\${player.coin}</p>
                 <p class="pui_atk_text">\${player.attack}</p>
@@ -40,7 +40,7 @@ export class pUI {
                     <circle class="pui_bg" cx="70" cy="70" r="65" />
                     <circle class="pui_meter-\${player.index}" cx="70" cy="70" r="65" />
                 </svg>
-            </div>
+            
         </div>
     </div>
       `;

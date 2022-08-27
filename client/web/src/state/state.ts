@@ -314,7 +314,26 @@ export class State {
         },
       },
       mypUI: {
-        clear: (event, model) => (model.myHand.isVisible = false),
+        addSE: (_event, model) => {
+          switch (model.mypUI.allPlayers[0].statusEffects.length) {
+            case 0:
+              model.mypUI.allPlayers[0].addStatusMessage({ text: "Lose 1 Health if Discard", img: discard, angle: 0 });
+              break;
+            case 1:
+              model.mypUI.allPlayers[0].addStatusMessage({
+                text: "Lose 1 Health if Location point added",
+                img: location,
+                angle: 0,
+              });
+              break;
+            case 2:
+              model.mypUI.allPlayers[0].addStatusMessage({ text: "Cannot Draw this round", img: nodraw, angle: 0 });
+              break;
+            default:
+              break;
+          }
+        },
+        clear: (_event, model) => (model.myHand.isVisible = false),
         checkHover: (event, model) => {
           mouseCount += 1;
           if (mouseCount >= MOUSELIMIT) {
@@ -358,12 +377,7 @@ export class State {
             index: 1,
             gender: Gender.Male,
             bloomStatus: "playerBloom",
-            statusEffects: [
-              {
-                img: discard,
-                text: "Lose 1 Health if Discard",
-              },
-            ],
+            statusEffects: [],
           }),
           new Character({
             name: "regis",
@@ -390,6 +404,11 @@ export class State {
             statusEffects: [],
           }),
         ],
+      },
+      myStatusEffect: {
+        rotate: () => {
+          console.log("fired load event");
+        },
       },
       myHand: {
         isVisible: false,
