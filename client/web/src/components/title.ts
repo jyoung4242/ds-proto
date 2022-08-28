@@ -1,5 +1,7 @@
 import help from "../assets/help/whitequestion-mark.png";
+import settings from "../assets/options/whitemenu.png";
 
+import { Settings } from "./settings";
 import { Help } from "./help";
 
 export class TitleComponent {
@@ -7,8 +9,10 @@ export class TitleComponent {
   template: string;
   localState: any;
   help: any;
+  settings: any;
 
   constructor(state) {
+    this.settings = new Settings(state);
     this.localState = state;
     this.help = new Help(state);
     this.template = `
@@ -21,7 +25,9 @@ export class TitleComponent {
     <div>
       <button class="titleButton" \${click@=>myTitle.login}>LOGIN</button>
       <img class="titleHelp" src="${help}" alt="" \${click@=>myHelp.showModal}/>
+      <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
       ${this.help.template}
+      ${this.settings.template}
     </div>`;
   }
 }

@@ -7,12 +7,22 @@ import rfemale from "../assets/people/rogue_w.png";
 import pmale from "../assets/people/paladin_male.png";
 import pfemale from "../assets/people/paladin_w.png";
 
+import settings from "../assets/options/whitemenu.png";
+import { Settings } from "./settings";
+
 export class CharScreen {
   componentName: string = "myCharscreen";
+  settings: any;
+  template: string;
 
-  template: string = `
+  localState: any;
+  constructor(state) {
+    this.localState = state;
+    this.settings = new Settings(state);
+    this.template = `
     <div class="charscreentitle">Character Selection</div>
     <div class="charscreenContainer">
+      ${this.settings.template}
       <div class="cs_modaldiv" \${!==myCharscreen.isModalShowing}>
           <div class="cs_inputsdiv">
             <input class="cs_inputname"  type="text" \${focus@=>myCharscreen.selectText} \${value<=>myCharscreen.characterName}/>
@@ -65,12 +75,9 @@ export class CharScreen {
     
     <div class="loginText">
           <p>Logged in as: \${playerData.username}</p>
-          <p>Game ID is \${myLobby.gameID}</p>
+          <p>Game ID is \${gameData.gameID}</p>
     </div>
+    <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}/>
       `;
-
-  localState: any;
-  constructor(state) {
-    this.localState = state;
   }
 }

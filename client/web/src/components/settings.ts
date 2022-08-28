@@ -55,9 +55,9 @@ export class Settings {
                     <div class="settings_sfx_cont">
                         <div class="settings_chat_rel">
                             <span class="settings_sfx_label" >SFX Volume</span>
-                            <img class="settings_sfx_icon" src="${unmute}" alt="" />
+                            <img class="settings_sfx_icon" src="\${mySettings.sfxIcon}" alt=""  \${click@=>mySettings.muteSFX}/>
                             <label class="settings_sfx_label_low" >Low</label>
-                            <input class="settings_sfx_slider" type="range"  ></input>
+                            <input class="settings_sfx_slider" type="range" \${value<=>mySettings.sfxGain} \${input@=>mySettings.changeSFX}  min="0" max="1"  step="0.05"></input>
                             <label class="settings_sfx_label_high" >High</label>
                         </div>
                         
@@ -66,9 +66,9 @@ export class Settings {
                     <div class="settings_bgm_cont">
                         <div class="settings_chat_rel">
                             <span class="settings_bgm_label" >Music Volume</span>
-                            <img class="settings_bgm_icon" src="${unmute}" alt="" />
+                            <img class="settings_bgm_icon" src="\${mySettings.bgmIcon}" alt=""  \${click@=>mySettings.muteBGM}/>
                             <label class="settings_bgm_label_low">Low</label>
-                            <input class="settings_bgm_range_slider" type="range"></input>
+                            <input class="settings_bgm_range_slider" type="range" min="0" max="1"  step="0.05" \${value<=>mySettings.bgmGain} \${input@=>mySettings.changeBGM} ></input>
                             <label class="settings_bgm_label_high">High</label>
                         </div>
                     </div>

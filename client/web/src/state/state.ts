@@ -16,6 +16,8 @@ import locationIcon from "../assets/toast/whitebuilding.png";
 import monsterIcon from "../assets/toast/whitemonster.png";
 import cardIcon from "../assets/toast/whitecard.png";
 import effectIcon from "../assets/toast/whiteeffect.png";
+import mute from "../assets/options/whitemute.png";
+import unmute from "../assets/options/whiteunmute.png";
 
 import discard from "../assets/hud/statusEffect_discard.png";
 import nodraw from "../assets/hud/statusEffect_nodraw.png";
@@ -398,6 +400,7 @@ export class State {
         },
         turn: 1,
         showOptions: (event, model) => {
+          utils.loadSettings();
           model.mySettings.showModal = true;
         },
 
@@ -662,11 +665,16 @@ export class State {
         desc: "Add 1 influence point to location",
       },
       myMonster: {},
+
       mySettings: {
         showModal: false,
         beginningColor: "#2c34d6",
         endingColor: "#101f6b",
         gameSpeed: 5,
+        bgmMute: false,
+        sfxMute: false,
+        bgmIcon: unmute,
+        sfxIcon: unmute,
         sfxGain: 5,
         bgmGain: 5,
         chatUM: "#8BAE1F",
@@ -674,6 +682,36 @@ export class State {
         chatOM: "#be53f3",
         chatBG: "#000000",
         chatOP: 0.5,
+        changeSFX: (_event, model) => {
+          utils.updateSFXvolume(model.mySettings.sfxGain);
+        },
+        changeBGM: (_event, model) => {
+          utils.updateBGMvolume(model.mySettings.bgmGain);
+        },
+        muteBGM: (_event, model) => {
+          let muted = model.mySettings.bgmMute;
+          if (muted) {
+            model.mySettings.bgmMute = false;
+            model.mySettings.bgmIcon = unmute;
+            utils.muteBGM(false);
+          } else {
+            model.mySettings.bgmMute = true;
+            model.mySettings.bgmIcon = mute;
+            utils.muteBGM(true);
+          }
+        },
+        muteSFX: (_event, model) => {
+          let muted = model.mySettings.sfxMute;
+          if (muted) {
+            model.mySettings.sfxMute = false;
+            model.mySettings.sfxIcon = unmute;
+            utils.muteSFX(false);
+          } else {
+            model.mySettings.sfxMute = true;
+            model.mySettings.sfxIcon = mute;
+            utils.muteSFX(true);
+          }
+        },
         closeModal: (_event, model) => {
           utils.playSound("button");
           let tempObj = {
@@ -738,6 +776,7 @@ export class State {
   updateArgs = (update: UpdateArgs) => {
     if (this) {
       console.log(update);
+      this.state.gameData.gameID = update.stateId;
       this.state.gameData.otherPlayers = update.state.others;
       this.state.gameData.roundState = update.state.roundState;
       this.state.gameData.cardPool = update.state.cardPool;
@@ -777,10 +816,6 @@ export class State {
         },
       };
 
-      console.log("gender: ", this.state.playerData.gender);
-      console.log("role: ", this.state.playerData.role);
-      console.log("rolemap: ", roleMap);
-
       this.state.myStaging.group.length = 0;
       this.state.myStaging.group.push({
         index: 1,
@@ -795,7 +830,6 @@ export class State {
           img: roleMap[player.role][player.gender],
         });
       });
-      console.log("group: ", this.state.myStaging.group);
     }
   };
 

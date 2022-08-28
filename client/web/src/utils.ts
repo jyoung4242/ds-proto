@@ -91,6 +91,18 @@ export const utils = {
   playSound(sound: string) {
     sfx.play(sound);
   },
+  updateSFXvolume(newLevel) {
+    sfx.updateVolume(newLevel);
+  },
+  updateBGMvolume(newLevel) {
+    bgm.updateVolume(newLevel);
+  },
+  muteBGM(muted: boolean) {
+    bgm.mute(muted);
+  },
+  muteSFX(muted: boolean) {
+    sfx.mute(muted);
+  },
   chooseChar(newname: string, newrole: Roles, newgender: Gender) {
     role = newrole;
     gender = newgender;
@@ -104,5 +116,21 @@ export const utils = {
       level: 1,
     });
     console.log("joing game response ", rslt);
+  },
+  loadSettings() {
+    let settings = JSON.parse(localStorage.getItem("DSsettings"));
+    console.log(settings);
+    localState.state.mySettings.chatOM = settings.chatOM;
+    localState.state.mySettings.chatOP = settings.chatOP;
+    localState.state.mySettings.chatBG = settings.chatBG;
+    localState.state.mySettings.chatSM = settings.chatSM;
+    localState.state.mySettings.chatUM = settings.chatUM;
+    localState.state.mySettings.beginningColor = settings.bColor;
+    localState.state.mySettings.endingColor = settings.eColor;
+    localState.state.mySettings.gameSpeed = settings.GS;
+    localState.state.mySettings.sfxGain = settings.sfx;
+    localState.state.mySettings.bgmGain = settings.bgm;
+    this.updateBGMvolume(settings.bgm);
+    this.updateSFXvolume(settings.sfx);
   },
 };
