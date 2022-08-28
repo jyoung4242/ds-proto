@@ -35,6 +35,10 @@ import {
   IBuyFromCardPoolRequest,
   ICloseCardPoolRequest,
   IEndRoundRequest,
+  ILeaveGameRequest,
+  Message,
+  ISendMessageRequest,
+  ISeenMessageRequest,
 } from "../api/types";
 
 //importing decks
@@ -71,6 +75,7 @@ type InternalState = {
   Location?: LCard;
   cardPool: ABCard[];
   turnOrder: UserId[];
+  Messages: Message[];
 };
 
 //nonstate variables
@@ -111,13 +116,45 @@ export class Impl implements Methods<InternalState> {
       Location: undefined,
       cardPool: [],
       turnOrder: [],
+      Messages: [],
     };
+  }
+
+  sendMessage(state: InternalState, userId: UserId, ctx: Context, request: ISendMessageRequest): Response {
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+    const nextID = state.Messages.length + 1;
+    const nickname = state.players[playerIndex].name;
+
+    const message: Message = {
+      id: nextID,
+      sender: userId,
+      nickName: nickname,
+      data: request.msg,
+    };
+    state.Messages.push(message);
+
+    return Response.ok();
+  }
+
+  seenMessage(state: InternalState, userId: UserId, ctx: Context, request: ISeenMessageRequest): Response {
+    console.log("seenMessage: ", userId, state);
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+    state.players[playerIndex].lastSeen = request.msgID;
+    return Response.ok();
+  }
+
+  leaveGame(state: InternalState, userId: UserId, ctx: Context, request: ILeaveGameRequest): Response {
+    if (state.gameState != GameState.Lobby) return Response.error("Joining game is now closed, game has started");
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+    if (playerIndex == -1) return Response.error("Player not found");
+    state.players.splice(playerIndex, 1);
+    return Response.ok();
   }
 
   joinGame(state: InternalState, userId: UserId, ctx: Context, request: IJoinGameRequest): Response {
     //guard conditions
-    if (state.players.length >= 4) Response.error("Too many users, cannot join");
-    if (state.gameState != GameState.Lobby) Response.error("Joining game is now closed, game has started");
+    if (state.players.length >= 4) return Response.error("Too many users, cannot join");
+    if (state.gameState != GameState.Lobby) return Response.error("Joining game is now closed, game has started");
     if (state.players.find(player => player.id === userId) !== undefined) return Response.error("Already joined");
     if ((request.level < 1 || request.level > 8) && state.players.length == 0)
       return Response.error("Invalid Level submitted, must be between 1 and 8");
@@ -142,11 +179,13 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.Lobby) return Response.error("Cannot Start game, its already started");
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
 
+    ctx.broadcastEvent("START");
+
     //Setting State and turn order
     state.gameState = GameState.GameSetup;
     state.turnOrder = setTurnOrder(state.players, ctx);
     state.turn = state.turnOrder[0];
-
+    /*
     //Deal starting cards
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
     state.Location = locationDeck.pop(); //Location Cards
@@ -157,7 +196,7 @@ export class Impl implements Methods<InternalState> {
     for (const player of state.players) {
       player.deck = setPlayerDeckbyRole(player.role, ctx);
       player.hand = dealPlayerCardsFromDeck(5, player.deck);
-    }
+    } */
 
     //get name of user
     let playerName = getActivePlayerName(state.players, state.turn);
@@ -480,6 +519,7 @@ export class Impl implements Methods<InternalState> {
         cardPool: state.cardPool,
         turn: state.turn,
         turnOrder: state.turnOrder,
+        Messages: state.Messages,
       };
       return clientState;
     } else {
@@ -493,6 +533,7 @@ export class Impl implements Methods<InternalState> {
         cardPool: state.cardPool,
         turn: state.turn,
         turnOrder: state.turnOrder,
+        Messages: state.Messages,
       };
       return clientState;
     }

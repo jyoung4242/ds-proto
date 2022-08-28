@@ -38,6 +38,10 @@
   box-shadow: 5px 5px 8px 3px #00000080;
 }
 
+.topside {
+  transform: rotateX(0deg);
+}
+
 .topside,
 .bottomside {
   position: absolute;

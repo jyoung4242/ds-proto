@@ -7,7 +7,7 @@ export class Chat {
           <div class="chat_messageContainer" \${===myChat.isActive}>
             <!- messages field ->
 
-            <div class="chat_message_innerContainer">
+            <div id="chatdiv" class="chat_message_innerContainer">
             <div class="\${msg.type}" \${msg<=*myChat.messages}>
             <!- peasy many to one binding for each message ->
             <p>\${msg.message}</p>
@@ -18,11 +18,11 @@ export class Chat {
             <div>
               <!- input field ->
               <div>
-                <input class="chat_inputtext" type="text" value="enter chat here"></input>
+                <input class="chat_inputtext" type="text" \${value<=>myChat.inputMessage} \${click@=>myChat.selectText}></input>
               </div>
               <!- message icon ->
               <div>
-                <img class="chat_input_icon" width="25" height="25" alt="" src="${bubble}"/>  
+                <img class="chat_input_icon" width="25" height="25" alt="" src="${bubble}" \${click@=>myChat.sendMessage}/>  
               </div>
             </div>
           </div>

@@ -7,7 +7,7 @@ import locationIcon from "./assets/toast/whitebuilding.png";
 import monsterIcon from "./assets/toast/whitemonster.png";
 import cardIcon from "./assets/toast/whitecard.png";
 import effectIcon from "./assets/toast/whiteeffect.png";
-import { Gender, IInitializeRequest, Roles } from "../../../api/types";
+import { Gender, IInitializeRequest, ISeenMessageRequest, ISendMessageRequest, Roles } from "../../../api/types";
 import { BGM, SFX } from "./sound";
 
 /**********************************************************
@@ -64,6 +64,9 @@ export const utils = {
       myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
     }
   },
+  leaveGame() {
+    myConnection.leaveGame({});
+  },
   async joinGame(roomID: string) {
     const config: IInitializeRequest = {};
     myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
@@ -84,9 +87,11 @@ export const utils = {
     });
     console.log("result response: ", response);
   },
+  startGame() {
+    myConnection.startGame({});
+  },
   playGameMusic() {
-    //titlesong.fade(0.5, 0, 0.25);
-    //gamesong.play();
+    bgm.play("game");
   },
   playSound(sound: string) {
     sfx.play(sound);
@@ -115,22 +120,34 @@ export const utils = {
       gender: gender,
       level: 1,
     });
-    console.log("joing game response ", rslt);
   },
   loadSettings() {
     let settings = JSON.parse(localStorage.getItem("DSsettings"));
-    console.log(settings);
-    localState.state.mySettings.chatOM = settings.chatOM;
-    localState.state.mySettings.chatOP = settings.chatOP;
-    localState.state.mySettings.chatBG = settings.chatBG;
-    localState.state.mySettings.chatSM = settings.chatSM;
-    localState.state.mySettings.chatUM = settings.chatUM;
-    localState.state.mySettings.beginningColor = settings.bColor;
-    localState.state.mySettings.endingColor = settings.eColor;
-    localState.state.mySettings.gameSpeed = settings.GS;
-    localState.state.mySettings.sfxGain = settings.sfx;
-    localState.state.mySettings.bgmGain = settings.bgm;
-    this.updateBGMvolume(settings.bgm);
-    this.updateSFXvolume(settings.sfx);
+    if (settings != undefined) {
+      localState.state.mySettings.chatOM = settings.chatOM;
+      localState.state.mySettings.chatOP = settings.chatOP;
+      localState.state.mySettings.chatBG = settings.chatBG;
+      localState.state.mySettings.chatSM = settings.chatSM;
+      localState.state.mySettings.chatUM = settings.chatUM;
+      localState.state.mySettings.beginningColor = settings.bColor;
+      localState.state.mySettings.endingColor = settings.eColor;
+      localState.state.mySettings.gameSpeed = settings.GS;
+      localState.state.mySettings.sfxGain = settings.sfx;
+      localState.state.mySettings.bgmGain = settings.bgm;
+      this.updateBGMvolume(settings.bgm);
+      this.updateSFXvolume(settings.sfx);
+    }
+  },
+  sendChat(msg: string) {
+    const message: ISendMessageRequest = {
+      msg: msg,
+    };
+    myConnection.sendMessage(message);
+  },
+  seenChat(msgID: number) {
+    const message: ISeenMessageRequest = {
+      msgID: msgID,
+    };
+    myConnection.seenMessage(message);
   },
 };

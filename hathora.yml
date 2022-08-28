@@ -13,6 +13,12 @@ types:
     - Male
     - Female
 
+  Message:
+    id: int
+    sender: UserId
+    nickName: string
+    data: string
+
   RoundState:
     - idle
     - waitingPlayerPassives
@@ -103,6 +109,7 @@ types:
     role: Roles
     gender: Gender
     statusEffects: StatusEffects[]
+    lastSeen: int
   UserState:
     me: Player?
     others: Player[]
@@ -113,6 +120,7 @@ types:
     cardPool: ABCard[]
     turnOrder: UserId[]
     turn: UserId?
+    Messages: Message[]
 
 methods:
   joinGame:
@@ -120,6 +128,7 @@ methods:
     name: string
     gender: Gender
     level: int
+  leaveGame:
   startGame:
   startTurn:
   runPlayerPassives:
@@ -142,6 +151,10 @@ methods:
     cardID: string
   closeCardPool:
   endRound:
+  sendMessage:
+    msg: string
+  seenMessage:
+    msgID: int
 
 auth:
   anonymous: {}

@@ -38,6 +38,7 @@ export const setupNewPlayer = (id: UserId, request: IJoinGameRequest): Player =>
     role: request.role,
     gender: request.gender,
     statusEffects: [],
+    lastSeen: 0,
   };
   return newPlayer;
 };

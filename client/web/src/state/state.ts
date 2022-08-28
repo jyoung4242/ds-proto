@@ -25,6 +25,10 @@ import location from "../assets/hud/statusEffect_location.png";
 
 const MOUSELIMIT = 10;
 let mouseCount = 0;
+let keybinding = undefined;
+let chatDiv;
+let controller;
+
 export class State {
   state: any;
 
@@ -43,6 +47,7 @@ export class State {
         role: 0,
         gender: 0,
         statusEffects: [],
+        lastSeen: 0,
       },
       gameData: {
         otherPlayers: [],
@@ -177,6 +182,7 @@ export class State {
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = rmale;
           else model.myCharscreen.imgSource = rfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.playSound("button");
           utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectBarbarian: (event, model) => {
@@ -188,6 +194,7 @@ export class State {
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = bmale;
           else model.myCharscreen.imgSource = bfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.playSound("button");
           utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectWizard: (event, model) => {
@@ -199,6 +206,7 @@ export class State {
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = wmale;
           else model.myCharscreen.imgSource = wfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.playSound("button");
           utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         selectPaladin: (event, model) => {
@@ -210,6 +218,7 @@ export class State {
           if (model.myCharscreen.isMale) model.myCharscreen.imgSource = pmale;
           else model.myCharscreen.imgSource = pfemale;
           model.myCharscreen.isModalShowing = true;
+          utils.playSound("button");
           utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
         },
         goBack: () => {
@@ -224,16 +233,19 @@ export class State {
           this.state.myContainer.screenSwitch(Router.Title);
         },
         cancelSelection: (event, model) => {
+          utils.playSound("button");
           model.myCharscreen.isModalShowing = false;
           model.myCharscreen.characterName = "Enter Character Name";
           model.myCharscreen.switchPosition = "left";
           model.myCharscreen.isMale = true;
         },
         enterGame: () => {
+          utils.playSound("button");
           utils.enterGame();
           this.state.myContainer.screenSwitch(Router.Staging);
         },
         toggleGender: (event, model) => {
+          utils.playSound("button");
           if (this.state.myCharscreen.isMale) {
             model.myCharscreen.switchPosition = "right";
             model.myCharscreen.isMale = false;
@@ -251,14 +263,22 @@ export class State {
       myStaging: {
         group: [],
         back: () => {
-          console.log("clicked back");
+          utils.playSound("button");
+          utils.leaveGame();
+          this.state.myContainer.screenSwitch(Router.Character);
         },
         start: () => {
           utils.playGameMusic();
-          console.log("clicked start");
+          utils.startGame();
+          this.state.myContainer.screenSwitch(Router.Game);
         },
-        logout: () => {
-          console.log("clicked logout");
+        logout: (event, model) => {
+          model.myCharscreen.characterName = "Enter Character Name";
+          model.myCharscreen.isModalShowing = false;
+          utils.leaveRoom();
+          utils.playSound("button");
+          this.state.playerData.username = "";
+          this.state.myContainer.screenSwitch(Router.Title);
         },
       },
       myGame: {
@@ -317,30 +337,40 @@ export class State {
         },
       },
       myChat: {
-        messages: [
-          {
-            type: "chat_system",
-            message: "System Messages Here",
-            messageID: 0,
-          },
-          {
-            type: "chat_user",
-            message: "User:  Messages Here",
-            messageID: 1,
-          },
-          {
-            type: "chat_other",
-            message: "Other: Messages Here",
-            messageID: 2,
-          },
-        ],
+        messages: [],
+        inputMessage: "enter chat here",
         isActive: false,
-        numUnreadMessages: 2,
-        sendMessage: () => {},
+        numUnreadMessages: 0,
+        selectText: (event, model, element) => {
+          element.select();
+        },
+        sendMessage: (event, model, element) => {
+          console.log("click chat");
+          utils.sendChat(model.myChat.inputMessage);
+          model.myChat.inputMessage = "";
+        },
         toggleChat: (event, model) => {
-          console.log("clicked", model.myChat.isActive);
-          if (model.myChat.isActive === true) model.myChat.isActive = false;
-          else model.myChat.isActive = true;
+          if (model.myChat.isActive === true) {
+            controller.abort();
+            controller = null;
+            model.myChat.isActive = false;
+          } else {
+            model.myChat.isActive = true;
+            controller = new AbortController();
+            keybinding = document.addEventListener(
+              "keypress",
+              e => {
+                if (e.key == "Enter") {
+                  console.log("keypress chat");
+                  utils.sendChat(model.myChat.inputMessage);
+                  model.myChat.inputMessage = "";
+                }
+              },
+              { signal: controller.signal }
+            );
+
+            utils.seenChat(model.myChat.messages.length);
+          }
         },
         get showPill() {
           return this.numUnreadMessages > 0;
@@ -727,7 +757,6 @@ export class State {
             eColor: model.mySettings.endingColor,
           };
 
-          console.log(tempObj);
           localStorage.setItem("DSsettings", JSON.stringify(tempObj));
           model.mySettings.showModal = false;
         },
@@ -783,6 +812,36 @@ export class State {
       this.state.gameData.turnOrder = update.state.turnOrder;
       this.state.turn = update.state.turn;
       this.state.activeMonsters = update.state.activeMonsters;
+
+      let lastMessage = update.state.Messages.length;
+      if (update.state.Messages.length != this.state.myChat.messages.length) {
+        let lastindex = this.state.myChat.messages.length;
+        const newArray = update.state.Messages.filter(elem => {
+          return elem.id > lastindex;
+        });
+        console.log("last index: ", lastindex, "new array: ", newArray);
+
+        newArray.forEach(msg => {
+          let msgType;
+          console.log("here");
+          if (msg.sender == this.state.playerData.id) msgType = "chat_user";
+          else msgType = "chat_other";
+
+          this.state.myChat.messages.push({
+            type: msgType,
+            message: `${msg.nickName}: ${msg.data}`,
+            id: msg.id,
+          });
+        });
+
+        setTimeout(() => {
+          chatDiv = document.getElementById("chatdiv");
+          if (chatDiv) {
+            chatDiv.scrollTop = chatDiv.scrollHeight + 45;
+          }
+        }, 50);
+      }
+
       if (update.state.me) {
         this.state.playerData.name = update.state.me.name;
         this.state.playerData.id = update.state.me.id;
@@ -795,6 +854,21 @@ export class State {
         this.state.playerData.role = update.state.me.role;
         this.state.playerData.gender = update.state.me.gender;
         this.state.playerData.statusEffects = update.state.me.statusEffects;
+        this.state.playerData.lastSeen = update.state.me.lastSeen;
+        console.log("chat status: ", this.state.myChat.isActive);
+        if (this.state.myChat.isActive === true) {
+          console.log("here");
+          this.state.myChat.numUnreadMessages = 0;
+          if (this.state.playerData.lastSeen != lastMessage) utils.seenChat(lastMessage);
+        } else this.state.myChat.numUnreadMessages = lastMessage - this.state.playerData.lastSeen;
+        console.log(
+          "numunread",
+          this.state.myChat.numUnreadMessages,
+          " last: ",
+          lastMessage,
+          " lastseen: ",
+          this.state.playerData.lastSeen
+        );
       }
 
       let roleMap = {
@@ -831,10 +905,24 @@ export class State {
         });
       });
     }
+
+    //events
+    update.events.forEach(event => {
+      console.log(event);
+      switch (event) {
+        case "START":
+          console.log("starting game");
+          if (this.state.myContainer.myRoute != Router.Game) {
+            this.state.myContainer.screenSwitch(Router.Game);
+            utils.playGameMusic();
+          }
+          break;
+      }
+    });
   };
 
-  onError() {
-    console.log("");
+  onError(errorMessage) {
+    console.log("message error", errorMessage);
   }
 }
 
