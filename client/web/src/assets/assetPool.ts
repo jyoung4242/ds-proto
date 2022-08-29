@@ -23,9 +23,9 @@ import atk from "../assets/hud/attackicon.png";
 import coin from "../assets/hud/stackofcoin.png";
 import help from "../assets/help/whitequestion-mark.png";
 
-import bgMusic from "./assets/audio/main.wav";
-import gmMusic from "./assets/audio/ingame.wav";
-import buttonWav from "./assets/audio/button.wav";
+import bgMusic from "../assets/audio/main.wav";
+import gmMusic from "../assets/audio/ingame.wav";
+import buttonWav from "../assets/audio/button.wav";
 
 export { bmale };
 export { bfemale };

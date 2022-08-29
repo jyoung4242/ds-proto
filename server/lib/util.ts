@@ -31,7 +31,7 @@ export const setupNewPlayer = (id: UserId, request: IJoinGameRequest): Player =>
     name: request.name,
     health: 10,
     attack: 0,
-    ability: 0,
+    coin: 0,
     hand: [],
     deck: [],
     discard: [],

@@ -58,19 +58,10 @@ export class State {
         username: "",
         name: "",
         id: "",
-        health: 10,
-        attack: 0,
-        ability: 0,
-        hand: [],
-        deck: [],
-        discard: [],
-        role: 0,
-        gender: 0,
-        statusEffects: [],
-        lastSeen: 0,
       },
       gameData: {
-        otherPlayers: [],
+        playerIndex: 1,
+        Players: [],
         roundState: 0,
         activeMonsters: [
           /* {
@@ -200,7 +191,7 @@ export class State {
           else model.myCharscreen.imgSource = rfemale;
           model.myCharscreen.isModalShowing = true;
           utils.playSound("button");
-          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
+          utils.chooseChar(model.myCharscreen.characterName.toUpperCase(), model.myCharscreen.role, gender);
         },
         selectBarbarian: (event, model) => {
           //gaurd conditions
@@ -212,7 +203,7 @@ export class State {
           else model.myCharscreen.imgSource = bfemale;
           model.myCharscreen.isModalShowing = true;
           utils.playSound("button");
-          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
+          utils.chooseChar(model.myCharscreen.characterName.toUpperCase(), model.myCharscreen.role, gender);
         },
         selectWizard: (event, model) => {
           //gaurd conditions
@@ -224,7 +215,7 @@ export class State {
           else model.myCharscreen.imgSource = wfemale;
           model.myCharscreen.isModalShowing = true;
           utils.playSound("button");
-          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
+          utils.chooseChar(model.myCharscreen.characterName.toUpperCase(), model.myCharscreen.role, gender);
         },
         selectPaladin: (event, model) => {
           //gaurd conditions
@@ -236,7 +227,7 @@ export class State {
           else model.myCharscreen.imgSource = pfemale;
           model.myCharscreen.isModalShowing = true;
           utils.playSound("button");
-          utils.chooseChar(model.myCharscreen.characterName, model.myCharscreen.role, gender);
+          utils.chooseChar(model.myCharscreen.characterName.toUpperCase(), model.myCharscreen.role, gender);
         },
         goBack: () => {
           utils.playSound("button");
@@ -331,27 +322,6 @@ export class State {
           };
           this.state.myToast.messages.push(config);
         },
-        test: () => {
-          let number = Math.floor(Math.random() * 5);
-          switch (number) {
-            case 0:
-              this.state.myToast.addToast("monster", "Monster Attacks Player");
-              break;
-            case 1:
-              this.state.myToast.addToast("user", "User 3 Turn to play");
-              break;
-            case 2:
-              this.state.myToast.addToast("location", "Location point added");
-              break;
-            case 3:
-              this.state.myToast.addToast("effect", "Passive Effect was triggered");
-              break;
-            case 4:
-              this.state.myToast.addToast("card", "Card was played");
-              break;
-          }
-          console.log("test: ", this.state.myToast.messages);
-        },
       },
       myChat: {
         messages: [],
@@ -394,25 +364,6 @@ export class State {
         },
       },
       mypUI: {
-        addSE: (_event, model) => {
-          switch (model.mypUI.allPlayers[0].statusEffects.length) {
-            case 0:
-              model.mypUI.allPlayers[0].addStatusMessage({ text: "Lose 1 Health if Discard", img: discard, angle: 0 });
-              break;
-            case 1:
-              model.mypUI.allPlayers[0].addStatusMessage({
-                text: "Lose 1 Health if Location point added",
-                img: location,
-                angle: 0,
-              });
-              break;
-            case 2:
-              model.mypUI.allPlayers[0].addStatusMessage({ text: "Cannot Draw this round", img: nodraw, angle: 0 });
-              break;
-            default:
-              break;
-          }
-        },
         clear: (_event, model) => (model.myHand.isVisible = false),
         checkHover: (event, model) => {
           mouseCount += 1;
@@ -450,41 +401,7 @@ export class State {
           utils.loadSettings();
           model.mySettings.showModal = true;
         },
-
-        allPlayers: [
-          new Character({
-            name: "conan",
-            role: Roles.Barbarian,
-            index: 1,
-            gender: Gender.Male,
-            bloomStatus: "playerBloom",
-            statusEffects: [],
-          }),
-          new Character({
-            name: "regis",
-            role: Roles.Rogue,
-            index: 2,
-            gender: Gender.Male,
-            bloomStatus: "",
-            statusEffects: [],
-          }),
-          new Character({
-            name: "merla",
-            role: Roles.Wizard,
-            gender: Gender.Female,
-            index: 3,
-            bloomStatus: "",
-            statusEffects: [],
-          }),
-          new Character({
-            name: "daryl",
-            role: Roles.Paladin,
-            gender: Gender.Male,
-            index: 4,
-            bloomStatus: "",
-            statusEffects: [],
-          }),
-        ],
+        allPlayers: [],
       },
       myStatusEffect: {
         rotate: () => {
@@ -823,12 +740,15 @@ export class State {
     if (this) {
       console.log(update);
       this.state.gameData.gameID = update.stateId;
-      this.state.gameData.otherPlayers = update.state.others;
+      this.state.gameData.playerIndex = update.state.me;
+      this.state.gameData.Players = update.state.players;
       this.state.gameData.roundState = update.state.roundState;
       this.state.gameData.cardPool = update.state.cardPool;
       this.state.gameData.turnOrder = update.state.turnOrder;
-      this.state.turn = update.state.turn;
-      this.state.activeMonsters = update.state.activeMonsters;
+      this.state.gameData.turn = update.state.turn;
+      this.state.gameData.activeMonsters = update.state.activeMonsters;
+      this.state.gameData.location = update.state.location;
+      this.state.gameData.td = update.state.TDcard;
 
       let lastMessage = update.state.Messages.length;
       if (update.state.Messages.length != this.state.myChat.messages.length) {
@@ -836,12 +756,11 @@ export class State {
         const newArray = update.state.Messages.filter(elem => {
           return elem.id > lastindex;
         });
-        console.log("last index: ", lastindex, "new array: ", newArray);
 
         newArray.forEach(msg => {
           let msgType;
-          console.log("here");
-          if (msg.sender == this.state.playerData.id) msgType = "chat_user";
+
+          if (msg.sender == this.state.gameData.Players[this.state.gameData.playerIndex].id) msgType = "chat_user";
           else msgType = "chat_other";
 
           this.state.myChat.messages.push({
@@ -859,49 +778,41 @@ export class State {
         }, 50);
       }
 
-      if (update.state.me) {
-        this.state.playerData.name = update.state.me.name;
-        this.state.playerData.id = update.state.me.id;
-        this.state.playerData.health = update.state.me.health;
-        this.state.playerData.attack = update.state.me.attack;
-        this.state.playerData.ability = update.state.me.ability;
-        this.state.playerData.hand = update.state.me.hand;
-        this.state.playerData.deck = update.state.me.deck;
-        this.state.playerData.discard = update.state.me.discard;
-        this.state.playerData.role = update.state.me.role;
-        this.state.playerData.gender = update.state.me.gender;
-        this.state.playerData.statusEffects = update.state.me.statusEffects;
-        this.state.playerData.lastSeen = update.state.me.lastSeen;
-        console.log("chat status: ", this.state.myChat.isActive);
+      if (update.state.me != undefined) {
         if (this.state.myChat.isActive === true) {
-          console.log("here");
           this.state.myChat.numUnreadMessages = 0;
-          if (this.state.playerData.lastSeen != lastMessage) utils.seenChat(lastMessage);
-        } else this.state.myChat.numUnreadMessages = lastMessage - this.state.playerData.lastSeen;
-        console.log(
-          "numunread",
-          this.state.myChat.numUnreadMessages,
-          " last: ",
-          lastMessage,
-          " lastseen: ",
-          this.state.playerData.lastSeen
-        );
+          if (this.state.gameData.Players[this.state.gameData.playerIndex].lastSeen != lastMessage)
+            utils.seenChat(lastMessage);
+        } else {
+          this.state.myChat.numUnreadMessages =
+            lastMessage - this.state.gameData.Players[this.state.gameData.playerIndex].lastSeen;
+        }
       }
 
-      this.state.myStaging.group.length = 0;
-      this.state.myStaging.group.push({
-        index: 1,
-        name: this.state.playerData.name,
-        img: roleMap[this.state.playerData.role][this.state.playerData.gender],
-      });
+      //staging screen
 
-      this.state.gameData.otherPlayers.forEach((player, index) => {
-        this.state.myStaging.group.push({
-          index: index + 2,
-          name: player.name,
-          img: roleMap[player.role][player.gender],
+      if (this.state.myContainer.myRoute == Router.Staging || this.state.myContainer.myRoute == Router.Character) {
+        this.state.myStaging.group.length = 0;
+
+        this.state.gameData.Players.forEach((player, index) => {
+          this.state.myStaging.group.push({
+            index: index + 1,
+            name: player.name,
+            img: roleMap[player.role][player.gender],
+          });
         });
-      });
+      }
+
+      if (this.state.myContainer.myRoute == Router.Game || this.state.myContainer.myRoute == Router.Staging) {
+        //PUI
+        this.state.mypUI.allPlayers.forEach((p, i) => {
+          p.coin = this.state.gameData.players[i].coin;
+          p.attack = this.state.gameData.players[i].attack;
+          p.health = this.state.gameData.players[i].health;
+          if (this.state.gameData.players[i].id == this.state.gameData.turn) p.bloomStatus = "playerBloom";
+          else p.bloomStatus = "";
+        });
+      }
     }
 
     //events
@@ -911,6 +822,18 @@ export class State {
         case "START":
           console.log("starting game");
           if (this.state.myContainer.myRoute != Router.Game) {
+            this.state.gameData.Players.forEach((p, i) => {
+              this.state.mypUI.allPlayers.push(
+                new Character({
+                  name: p.name,
+                  role: p.role,
+                  index: i,
+                  gender: p.gender,
+                  bloomStatus: "",
+                  statusEffects: p.statusEffects,
+                })
+              );
+            });
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
           }
