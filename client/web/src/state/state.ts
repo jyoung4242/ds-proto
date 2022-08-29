@@ -73,7 +73,7 @@ export class State {
         otherPlayers: [],
         roundState: 0,
         activeMonsters: [
-          {
+          /* {
             id: "kobalt",
             title: "Kobalt",
             health: 5,
@@ -81,14 +81,14 @@ export class State {
             desc: "Active Hero: -1 Health",
             reward: "All Hereos: +1 Health",
             level: 1,
-          },
+          }, */
         ],
         location: {},
         TDcard: {},
         cardPool: [],
         turn: 0,
         turnOrder: [],
-        gameID: undefined,
+        gameID: "",
       },
       myContainer: {
         myRoute: Router.Title,
@@ -137,13 +137,11 @@ export class State {
         isJoining: false,
         isDisabled: true,
         validationCSSstring: "joinGameText",
-        gameID: "",
         get buttonEnable() {
           return this.isDisabled;
         },
         createGame: () => {
           utils.playSound("button");
-          console.log("Creating Game");
           utils.createGame();
         },
         joinGame: (event, model) => {
@@ -170,7 +168,7 @@ export class State {
           };
 
           //step one, read the input
-          let mystring = this.state.myLobby.gameID;
+          let mystring = this.state.gameData.gameID;
           //step two, qualify the input
           let valStatus = validateGameID(mystring);
           //step three, do something to the UI to indicate pass/fail
@@ -184,8 +182,7 @@ export class State {
           }
         },
         connect: (_event, model) => {
-          console.log("gameID: ", model.myLobby.gameID);
-          utils.joinGame(model.myLobby.gameID);
+          utils.joinGame(model.gameData.gameID);
         },
       },
       myCharscreen: {

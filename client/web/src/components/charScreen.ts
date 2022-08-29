@@ -1,6 +1,4 @@
-import { bmale, bfemale, wmale, wfemale, rmale, rfemale, pmale, pfemale } from "../assets/assetPool";
-
-import settings from "../assets/options/whitemenu.png";
+import { bmale, bfemale, wmale, wfemale, rmale, rfemale, pmale, pfemale, settings } from "../assets/assetPool";
 import { Settings } from "./settings";
 
 export class CharScreen {

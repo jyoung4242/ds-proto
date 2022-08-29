@@ -22,7 +22,7 @@ export class LobbyComponent {
     </div>
     <div class="joinflex" \${===myLobby.isJoining}>
         <label for="joinGameInput">Enter Game ID</label>
-        <input id="joinGameInput" \${input@=>myLobby.validate} class=\${myLobby.validationCSSstring} \${value==>myLobby.gameID}/>
+        <input id="joinGameInput" \${input@=>myLobby.validate} class=\${myLobby.validationCSSstring} \${value==>gameData.gameID}/>
         <button class="lobbyButton b4" \${click@=>myLobby.connect} \${disabled<==myLobby.buttonEnable}>Join</button>
     </div>
     <div class="loginText">
