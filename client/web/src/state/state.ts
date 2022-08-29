@@ -29,6 +29,25 @@ let keybinding = undefined;
 let chatDiv;
 let controller;
 
+let roleMap = {
+  [Roles.Barbarian]: {
+    [Gender.Male]: bmale,
+    [Gender.Female]: bfemale,
+  },
+  [Roles.Wizard]: {
+    [Gender.Male]: wmale,
+    [Gender.Female]: wfemale,
+  },
+  [Roles.Rogue]: {
+    [Gender.Male]: rmale,
+    [Gender.Female]: rfemale,
+  },
+  [Roles.Paladin]: {
+    [Gender.Male]: pmale,
+    [Gender.Female]: pfemale,
+  },
+};
+
 export class State {
   state: any;
 
@@ -870,25 +889,6 @@ export class State {
           this.state.playerData.lastSeen
         );
       }
-
-      let roleMap = {
-        [Roles.Barbarian]: {
-          [Gender.Male]: bmale,
-          [Gender.Female]: bfemale,
-        },
-        [Roles.Wizard]: {
-          [Gender.Male]: wmale,
-          [Gender.Female]: wfemale,
-        },
-        [Roles.Rogue]: {
-          [Gender.Male]: rmale,
-          [Gender.Female]: rfemale,
-        },
-        [Roles.Paladin]: {
-          [Gender.Male]: pmale,
-          [Gender.Female]: pfemale,
-        },
-      };
 
       this.state.myStaging.group.length = 0;
       this.state.myStaging.group.push({

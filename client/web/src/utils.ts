@@ -88,6 +88,17 @@ export const utils = {
     console.log("result response: ", response);
   },
   startGame() {
+    /* 
+    new Character({
+            name: "conan",
+            role: Roles.Barbarian,
+            index: 1,
+            gender: Gender.Male,
+            bloomStatus: "playerBloom",
+            statusEffects: [],
+          })
+    */
+    //TODO - load up players
     myConnection.startGame({});
   },
   playGameMusic() {
