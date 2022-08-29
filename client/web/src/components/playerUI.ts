@@ -1,16 +1,5 @@
-import bmale from "../assets/people/barbarian_m.png";
-import bfemale from "../assets/people/ff_barbarian_w.png";
-import wmale from "../assets/people/ff_wizard.png";
-import wfemale from "../assets/people/ff_wizard_w.png";
-import rmale from "../assets/people/ff_rogue.png";
-import rfemale from "../assets/people/ff_rogue_w.png";
-import pmale from "../assets/people/ff_paladin.png";
-import pfemale from "../assets/people/ff_paladin_w.png";
-
 import { StatusEffect } from "./statusEffect";
-
-import atk from "../assets/hud/attackicon.png";
-import coin from "../assets/hud/stackofcoin.png";
+import { atk, coin } from "../assets/assetPool";
 
 export class pUI {
   componentName: string = "myUI";

@@ -1,12 +1,5 @@
 import { Gender, Roles } from "../../../../api/types";
-import bmale from "../assets/people/barbarian_m.png";
-import bfemale from "../assets/people/ff_barbarian_w.png";
-import wmale from "../assets/people/ff_wizard.png";
-import wfemale from "../assets/people/wizard_female.png";
-import rmale from "../assets/people/rogue_male.png";
-import rfemale from "../assets/people/ff_rogue_w.png";
-import pmale from "../assets/people/paladin_male.png";
-import pfemale from "../assets/people/ff_paladin_w.png";
+import { bmale, bfemale, wmale, wfemale, rmale, rfemale, pmale, pfemale } from "../assets/assetPool";
 
 type iStatusMessage = {
   img: string;

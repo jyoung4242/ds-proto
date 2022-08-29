@@ -1,6 +1,4 @@
-import help from "../assets/help/whitequestion-mark.png";
-import settings from "../assets/options/whitemenu.png";
-
+import { help, settings } from "../assets/assetPool";
 import { Settings } from "./settings";
 import { Help } from "./help";
 

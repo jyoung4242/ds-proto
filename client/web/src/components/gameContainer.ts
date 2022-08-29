@@ -1,8 +1,4 @@
 import { utils } from "../utils";
-//import { SceneTransition } from "./SceneTransition";
-//import { TitleComponent } from "./title";
-//import { LobbyComponent } from "./lobby";
-//import { CharScreen } from "./charScreen";
 import { SceneTransition, TitleComponent, LobbyComponent, CharScreen, StagingComponent, Game } from "./index";
 
 export enum Router {

@@ -1,5 +1,4 @@
-import settings from "../assets/options/whitemenu.png";
-
+import { settings } from "../assets/assetPool";
 import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings, Monster } from "../components/index";
 
 export class Game {

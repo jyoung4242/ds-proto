@@ -1,4 +1,4 @@
-import bubble from "../assets/chat/whitespeech-bubble.png";
+import { bubble } from "../assets/assetPool";
 
 export class Chat {
   componentName: string = "myChat";

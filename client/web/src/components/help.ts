@@ -1,4 +1,4 @@
-import arrow from "../assets/help/whiteback-button.png";
+import { arrow } from "../assets/assetPool";
 
 export class Help {
   componentName: string = "myHelp";

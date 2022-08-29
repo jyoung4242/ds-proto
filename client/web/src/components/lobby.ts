@@ -1,5 +1,4 @@
-import settings from "../assets/options/whitemenu.png";
-
+import { settings } from "../assets/assetPool";
 import { Settings } from "./settings";
 
 export class LobbyComponent {

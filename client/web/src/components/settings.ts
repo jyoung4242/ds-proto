@@ -1,5 +1,4 @@
-import mute from "../assets/options/whitemute.png";
-import unmute from "../assets/options/whiteunmute.png";
+import { mute, unmute } from "../assets/assetPool";
 
 export class Settings {
   componentName: string = "mySettings";

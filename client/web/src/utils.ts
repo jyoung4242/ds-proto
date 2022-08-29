@@ -1,12 +1,6 @@
 import { HathoraClient, HathoraConnection, StateId, UpdateArgs } from "../../.hathora/client";
 import { AnonymousUserData } from "../../../api/base";
 import { Router } from "./components/index";
-
-import userIcon from "./assets/toast/whiteuser.png";
-import locationIcon from "./assets/toast/whitebuilding.png";
-import monsterIcon from "./assets/toast/whitemonster.png";
-import cardIcon from "./assets/toast/whitecard.png";
-import effectIcon from "./assets/toast/whiteeffect.png";
 import { Gender, IInitializeRequest, ISeenMessageRequest, ISendMessageRequest, Roles } from "../../../api/types";
 import { BGM, SFX } from "./sound";
 

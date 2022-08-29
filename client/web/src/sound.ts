@@ -1,6 +1,4 @@
-import bgMusic from "./assets/audio/main.wav";
-import gmMusic from "./assets/audio/ingame.wav";
-import buttonWav from "./assets/audio/button.wav";
+import { bgMusic, gmMusic, buttonWav } from "./assets/assetPool";
 
 import { Howl } from "howler";
 

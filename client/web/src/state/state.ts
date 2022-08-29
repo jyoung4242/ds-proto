@@ -1,27 +1,28 @@
 import { utils } from "../utils";
 import { Router, Card } from "../components";
 import { Character } from "../components/character";
-import bmale from "../assets/people/barbarian_m.png";
-import bfemale from "../assets/people/barbarian_w.png";
-import wmale from "../assets/people/wizard.png";
-import wfemale from "../assets/people/wizard_female.png";
-import rmale from "../assets/people/rogue_male.png";
-import rfemale from "../assets/people/rogue_w.png";
-import pmale from "../assets/people/paladin_male.png";
-import pfemale from "../assets/people/paladin_w.png";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
-import userIcon from "../assets/toast/whiteuser.png";
-import locationIcon from "../assets/toast/whitebuilding.png";
-import monsterIcon from "../assets/toast/whitemonster.png";
-import cardIcon from "../assets/toast/whitecard.png";
-import effectIcon from "../assets/toast/whiteeffect.png";
-import mute from "../assets/options/whitemute.png";
-import unmute from "../assets/options/whiteunmute.png";
-
-import discard from "../assets/hud/statusEffect_discard.png";
-import nodraw from "../assets/hud/statusEffect_nodraw.png";
-import location from "../assets/hud/statusEffect_location.png";
+import {
+  bmale,
+  bfemale,
+  wmale,
+  wfemale,
+  rmale,
+  rfemale,
+  pmale,
+  pfemale,
+  userIcon,
+  locationIcon,
+  monsterIcon,
+  cardIcon,
+  effectIcon,
+  mute,
+  unmute,
+  discard,
+  nodraw,
+  location,
+} from "../assets/assetPool";
 
 const MOUSELIMIT = 10;
 let mouseCount = 0;
@@ -925,5 +926,3 @@ export class State {
     console.log("message error", errorMessage);
   }
 }
-
-//TODO - left off at staging and pulling dummy data now that your updating state
