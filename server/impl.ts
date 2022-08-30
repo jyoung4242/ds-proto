@@ -390,7 +390,7 @@ export class Impl implements Methods<InternalState> {
     const cardIndex = state.cardPool.findIndex(c => c.id === cardPurchased);
     const playerIndex = state.players.findIndex(p => p.id === userId);
 
-    if (state.players[playerIndex].ability < state.cardPool[cardIndex].cost)
+    if (state.players[playerIndex].coin < state.cardPool[cardIndex].cost)
       return Response.error("Cost of selected card exceeds players ability points");
 
     ctx.broadcastEvent("card purchased");
@@ -510,8 +510,8 @@ export class Impl implements Methods<InternalState> {
     let userIndex = state.players.findIndex(p => p.id === userId);
     if (userIndex != -1) {
       const clientState: UserState = {
-        me: state.players[userIndex],
-        others: state.players.filter(p => p.id != userId),
+        me: userIndex,
+        players: state.players,
         roundState: state.roundState,
         activeMonsters: state.activeMonsters,
         location: state.Location,
@@ -524,8 +524,8 @@ export class Impl implements Methods<InternalState> {
       return clientState;
     } else {
       const clientState: UserState = {
-        me: undefined,
-        others: [],
+        me: userIndex,
+        players: [],
         roundState: state.roundState,
         activeMonsters: state.activeMonsters,
         location: state.Location,

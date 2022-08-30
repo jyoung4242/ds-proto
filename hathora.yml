@@ -102,7 +102,7 @@ types:
     name: string
     health: int
     attack: int
-    ability: int
+    coin: int
     hand: ABCard[]
     deck: ABCard[]
     discard: ABCard[]
@@ -111,8 +111,8 @@ types:
     statusEffects: StatusEffects[]
     lastSeen: int
   UserState:
-    me: Player?
-    others: Player[]
+    me: int
+    players: Player[]
     roundState: RoundState
     activeMonsters: MCard[]
     location: LCard?

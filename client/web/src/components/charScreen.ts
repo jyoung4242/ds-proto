@@ -1,13 +1,4 @@
-import bmale from "../assets/people/barbarian_m.png";
-import bfemale from "../assets/people/barbarian_w.png";
-import wmale from "../assets/people/wizard.png";
-import wfemale from "../assets/people/wizard_female.png";
-import rmale from "../assets/people/rogue_male.png";
-import rfemale from "../assets/people/rogue_w.png";
-import pmale from "../assets/people/paladin_male.png";
-import pfemale from "../assets/people/paladin_w.png";
-
-import settings from "../assets/options/whitemenu.png";
+import { bmale, bfemale, wmale, wfemale, rmale, rfemale, pmale, pfemale, settings } from "../assets/assetPool";
 import { Settings } from "./settings";
 
 export class CharScreen {

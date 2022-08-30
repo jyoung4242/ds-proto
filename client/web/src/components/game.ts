@@ -1,5 +1,4 @@
-import settings from "../assets/options/whitemenu.png";
-
+import { settings } from "../assets/assetPool";
 import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings, Monster } from "../components/index";
 
 export class Game {
@@ -32,7 +31,7 @@ export class Game {
     this.template = `
     
     <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
-    <button \${click@=>mypUI.addSE} > add StatusEffect</button>
+    
     ${this.cardPool.template}
     ${this.toast.template}
     ${this.chat.template}

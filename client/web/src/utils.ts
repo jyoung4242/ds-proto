@@ -1,14 +1,9 @@
 import { HathoraClient, HathoraConnection, StateId, UpdateArgs } from "../../.hathora/client";
 import { AnonymousUserData } from "../../../api/base";
 import { Router } from "./components/index";
-
-import userIcon from "./assets/toast/whiteuser.png";
-import locationIcon from "./assets/toast/whitebuilding.png";
-import monsterIcon from "./assets/toast/whitemonster.png";
-import cardIcon from "./assets/toast/whitecard.png";
-import effectIcon from "./assets/toast/whiteeffect.png";
 import { Gender, IInitializeRequest, ISeenMessageRequest, ISendMessageRequest, Roles } from "../../../api/types";
 import { BGM, SFX } from "./sound";
+import { Character } from "./components/character";
 
 /**********************************************************
  * Hathora Client variables
@@ -23,7 +18,6 @@ let sfx = new SFX();
 let role: Roles;
 let gender: Gender;
 let nickname: string;
-
 let localState;
 
 export const utils = {
@@ -43,6 +37,7 @@ export const utils = {
     }
     token = sessionStorage.getItem("token");
     user = HathoraClient.getUserFromToken(token);
+    console.log("players", localState.state.gameData.Players);
     localState.state.playerData.username = user.name; //"testname"; //
     bgm.play("title");
     localState.state.myContainer.screenSwitch(Router.Lobby);
@@ -88,17 +83,6 @@ export const utils = {
     console.log("result response: ", response);
   },
   startGame() {
-    /* 
-    new Character({
-            name: "conan",
-            role: Roles.Barbarian,
-            index: 1,
-            gender: Gender.Male,
-            bloomStatus: "playerBloom",
-            statusEffects: [],
-          })
-    */
-    //TODO - load up players
     myConnection.startGame({});
   },
   playGameMusic() {
