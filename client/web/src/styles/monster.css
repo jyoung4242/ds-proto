@@ -13,6 +13,16 @@
   aspect-ratio: 3/2;
 }
 
+.monster_title {
+  font-size: small;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+}
+
 .monster_card_outer {
   position: absolute;
 

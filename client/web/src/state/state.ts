@@ -332,11 +332,12 @@ export class State {
           element.select();
         },
         sendMessage: (event, model, element) => {
-          console.log("click chat");
+          utils.playSound("mailSend");
           utils.sendChat(model.myChat.inputMessage);
           model.myChat.inputMessage = "";
         },
         toggleChat: (event, model) => {
+          utils.playSound("button");
           if (model.myChat.isActive === true) {
             controller.abort();
             controller = null;
@@ -348,7 +349,7 @@ export class State {
               "keypress",
               e => {
                 if (e.key == "Enter") {
-                  console.log("keypress chat");
+                  utils.playSound("mailSend");
                   utils.sendChat(model.myChat.inputMessage);
                   model.myChat.inputMessage = "";
                 }
@@ -604,7 +605,7 @@ export class State {
         hand: [],
       },
       myLocation: {
-        isVisible: true,
+        isVisible: false,
         level: 1,
         health: 6,
         damage: 0,
@@ -623,7 +624,7 @@ export class State {
         },
       },
       myTowerD: {
-        isVisible: true,
+        isVisible: false,
         title: "Net Trap",
         level: 1,
         desc: "Add 1 influence point to location",
@@ -806,10 +807,10 @@ export class State {
       if (this.state.myContainer.myRoute == Router.Game || this.state.myContainer.myRoute == Router.Staging) {
         //PUI
         this.state.mypUI.allPlayers.forEach((p, i) => {
-          p.coin = this.state.gameData.players[i].coin;
-          p.attack = this.state.gameData.players[i].attack;
-          p.health = this.state.gameData.players[i].health;
-          if (this.state.gameData.players[i].id == this.state.gameData.turn) p.bloomStatus = "playerBloom";
+          p.coin = this.state.gameData.Players[i].coin;
+          p.attack = this.state.gameData.Players[i].attack;
+          p.health = this.state.gameData.Players[i].health;
+          if (this.state.gameData.Players[i].id == this.state.gameData.turn) p.bloomStatus = "playerBloom";
           else p.bloomStatus = "";
         });
       }

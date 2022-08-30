@@ -1,4 +1,4 @@
-import { bgMusic, gmMusic, buttonWav } from "./assets/assetPool";
+import { bgMusic, gmMusic, buttonWav, woosh, mail } from "./assets/assetPool";
 
 import { Howl } from "howler";
 
@@ -10,8 +10,20 @@ export class SFX {
     volume: this.sfxGain,
   });
 
+  mailSend = new Howl({
+    src: [woosh],
+    volume: this.sfxGain,
+  });
+
+  mailGet = new Howl({
+    src: [mail],
+    volume: this.sfxGain,
+  });
+
   gameSfx = {
     button: this.buttonClick,
+    mailSend: this.mailSend,
+    mailGet: this.mailGet,
   };
 
   constructor() {}

@@ -26,6 +26,8 @@ import help from "../assets/help/whitequestion-mark.png";
 import bgMusic from "../assets/audio/main.wav";
 import gmMusic from "../assets/audio/ingame.wav";
 import buttonWav from "../assets/audio/button.wav";
+import woosh from "../assets/audio/woosh.mp3";
+import mail from "../assets/audio/mail.mp3";
 
 export { bmale };
 export { bfemale };
@@ -52,6 +54,4 @@ export { atk };
 export { coin };
 export { help };
 
-export { bgMusic };
-export { gmMusic };
-export { buttonWav };
+export { mail, woosh, gmMusic, bgMusic, buttonWav };

@@ -3,7 +3,7 @@ export class Monster {
   template: string = `
       <div class="monster_container" >
           <div class="monster_rel_container" >
-              <span class="monster_title">Monster</span>
+              <span class="monster_title">Monster Card</span>
               <div class="monster_card_outer">
                 <div class="monster_card"  \${monster<=*gameData.activeMonsters}>
                   <div class="topside">
