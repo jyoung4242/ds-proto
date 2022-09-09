@@ -16,6 +16,8 @@ import { Tower } from "./towerD";
 import { Settings } from "./settings";
 import { Monster } from "./monsterarea";
 import { StatusEffect } from "./statusEffect";
+import { NavBar } from "./navbar";
+import { NavInput } from "./navInput";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -35,3 +37,5 @@ export * from "./towerD";
 export * from "./settings";
 export * from "./monsterarea";
 export * from "./statusEffect";
+export * from "./navbar";
+export * from "./navInput";

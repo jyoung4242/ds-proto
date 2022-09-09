@@ -1,0 +1,45 @@
+.NIcontainer {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
+  background-repeat: no-repeat;
+  background-size: contain;
+  border: 10px solid;
+  border-image: url("../assets/border.svg");
+  border-image-slice: 15;
+  border-radius: 10px;
+  width: var(--component-width);
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.NIbutton {
+  border: 5px rgb(211, 211, 211) solid;
+  border-radius: 5px;
+  background-color: #00000000;
+  color: rgb(211, 211, 211);
+  font-size: medium;
+  width: 150px;
+  height: 60px;
+  padding: 10px 10px;
+  cursor: pointer;
+  box-shadow: 2px 2px 1px 1px var(--background-end);
+  text-shadow: 1px 1px black;
+}
+
+.NIbutton:hover {
+  background-color: rgb(211, 211, 211);
+  color: var(--background-end);
+}
+
+.NIclicked {
+  box-shadow: 2px 2px 2px 2px var(--background-end);
+  transform: translate(2px, 2px);
+  text-shadow: 1px 1px var(--background-end);
+}

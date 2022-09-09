@@ -29,29 +29,31 @@ import buttonWav from "../assets/audio/button.wav";
 import woosh from "../assets/audio/woosh.mp3";
 import mail from "../assets/audio/mail.mp3";
 
-export { bmale };
-export { bfemale };
-export { wmale };
-export { wfemale };
-export { rmale };
-export { rfemale };
-export { pmale };
-export { pfemale };
-export { userIcon };
-export { locationIcon };
-export { monsterIcon };
-export { cardIcon };
-export { effectIcon };
-export { mute };
-export { unmute };
-export { discard };
-export { nodraw };
-export { location };
-export { bubble };
-export { settings };
-export { arrow };
-export { atk };
-export { coin };
-export { help };
+export {
+  bmale,
+  bfemale,
+  wmale,
+  wfemale,
+  rmale,
+  rfemale,
+  pmale,
+  pfemale,
+  userIcon,
+  locationIcon,
+  monsterIcon,
+  cardIcon,
+  effectIcon,
+  mute,
+  unmute,
+  discard,
+  nodraw,
+  location,
+  bubble,
+  settings,
+  arrow,
+  atk,
+  coin,
+  help,
+};
 
 export { mail, woosh, gmMusic, bgMusic, buttonWav };

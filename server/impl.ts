@@ -137,7 +137,6 @@ export class Impl implements Methods<InternalState> {
   }
 
   seenMessage(state: InternalState, userId: UserId, ctx: Context, request: ISeenMessageRequest): Response {
-    console.log("seenMessage: ", userId, state);
     const playerIndex = state.players.findIndex(p => p.id === userId);
     state.players[playerIndex].lastSeen = request.msgID;
     return Response.ok();
@@ -192,6 +191,7 @@ export class Impl implements Methods<InternalState> {
     if (state.Location) numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
     state.cardPool = setupCardPool(AbilityLibrary); //Ability Cards - cardpool
 
+    
     //setup each users hands based on role
     for (const player of state.players) {
       player.deck = setPlayerDeckbyRole(player.role, ctx);

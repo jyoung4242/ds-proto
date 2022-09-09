@@ -276,7 +276,7 @@ export class State {
           this.state.myContainer.screenSwitch(Router.Character);
         },
         start: () => {
-          utils.playGameMusic();
+          //utils.playGameMusic();
           utils.startGame();
           this.state.myContainer.screenSwitch(Router.Game);
         },
@@ -295,6 +295,7 @@ export class State {
       attributes: {
         icons:
           '<a href="https://www.flaticon.com/free-icons/card" title="card icons">Card icons created by Pixel perfect - Flaticon</a>',
+        sounds: "Sound from Zapsplat.com",
       },
       myToast: {
         intervalID: null,
@@ -734,6 +735,120 @@ export class State {
           }
         },
       },
+      myNavBar: {
+        showNavBar: true,
+        globalstates: ["passives", "td", "monster", "player", "purchase", "damage", "endturn"],
+        resetTimeline: obj => {
+          obj.$parent.$model.progressIndex = 0;
+          obj.$parent.$model.timestamps.forEach((ts, index) => {
+            ts.doneFlag = false;
+            if (index == 0) ts.style = "pulse";
+            else ts.style = "";
+            ts.connStyle = "";
+          });
+        },
+        timestamps: [
+          {
+            title: "Passives",
+            done: "Passives Applied",
+            style: "pulse",
+            doneFlag: false,
+            connector: true,
+            data: "passives",
+            connStyle: "",
+          },
+          {
+            title: "Tower Defense",
+            done: "TD Card enabled",
+            style: "",
+            doneFlag: false,
+            connector: true,
+            data: "td",
+            connStyle: "",
+          },
+          {
+            title: "Monster Card",
+            done: "Monster Card enabled",
+            style: "",
+            doneFlag: false,
+            connector: true,
+            data: "monster",
+            connStyle: "",
+          },
+          {
+            title: "Player Card",
+            done: "Player Hand enabled",
+            style: "",
+            doneFlag: false,
+            connector: true,
+            data: "player",
+            connStyle: "",
+          },
+          {
+            title: "Purchase Cards",
+            done: "Card Pool Enabled",
+            style: "",
+            doneFlag: false,
+            connector: true,
+            data: "purchase",
+            connStyle: "",
+          },
+          {
+            title: "Apply Damage",
+            done: "Select Monster",
+            style: "",
+            doneFlag: false,
+            connector: true,
+            data: "damage",
+            connStyle: "",
+          },
+          {
+            data: "endturn",
+            title: "End Turn",
+            done: "Resetting Turn",
+            style: "",
+            doneFlag: false,
+            connector: false,
+            connStyle: "",
+          },
+        ],
+        progressIndex: 0,
+        increment: (_event, model, element, _attribute, object) => {
+          let elementStateLabel = element.getAttribute("data-state");
+
+          if (elementStateLabel == model.myNavBar.globalstates[object.$parent.$model.progressIndex]) {
+            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].style = "complete glow";
+            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].doneFlag = true;
+            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].connStyle = "glow";
+            object.$parent.$model.progressIndex++;
+            if (object.$parent.$model.timestamps[object.$parent.$model.progressIndex])
+              object.$parent.$model.timestamps[object.$parent.$model.progressIndex].style = "pulse";
+            if (elementStateLabel == "endturn") {
+              setTimeout(() => {
+                object.$parent.$model.resetTimeline(object);
+              }, 2000);
+            }
+          }
+        },
+      },
+      myNavInput: {
+        isVisible: true,
+        contWidth: "190px",
+        buttons: [
+          {
+            label: "click me",
+            action: (event, model, element) => {
+              model.button.label = "BOOM!";
+              model.button.style = "NIclicked";
+            },
+            unaction: (event, model, element) => {
+              model.button.style = "";
+              model.button.label = "click me";
+            },
+            style: "",
+          },
+        ],
+      },
     };
   }
 
@@ -818,10 +933,8 @@ export class State {
 
     //events
     update.events.forEach(event => {
-      console.log(event);
       switch (event) {
         case "START":
-          console.log("starting game");
           if (this.state.myContainer.myRoute != Router.Game) {
             this.state.gameData.Players.forEach((p, i) => {
               this.state.mypUI.allPlayers.push(
@@ -838,6 +951,13 @@ export class State {
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
           }
+          //get user name
+
+          const usr = this.state.gameData.Players.findIndex(p => {
+            return this.state.gameData.turn === p.id;
+          });
+          this.state.myToast.addToast("user", `${this.state.gameData.Players[usr].name}'s turn to play`);
+
           break;
       }
     });

@@ -1,5 +1,5 @@
 import { settings } from "../assets/assetPool";
-import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings, Monster } from "../components/index";
+import { CardPool, Toast, Chat, pUI, Hand, Location, Tower, Settings, Monster, NavBar, NavInput } from "../components/index";
 
 export class Game {
   componentName: string = "myGameScreen";
@@ -14,6 +14,8 @@ export class Game {
   towerD: any;
   settings: any;
   monster: any;
+  navBar: any;
+  navInput: any;
 
   constructor(state) {
     this.localState = state;
@@ -27,7 +29,8 @@ export class Game {
     this.towerD = new Tower(state);
     this.settings = new Settings(state);
     this.monster = new Monster(state);
-
+    this.navBar = new NavBar(state);
+    this.navInput = new NavInput(state);
     this.template = `
     
     <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
@@ -41,6 +44,8 @@ export class Game {
     ${this.towerD.template}
     ${this.settings.template}
     ${this.monster.template}
+    ${this.navBar.template}
+    ${this.navInput.template}
     `;
   }
 }

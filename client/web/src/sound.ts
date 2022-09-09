@@ -72,7 +72,9 @@ export class BGM {
   play(song: string) {
     if (this.currentSong) {
       this.currentSong.fade(this.bgmGain, 0, 0.25);
+      this.currentSong.stop();
     }
+
     this.currentSong = this.gameMusic[song];
     this.updateVolume(this.bgmGain);
     this.gameMusic[song].play();

@@ -10,11 +10,11 @@ export class Monster {
                     <div  class="monster_card_title">\${monster.title}</div>
                     <div  class="monster_card_level">Level \${monster.level}</div>
                     <div  class="monster_card_health">Health: \${monster.damage}/\${monster.health}</div>
-                    <div class="monster_card_description">\${monster.desc}</div>
+                    <div class="monster_card_description">\${monster.effectstring}</div>
                   </div>
                   <div class="bottomside">
                     <div  class="monster_card_subtitle">\${monster.title}</div>
-                    <div class="monster_card_reward">Reward: \${monster.reward}</div>
+                    <div class="monster_card_reward">Reward: \${monster.rewardstring}</div>
                   </div>    
                 </div>
               </div>

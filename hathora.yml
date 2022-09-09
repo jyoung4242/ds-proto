@@ -4,11 +4,13 @@ types:
     - Spell
     - Weapon
     - Friend
+
   Roles:
     - Barbarian
     - Wizard
     - Rogue
     - Paladin
+
   Gender:
     - Male
     - Female
@@ -39,6 +41,7 @@ types:
     - activeBuyingCard
     - waitingOnEndTurn
     - activeEndingTurn
+
   GameState:
     - Lobby
     - GameSetup
@@ -46,6 +49,7 @@ types:
     - RoundSetup
     - PlayersTurn
     - GameOver
+
   StatusEffects:
     - Stunned
     - NoHeal
@@ -56,9 +60,11 @@ types:
   Effect:
     callback: string
     userPrompt: string?
+
   EffectType:
     - Active
     - Passive
+
   MCard:
     id: string
     title: string

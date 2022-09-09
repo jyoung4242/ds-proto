@@ -18,3 +18,5 @@ import "./settings.css";
 import "./monster.css";
 import "./help.css";
 import "./StatusEffect.css";
+import "./navbar.css";
+import "./navInput.css";
