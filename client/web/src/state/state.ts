@@ -3,6 +3,8 @@ import { Router, Card } from "../components";
 import { Character } from "../components/character";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
+import { startEventSequence, startSequence } from "../events";
+
 import {
   bmale,
   bfemale,
@@ -840,6 +842,7 @@ export class State {
             action: (event, model, element) => {
               model.button.label = "BOOM!";
               model.button.style = "NIclicked";
+              this.state.myMessageOverlay.showMessage("STARTING GAME", "this is a test", 6000);
             },
             unaction: (event, model, element) => {
               model.button.style = "";
@@ -848,6 +851,19 @@ export class State {
             style: "",
           },
         ],
+      },
+      myMessageOverlay: {
+        isVisible: false,
+        mainMessage: "",
+        subMessage: "",
+        showMessage: (main: string, sub: string, timeout: number) => {
+          this.state.myMessageOverlay.mainMessage = main;
+          this.state.myMessageOverlay.subMessage = sub;
+          this.state.myMessageOverlay.isVisble = true;
+          setTimeout(() => {
+            this.state.myMessageOverlay.isVisble = false;
+          }, timeout);
+        },
       },
     };
   }
@@ -950,6 +966,8 @@ export class State {
             });
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
+            startEventSequence(startSequence);
+            //this.state.myMessageOverlay.showMessage("STARTING GAME", "this is a test", 2500);
           }
           //get user name
 

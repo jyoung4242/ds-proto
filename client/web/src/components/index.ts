@@ -18,6 +18,7 @@ import { Monster } from "./monsterarea";
 import { StatusEffect } from "./statusEffect";
 import { NavBar } from "./navbar";
 import { NavInput } from "./navInput";
+import { MessageOverlay } from "./messageOverlay";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -39,3 +40,4 @@ export * from "./monsterarea";
 export * from "./statusEffect";
 export * from "./navbar";
 export * from "./navInput";
+export * from "./messageOverlay";

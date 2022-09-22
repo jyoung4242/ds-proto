@@ -1,0 +1,53 @@
+.MO_container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 12;
+}
+
+.MO_relative {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: var(--game-width);
+  height: var(--game-height);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.MO_container .pui-adding {
+  opacity: 1;
+}
+
+.MO_container .pui-removing {
+  opacity: 0;
+}
+
+.MO_main {
+  font-size: xx-large;
+  font-family: demonFont;
+  color: white;
+  font-weight: bolder;
+  text-align: center;
+  width: var(--game-width);
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-80%);
+}
+
+.MO_sub {
+  font-size: large;
+  font-family: demonFont;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  width: var(--game-width);
+  height: 75px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(10%);
+}

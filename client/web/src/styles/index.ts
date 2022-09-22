@@ -20,3 +20,4 @@ import "./help.css";
 import "./StatusEffect.css";
 import "./navbar.css";
 import "./navInput.css";
+import "./messageOverlay.css";
