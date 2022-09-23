@@ -5,7 +5,7 @@ export class MessageOverlay {
     <div class="MO_container" \${===myMessageOverlay.isVisble}>
         <div class="MO_relative">
             <div class="MO_main">\${myMessageOverlay.mainMessage}</div>
-            <divc class="MO_sub">\${myMessageOverlay.subMessage}</div>
+            <div class="MO_sub">\${myMessageOverlay.subMessage}</div>
         </div>
     </div>
     `;

@@ -4,8 +4,8 @@
   left: 0;
   width: var(--game-width);
   height: var(--game-height);
-  opacity: 0;
-  transition: opacity 0.5s;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
   z-index: 12;
 }
 
@@ -18,11 +18,11 @@
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.MO_container .pui-adding {
-  opacity: 1;
+.MO_container.pui-adding {
+  opacity: 0;
 }
 
-.MO_container .pui-removing {
+.MO_container.pui-removing {
   opacity: 0;
 }
 

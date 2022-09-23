@@ -1,3 +1,14 @@
+.hand_blurdiv {
+  min-width: var(--game-width);
+  min-height: var(--game-height);
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  backdrop-filter: blur(4px);
+  z-index: 15;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
 .hand_container {
   min-width: 100%;
   min-height: 230px;

@@ -28,11 +28,8 @@ export class Toast {
         for (let index = numMessages - 1; index >= 0; index--) {
           let elm = document.getElementById(`elm_${index}`);
           if (!this.isHover(elm)) {
-            console.log(this.localState.state.myToast.messages[index].timeOut);
             this.localState.state.myToast.messages[index].timeOut -= 500;
-
             if (this.localState.state.myToast.messages[index].timeOut <= 0) {
-              console.log("here");
               this.localState.state.myToast.messages.splice(index, 1);
             }
           }

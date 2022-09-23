@@ -39,6 +39,8 @@ export const utils = {
     user = HathoraClient.getUserFromToken(token);
 
     localState.state.playerData.username = user.name; //"testname"; //
+    localState.state.playerData.id = user.id;
+
     bgm.play("title");
     localState.state.myContainer.screenSwitch(Router.Lobby);
   },
@@ -146,4 +148,7 @@ export const utils = {
     myConnection.seenMessage(message);
   },
   setupGame() {},
+  startTurn() {
+    myConnection.startTurn({});
+  },
 };

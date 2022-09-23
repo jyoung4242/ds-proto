@@ -3,7 +3,7 @@ import { Router, Card } from "../components";
 import { Character } from "../components/character";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
-import { startEventSequence, startSequence } from "../events";
+import { startEventSequence, startSequence, startSetupSeq } from "../events";
 
 import {
   bmale,
@@ -109,7 +109,6 @@ export class State {
           this.state.mySceneTransition.reset();
         },
       },
-
       myTitle: {
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
@@ -632,8 +631,10 @@ export class State {
         level: 1,
         desc: "Add 1 influence point to location",
       },
-      myMonster: {},
-
+      myMonster: {
+        isVisible: false,
+        cssString: "",
+      },
       mySettings: {
         showModal: false,
         beginningColor: "#2c34d6",
@@ -842,7 +843,6 @@ export class State {
             action: (event, model, element) => {
               model.button.label = "BOOM!";
               model.button.style = "NIclicked";
-              this.state.myMessageOverlay.showMessage("STARTING GAME", "this is a test", 6000);
             },
             unaction: (event, model, element) => {
               model.button.style = "";
@@ -870,7 +870,6 @@ export class State {
 
   updateArgs = (update: UpdateArgs) => {
     if (this) {
-      console.log(update);
       this.state.gameData.gameID = update.stateId;
       this.state.gameData.playerIndex = update.state.me;
       this.state.gameData.Players = update.state.players;
@@ -966,16 +965,14 @@ export class State {
             });
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
-            startEventSequence(startSequence);
-            //this.state.myMessageOverlay.showMessage("STARTING GAME", "this is a test", 2500);
           }
-          //get user name
 
-          const usr = this.state.gameData.Players.findIndex(p => {
-            return this.state.gameData.turn === p.id;
-          });
-          this.state.myToast.addToast("user", `${this.state.gameData.Players[usr].name}'s turn to play`);
+          startEventSequence(startSetupSeq, this.state);
+          startEventSequence(startSequence, this.state);
 
+          break;
+        case "START TURN":
+          window.alert("turn started");
           break;
       }
     });

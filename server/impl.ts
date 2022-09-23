@@ -184,23 +184,19 @@ export class Impl implements Methods<InternalState> {
     state.gameState = GameState.GameSetup;
     state.turnOrder = setTurnOrder(state.players, ctx);
     state.turn = state.turnOrder[0];
-    /*
+
     //Deal starting cards
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
     state.Location = locationDeck.pop(); //Location Cards
     if (state.Location) numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
-    state.cardPool = setupCardPool(AbilityLibrary); //Ability Cards - cardpool
 
-    
+    state.cardPool = setupCardPool(abilityCardDeck); //Ability Cards - cardpool
+
     //setup each users hands based on role
     for (const player of state.players) {
       player.deck = setPlayerDeckbyRole(player.role, ctx);
       player.hand = dealPlayerCardsFromDeck(5, player.deck);
-    } */
-
-    //get name of user
-    let playerName = getActivePlayerName(state.players, state.turn);
-    ctx.broadcastEvent(`Ready To Start, its ${playerName}'s play`);
+    }
 
     state.gameState = GameState.ReadyToStart;
     return Response.ok();
@@ -217,9 +213,7 @@ export class Impl implements Methods<InternalState> {
     //show TD card
     state.TD = towerDefenseDeck.pop();
 
-    //get name of user
-    let playerName = getActivePlayerName(state.players, state.turn);
-    ctx.broadcastEvent(`${playerName} has started their turn`);
+    ctx.broadcastEvent(`START TURN`);
     return Response.ok();
   }
 
