@@ -3,7 +3,7 @@ import { Router, Card } from "../components";
 import { Character } from "../components/character";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
-import { startEventSequence, startSequence, startSetupSeq } from "../events";
+import { startEventSequence, startSequence, startSetupSeq, startTurn } from "../events";
 
 import {
   bmale,
@@ -270,14 +270,16 @@ export class State {
         imgSource: null,
       },
       myStaging: {
+        isVisible: true,
         group: [],
         back: () => {
           utils.playSound("button");
           utils.leaveGame();
           this.state.myContainer.screenSwitch(Router.Character);
         },
-        start: () => {
+        start: (_event, model) => {
           //utils.playGameMusic();
+          model.myStaging.isVisible = false;
           utils.startGame();
           this.state.myContainer.screenSwitch(Router.Game);
         },
@@ -972,7 +974,7 @@ export class State {
 
           break;
         case "START TURN":
-          window.alert("turn started");
+          startEventSequence(startTurn, this.state);
           break;
       }
     });

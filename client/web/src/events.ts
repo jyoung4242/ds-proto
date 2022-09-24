@@ -1,3 +1,4 @@
+import { resolve } from "../webpack.config";
 import { utils } from "./utils";
 
 type GameEventType = {
@@ -55,18 +56,46 @@ let shortdelay: GameEventType = {
   timeout: 1000,
 };
 
+let hideNavButton: GameEventType = {
+  type: "hideNavButton",
+};
+
+let showNavBar: GameEventType = {
+  type: "showNavBar",
+};
+
+let dealTD: GameEventType = {
+  type: "dealTD",
+};
+
 type GameEventSequence = {
   sequence: GameEventType[];
 };
 
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
+export let startTurn: GameEventSequence = { sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD] };
 
 class GameEvent {
   state: any;
   event: GameEventType;
   constructor(event: GameEventType) {
     this.event = event;
+  }
+
+  hideNavButton(resolve) {
+    this.state.myNavInput.isVisible = false;
+    resolve();
+  }
+
+  dealTD(resolve) {
+    this.state.myTowerD.isVisible = true;
+    resolve();
+  }
+
+  showNavBar(resolve) {
+    this.state.myNavBar.showNavBar = true;
+    resolve();
   }
 
   clearscreen(resolve) {
@@ -102,7 +131,7 @@ class GameEvent {
           break;
       }
     });
-    console.log(this.state.myHand.player1Hand);
+
     resolve();
   }
 
@@ -128,7 +157,6 @@ class GameEvent {
     });
     const username = this.state.gameData.Players[usr].name;
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
-    console.log("values: ", usr, username, myTurn, this.state.playerData.id, this.state.gameData.Players[usr].id);
     if (myTurn) {
       //show start turn button
       this.state.myNavInput.isVisible = true;

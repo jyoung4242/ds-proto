@@ -36,7 +36,7 @@
   height: 100px;
   position: absolute;
   top: 50%;
-  transform: translateY(-80%);
+  transform: translateY(-60%);
 }
 
 .MO_sub {
@@ -49,5 +49,5 @@
   height: 75px;
   position: absolute;
   top: 50%;
-  transform: translateY(10%);
+  transform: translateY(20%);
 }

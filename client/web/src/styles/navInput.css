@@ -17,6 +17,16 @@
   justify-content: center;
   align-items: center;
   gap: 15px;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.NIcontainer.pui-adding {
+  opacity: 0;
+}
+
+.NIcontainer.pui-removing {
+  opacity: 0;
 }
 
 .NIbutton {

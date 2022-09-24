@@ -39,6 +39,15 @@
   font-size: small;
   transition: width 0.3s ease-in-out;
   box-shadow: 5px 5px 8px 3px #00000080;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.td_card.pui-adding {
+  opacity: 0;
+}
+.td_card.pui-removing {
+  opacity: 0;
 }
 
 .td_card_title {

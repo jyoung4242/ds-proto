@@ -43,6 +43,12 @@
   box-shadow: 5px 5px black;
   min-height: 100px;
   padding: 8px;
+  opacity: 1;
+  transition: opacity 0.75s ease-in-out;
+}
+
+stg_PlayerEntry.pui-removing {
+  opacity: 0;
 }
 
 .stg_textSpan {

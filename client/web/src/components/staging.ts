@@ -12,10 +12,10 @@ export class StagingComponent {
     this.settings = new Settings(state);
     this.template = `
   <div class="stg_Screentitle">Game Staging Selection</div>
-    <div class="stg_Container">
+    <div class="stg_Container" \${===myStaging.isVisible}>
       ${this.settings.template}
       <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
-      <div class="stg_PlayerEntry" \${players <=* myStaging.group}>
+      <div class="stg_PlayerEntry" \${players <=* myStaging.group} >
         <span class="stg_textSpan">Player \${players.index} : </span>
         <span class="stg_textSpan">\${players.name}</span>
         <img src="\${players.img}" alt=""/>
@@ -23,9 +23,9 @@ export class StagingComponent {
     </div>
           
     <div class="stg_buttonflex">
-        <button class="lobbyButton" \${click@=>myStaging.back}>Back</button>
-        <button class="lobbyButton" \${click@=>myStaging.logout}>Logout</button>
-        <button class="lobbyButton" \${click@=>myStaging.start}>Start Game</button>
+        <button class="lobbyButton" \${===myStaging.isVisible} \${click@=>myStaging.back}>Back</button>
+        <button class="lobbyButton" \${===myStaging.isVisible} \${click@=>myStaging.logout}>Logout</button>
+        <button class="lobbyButton" \${===myStaging.isVisible} \${click@=>myStaging.start}>Start Game</button>
     </div>
     
     <div class="loginText">

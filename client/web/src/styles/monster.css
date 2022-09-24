@@ -33,6 +33,8 @@
   transform: translate(-50%, -50%);
   background-color: transparent;
   perspective: 1000px;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
 }
 
 .monster_card {
@@ -43,9 +45,16 @@
   border-radius: 10px;
   color: #101f6b;
   font-size: small;
-  transition: transform 0.8s;
+  transition: transform 0.8s ease-in-out;
   transform-style: preserve-3d;
   box-shadow: 5px 5px 8px 3px #00000080;
+}
+
+.monster_card_outer.pui-adding {
+  opacity: 0;
+}
+.monster_card_outer.pui-removing {
+  opacity: 0;
 }
 
 .topside {
