@@ -1,10 +1,10 @@
 export class Monster {
   componentName: string = "myMonster";
   template: string = `
-      <div class="monster_container" >
-          <div class="monster_rel_container" >
+      <div  class="monster_container" >
+          <div  class="monster_rel_container" >
               <span class="monster_title">Monster Card</span>
-              <div class="monster_card_outer" $\{===myMonster.isVisible}>
+              <div id="mon" class="monster_card_outer" $\{===myMonster.isVisible}>
                 <div class="monster_card"  \${monster<=*gameData.activeMonsters}>
                   <div class="topside">
                     <div  class="monster_card_title">\${monster.title}</div>

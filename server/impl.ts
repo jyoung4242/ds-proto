@@ -207,7 +207,9 @@ export class Impl implements Methods<InternalState> {
     if (state.roundState != RoundState.idle) return Response.error("Roundstate is not idle, cannot start turn");
     if (state.gameState != GameState.ReadyToStart) return Response.error("Cannot Start turn, game is not ready");
     if (userId != state.turn) return Response.error("You cannot start the turn, it is not your turn!");
-    state.roundState = RoundState.waitingPlayerPassives;
+    //state.roundState = RoundState.waitingPlayerPassives;
+    //bypassing player passives, cuz there arent' any for demo
+    state.roundState = RoundState.waitingMonsterPassives;
     state.gameState = GameState.PlayersTurn;
 
     //show TD card
@@ -225,10 +227,10 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningPlayerPassives;
 
-    //TODO - cycle through user's passive status effects when that system is implemented
-
+    //cycle through user's passive status effects when that system is implemented
+    //FOR PROTO, there are no player passives...
     state.roundState = RoundState.waitingMonsterPassives;
-    ctx.broadcastEvent(`PASSIVES`);
+
     return Response.ok();
   }
   runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
@@ -240,7 +242,14 @@ export class Impl implements Methods<InternalState> {
     state.roundState = RoundState.activeRunningMonsterPassives;
 
     //TODO - cycle through all active monsters and apply their passive effects
+    state.activeMonsters.forEach((monster, index) => {
+      if (monster.PassiveEffect != undefined) {
+        //do something
+        console.log(monster.PassiveEffect);
+      }
+    });
 
+    ctx.broadcastEvent(`PASSIVES`);
     state.roundState = RoundState.waitingOnTD;
     return Response.ok();
   }

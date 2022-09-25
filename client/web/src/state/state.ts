@@ -1,7 +1,7 @@
 import { utils } from "../utils";
 import { Router, Card } from "../components";
 import { Character } from "../components/character";
-import { Gender, Roles } from "../../../../api/types";
+import { Gender, MCard, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
 import { passives, startEventSequence, startSequence, startSetupSeq, startTurn } from "../events";
 
@@ -65,17 +65,7 @@ export class State {
         playerIndex: 1,
         Players: [],
         roundState: 0,
-        activeMonsters: [
-          /* {
-            id: "kobalt",
-            title: "Kobalt",
-            health: 5,
-            damage: 0,
-            desc: "Active Hero: -1 Health",
-            reward: "All Hereos: +1 Health",
-            level: 1,
-          }, */
-        ],
+        activeMonsters: [],
         location: {},
         TDcard: {},
         cardPool: [],
@@ -871,6 +861,24 @@ export class State {
     };
   }
 
+  areArraysEqual = (a: Array<Record<string, any>>, b: MCard[]): boolean => {
+    //if both empty, true
+    if (a.length == 0 && b.length == 0) return true;
+    if (a.length != b.length) return false;
+    let failedtests = 0;
+    if (a.length == b.length) {
+      b.forEach((card, i) => {
+        if ("id" in a[i]) {
+          if (card.id != a[i].id) failedtests++;
+        }
+      });
+
+      if (failedtests == 0) return true;
+    }
+
+    return false;
+  };
+
   updateArgs = (update: UpdateArgs) => {
     if (this) {
       this.state.gameData.gameID = update.stateId;
@@ -880,8 +888,10 @@ export class State {
       this.state.gameData.cardPool = update.state.cardPool;
       this.state.gameData.turnOrder = update.state.turnOrder;
       this.state.gameData.turn = update.state.turn;
-      if (this.state.gameData.activeMonsters != update.state.activeMonsters)
-        this.state.gameData.activeMonsters = update.state.activeMonsters;
+      if (!this.areArraysEqual(this.state.gameData.activeMonsters, update.state.activeMonsters)) {
+        this.state.gameData.activeMonsters = [...update.state.activeMonsters];
+      }
+
       this.state.gameData.location = update.state.location;
       this.state.gameData.td = update.state.TDcard;
 
@@ -913,7 +923,7 @@ export class State {
         }, 50);
       }
 
-      if (update.state.me != undefined) {
+      if (update.state.me != undefined && this.state.gameData.Players.length > 0) {
         if (this.state.myChat.isActive === true) {
           this.state.myChat.numUnreadMessages = 0;
           if (this.state.gameData.Players[this.state.gameData.playerIndex].lastSeen != lastMessage)

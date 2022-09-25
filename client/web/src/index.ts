@@ -26,4 +26,9 @@ const uiStringTemplate = `
 let myUI: UIView;
 myUI = UI.create(myApp, uiStringTemplate, state.state);
 
-setInterval(() => UI.update(), 25);
+const update = () => {
+  UI.update();
+  requestAnimationFrame(update);
+};
+
+update();

@@ -49,7 +49,7 @@ let alert: GameEventType = {
 
 let longdelay: GameEventType = {
   type: "delay",
-  timeout: 5000,
+  timeout: 4000,
 };
 
 let shortdelay: GameEventType = {
@@ -86,6 +86,10 @@ type GameEventSequence = {
   sequence: GameEventType[];
 };
 
+let debug: GameEventType = {
+  type: "debug",
+};
+
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
@@ -102,13 +106,33 @@ class GameEvent {
     this.event = event;
   }
 
+  debug(resolve) {
+    let mutObs = new MutationObserver(entries => {
+      console.log(entries);
+    });
+    let target = document.getElementById("mon");
+    console.log("target: ", target);
+    mutObs.observe(target, { childList: true });
+    resolve();
+  }
+
   indexProgress(resolve) {
     this.state.myNavBar.increment(`${this.event.state}`);
     resolve();
   }
 
   TDbloom(resolve) {
-    this.state.myTowerD.cssString = "td_bloom";
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    //this.state.myNavBar.increment("passives");
+    if (myTurn) {
+      this.state.myTowerD.cssString = "td_bloom td_clickable";
+    } else {
+      this.state.myTowerD.cssString = "td_bloom";
+    }
     resolve();
   }
 
@@ -213,6 +237,7 @@ class GameEvent {
     });
     const username = this.state.gameData.Players[usr].name;
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
     if (myTurn) {
       //show start turn button
       this.state.myNavInput.isVisible = true;
