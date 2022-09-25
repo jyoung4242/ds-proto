@@ -26,4 +26,4 @@ const uiStringTemplate = `
 let myUI: UIView;
 myUI = UI.create(myApp, uiStringTemplate, state.state);
 
-setInterval(() => UI.update(), 1000 / 60);
+setInterval(() => UI.update(), 25);

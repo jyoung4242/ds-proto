@@ -3,7 +3,7 @@ import { Router, Card } from "../components";
 import { Character } from "../components/character";
 import { Gender, Roles } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
-import { startEventSequence, startSequence, startSetupSeq, startTurn } from "../events";
+import { passives, startEventSequence, startSequence, startSetupSeq, startTurn } from "../events";
 
 import {
   bmale,
@@ -278,7 +278,7 @@ export class State {
           this.state.myContainer.screenSwitch(Router.Character);
         },
         start: (_event, model) => {
-          //utils.playGameMusic();
+          utils.playSound("button");
           model.myStaging.isVisible = false;
           utils.startGame();
           this.state.myContainer.screenSwitch(Router.Game);
@@ -628,6 +628,7 @@ export class State {
         },
       },
       myTowerD: {
+        cssString: "",
         isVisible: false,
         title: "Net Trap",
         level: 1,
@@ -743,11 +744,11 @@ export class State {
       myNavBar: {
         showNavBar: true,
         globalstates: ["passives", "td", "monster", "player", "purchase", "damage", "endturn"],
-        resetTimeline: obj => {
-          obj.$parent.$model.progressIndex = 0;
-          obj.$parent.$model.timestamps.forEach((ts, index) => {
+        resetTimeline: () => {
+          this.state.myNavBar.progressIndex = 0;
+          this.state.myNavBar.timestamps.forEach((ts, index) => {
             ts.doneFlag = false;
-            if (index == 0) ts.style = "pulse";
+            if (index == 0) ts.style = "NBpulse";
             else ts.style = "";
             ts.connStyle = "";
           });
@@ -756,7 +757,7 @@ export class State {
           {
             title: "Passives",
             done: "Passives Applied",
-            style: "pulse",
+            style: "NBpulse",
             doneFlag: false,
             connector: true,
             data: "passives",
@@ -818,19 +819,19 @@ export class State {
           },
         ],
         progressIndex: 0,
-        increment: (_event, model, element, _attribute, object) => {
-          let elementStateLabel = element.getAttribute("data-state");
-
-          if (elementStateLabel == model.myNavBar.globalstates[object.$parent.$model.progressIndex]) {
-            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].style = "complete glow";
-            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].doneFlag = true;
-            object.$parent.$model.timestamps[object.$parent.$model.progressIndex].connStyle = "glow";
-            object.$parent.$model.progressIndex++;
-            if (object.$parent.$model.timestamps[object.$parent.$model.progressIndex])
-              object.$parent.$model.timestamps[object.$parent.$model.progressIndex].style = "pulse";
+        increment: barstate => {
+          //let elementStateLabel = element.getAttribute("data-state");
+          let elementStateLabel = barstate;
+          if (elementStateLabel == this.state.myNavBar.globalstates[this.state.myNavBar.progressIndex]) {
+            this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].style = "complete glow";
+            this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].doneFlag = true;
+            this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].connStyle = "NBglow";
+            this.state.myNavBar.progressIndex++;
+            if (this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex])
+              this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].style = "NBpulse";
             if (elementStateLabel == "endturn") {
               setTimeout(() => {
-                object.$parent.$model.resetTimeline(object);
+                this.state.myNavBar.resetTimeline();
               }, 2000);
             }
           }
@@ -879,7 +880,8 @@ export class State {
       this.state.gameData.cardPool = update.state.cardPool;
       this.state.gameData.turnOrder = update.state.turnOrder;
       this.state.gameData.turn = update.state.turn;
-      this.state.gameData.activeMonsters = update.state.activeMonsters;
+      if (this.state.gameData.activeMonsters != update.state.activeMonsters)
+        this.state.gameData.activeMonsters = update.state.activeMonsters;
       this.state.gameData.location = update.state.location;
       this.state.gameData.td = update.state.TDcard;
 
@@ -975,6 +977,9 @@ export class State {
           break;
         case "START TURN":
           startEventSequence(startTurn, this.state);
+          break;
+        case "PASSIVES":
+          startEventSequence(passives, this.state);
           break;
       }
     });

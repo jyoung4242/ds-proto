@@ -11,4 +11,6 @@ export class NavInput {
   constructor(state) {
     this.localState = state;
   }
+
+  init() {}
 }

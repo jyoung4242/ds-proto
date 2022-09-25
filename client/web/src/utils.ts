@@ -151,4 +151,7 @@ export const utils = {
   startTurn() {
     myConnection.startTurn({});
   },
+  passives() {
+    myConnection.runPlayerPassives({});
+  },
 };

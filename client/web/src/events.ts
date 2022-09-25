@@ -5,6 +5,7 @@ type GameEventType = {
   type: string;
   message?: string;
   timeout?: number;
+  state?: string;
   //add optional
 };
 
@@ -68,19 +69,47 @@ let dealTD: GameEventType = {
   type: "dealTD",
 };
 
+let playerPassives: GameEventType = {
+  type: "pPassives",
+};
+
+let indexProgressBar_passive: GameEventType = {
+  type: "indexProgress",
+  state: "passives",
+};
+
+let highlightTD: GameEventType = {
+  type: "TDbloom",
+};
+
 type GameEventSequence = {
   sequence: GameEventType[];
 };
 
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
-export let startTurn: GameEventSequence = { sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD] };
+export let startTurn: GameEventSequence = {
+  sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD, shortdelay, playerPassives],
+};
+export let passives: GameEventSequence = {
+  sequence: [hideNavButton, shortdelay, indexProgressBar_passive, shortdelay, highlightTD],
+};
 
 class GameEvent {
   state: any;
   event: GameEventType;
   constructor(event: GameEventType) {
     this.event = event;
+  }
+
+  indexProgress(resolve) {
+    this.state.myNavBar.increment(`${this.event.state}`);
+    resolve();
+  }
+
+  TDbloom(resolve) {
+    this.state.myTowerD.cssString = "td_bloom";
+    resolve();
   }
 
   hideNavButton(resolve) {
@@ -149,9 +178,36 @@ class GameEvent {
     }, 5000);
   }
 
+  pPassives(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    //this.state.myNavBar.increment("passives");
+    if (myTurn) {
+      //show start turn button
+
+      this.state.myNavInput.buttons = [];
+      this.state.myNavInput.buttons.push({
+        label: "Run Passives",
+        action: (event, model, element) => {
+          utils.passives();
+          utils.playSound("button");
+          this.state.myNavInput.isVisble = false;
+        },
+        unaction: (event, model, element) => {},
+        style: "",
+      });
+      this.state.myNavInput.isVisible = true;
+    } else {
+    }
+    resolve();
+  }
+
   showStartTurn(resolve) {
     //get user name
-    console.log("i made it here");
+
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
@@ -164,6 +220,8 @@ class GameEvent {
         label: "Start Turn",
         action: (event, model, element) => {
           utils.startTurn();
+          utils.playSound("button");
+          this.state.myNavInput.isVisble = false;
         },
         unaction: (event, model, element) => {},
         style: "",

@@ -227,8 +227,8 @@ export class Impl implements Methods<InternalState> {
 
     //TODO - cycle through user's passive status effects when that system is implemented
 
-    ctx.broadcastEvent(`Player Passives Complete`);
     state.roundState = RoundState.waitingMonsterPassives;
+    ctx.broadcastEvent(`PASSIVES`);
     return Response.ok();
   }
   runMonsterPassives(state: InternalState, userId: UserId, ctx: Context, request: IRunMonsterPassivesRequest): Response {
