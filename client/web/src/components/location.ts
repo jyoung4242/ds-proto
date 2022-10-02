@@ -2,7 +2,7 @@ export class Location {
   componentName: string = "myLocation";
   template: string = `
     <div class="loc_container" >
-        <div class="loc_rel_container">
+        <div class="loc_rel_container \${myLocation.cssString}">
             <span class="loc_title">Location Card</span>
             <div class="loc_card" \${===myLocation.isVisible}>
                 <div  class="loc_card_title">\${myLocation.title}</div>

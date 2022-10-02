@@ -4,10 +4,14 @@ import { Character } from "../components/character";
 import { Gender, MCard, Roles, RoundState } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
 import {
+  bloomMonsters,
   hideTD,
+  locDamage,
   lowerHealth1,
   lowerHealth2,
+  MonsterPlayed,
   passives,
+  skipMonsters,
   startEventSequence,
   startSequence,
   startSetupSeq,
@@ -63,6 +67,9 @@ export class State {
 
   constructor() {
     this.state = {
+      animationEnd(...args) {
+        console.log("animationEnd", args);
+      },
       playerData: {
         username: "",
         name: "",
@@ -412,197 +419,11 @@ export class State {
       },
       myHand: {
         isVisible: false,
-        player1Hand: [
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-        ],
-        player2Hand: [
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-        ],
-        player3Hand: [
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-        ],
-        player4Hand: [
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-          new Card({
-            state: this.state,
-            type: "ability",
-            title: "TestCard",
-            level: 1,
-            description: "my test card",
-          }),
-        ],
-        footer: "Player 1 Hand",
+        player1Hand: [],
+        player2Hand: [],
+        player3Hand: [],
+        player4Hand: [],
+        footer: "",
         hand: [],
       },
       myLocation: {
@@ -613,6 +434,7 @@ export class State {
         title: "Cellar",
         sequence: 1,
         addPoint: (pts, model) => {
+          console.log(model);
           if (model.myLocation.damage < model.myLocation.health) {
             model.myLocation.damage += pts;
             if (model.myLocation.damage == model.myLocation.health) alert("location lost"); //do something here
@@ -623,6 +445,7 @@ export class State {
             model.myLocation.damage -= pts;
           }
         },
+        cssString: "",
       },
       myTowerD: {
         cssString: "",
@@ -646,6 +469,16 @@ export class State {
       myMonster: {
         isVisible: false,
         cssString: "",
+        clickHandler: (event, model, element, object) => {
+          console.log("click happened", element, model);
+          const cardId = element.getAttribute("id");
+          if (this.state.gameData.roundState == RoundState.activeRunningMonster) {
+            utils.playMcard(cardId);
+          }
+          if (this.state.gameData.roundState == RoundState.activeApplyingDamage) {
+          }
+          return;
+        },
       },
       mySettings: {
         showModal: false,
@@ -774,7 +607,7 @@ export class State {
           },
           {
             title: "Tower Defense",
-            done: "TD Card Played",
+            done: "TD Card Complete",
             style: "",
             doneFlag: false,
             connector: true,
@@ -783,7 +616,7 @@ export class State {
           },
           {
             title: "Monster Card",
-            done: "Monster Card enabled",
+            done: "Monster Card Complete",
             style: "",
             doneFlag: false,
             connector: true,
@@ -792,7 +625,7 @@ export class State {
           },
           {
             title: "Player Card",
-            done: "Player Hand enabled",
+            done: "Player Hand Complete",
             style: "",
             doneFlag: false,
             connector: true,
@@ -801,7 +634,7 @@ export class State {
           },
           {
             title: "Purchase Cards",
-            done: "Card Pool Enabled",
+            done: "Card Pool Complete",
             style: "",
             doneFlag: false,
             connector: true,
@@ -1032,12 +865,22 @@ export class State {
 
         case "add1toLocation":
           console.trace("state, line 1033 broadcast event, add 1 to location");
-          this.state.myLocation.damage = this.state.gameData.location.damage;
+          startEventSequence(locDamage, this.state);
+          this.state.myLocation.addPoint(1, this.state);
 
           break;
         case "hideTD":
           //console.trace("state, line 1039 broadcast event, hide td");
           startEventSequence(hideTD, this.state);
+          break;
+        case "ENABLE_Monster":
+          startEventSequence(bloomMonsters, this.state);
+          break;
+        case "NO MONSTERS READY":
+          startEventSequence(skipMonsters, this.state);
+          break;
+        case "MONSTER_PLAYED":
+          startEventSequence(MonsterPlayed, this.state);
           break;
       }
     });

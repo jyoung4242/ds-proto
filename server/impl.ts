@@ -92,7 +92,7 @@ export let rogueCardDeck: ABCard[] = [];
 
 const numberMonstersActiveByLevel: Array<number> = [1, 1, 2, 2, 3, 3, 3, 3];
 let numberOfTDCardsForThisLocation: number = 0;
-let numgerOfActiveMonstersThatHaveActiveEvents: number = 0;
+let numberOfActiveMonstersThatHaveActiveEvents: number = 0;
 
 type PlayerDiscard = {
   user: UserId;
@@ -306,15 +306,17 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    ctx.broadcastEvent("ENABLE_Monster");
+    //ctx.broadcastEvent("ENABLE_Monster");
 
     //setup looping index for monsters with active effects, used in next method
-    numgerOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
-    if (numgerOfActiveMonstersThatHaveActiveEvents === 0) {
+    numberOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
+    console.log(numberOfActiveMonstersThatHaveActiveEvents);
+    if (numberOfActiveMonstersThatHaveActiveEvents === 0) {
       ctx.broadcastEvent("NO MONSTERS READY");
       state.roundState = RoundState.waitingOnPlayer;
       return Response.ok();
     }
+    ctx.broadcastEvent("ENABLE_Monster");
     state.roundState = RoundState.activeRunningMonster;
     return Response.ok();
   }
@@ -326,20 +328,29 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    ctx.broadcastEvent("Monster card played");
     let cardPlayed = request.cardID;
-
+    console.log("monster card: ", cardPlayed);
     //TODO - add both/all Monster effects here
 
+    let pIndex = state.players.findIndex(p => {
+      return p.id == userId;
+    });
+
+    console.log("impl 335, checking for monster card callbacks");
+    if (state.activeMonsters[0].ActiveEffect)
+      executeCallback(state.activeMonsters[0].ActiveEffect.callback, state, pIndex, ctx);
+
+    ctx.broadcastEvent("MONSTER_PLAYED");
+
     //Decrement counter until all monsters played
-    numgerOfActiveMonstersThatHaveActiveEvents -= 1;
-    if (numgerOfActiveMonstersThatHaveActiveEvents == 0) {
+    numberOfActiveMonstersThatHaveActiveEvents -= 1;
+    if (numberOfActiveMonstersThatHaveActiveEvents == 0) {
       state.roundState = RoundState.waitingOnPlayer;
-      ctx.broadcastEvent("Ready for players cards");
+      ctx.broadcastEvent("MONSTER_DONE");
       return Response.ok();
     }
 
-    ctx.broadcastEvent("another monster card needs played");
+    ctx.broadcastEvent("NEXT_MONSTER");
     return Response.ok();
   }
 

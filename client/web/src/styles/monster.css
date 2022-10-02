@@ -11,6 +11,11 @@
   align-items: center;
   width: 210px;
   aspect-ratio: 3/2;
+  pointer-events: none;
+}
+
+.monster_rel_container {
+  pointer-events: none;
 }
 
 .monster_title {
@@ -25,7 +30,7 @@
 
 .monster_card_outer {
   position: absolute;
-
+  pointer-events: none;
   width: 200px;
   aspect-ratio: 3/2;
   top: 50%;
@@ -38,6 +43,7 @@
 }
 
 .monster_card {
+  pointer-events: auto;
   width: 200px;
   aspect-ratio: 3/2;
   background-color: #fbfaf5;

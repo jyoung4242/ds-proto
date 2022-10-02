@@ -158,4 +158,13 @@ export const utils = {
     console.log("utils 158, sending rpc");
     myConnection.playTD({ cardID: cardID });
   },
+  enableM() {
+    myConnection.enableMonsters({});
+  },
+  playMcard(cardID: string) {
+    myConnection.playMonster({ cardID: cardID });
+  },
+  playPcard() {
+    myConnection.enablePlayer({});
+  },
 };

@@ -99,6 +99,11 @@ let indexProgressBar_td: GameEventType = {
   state: "td",
 };
 
+let indexProgressBar_monster: GameEventType = {
+  type: "indexProgress",
+  state: "monster",
+};
+
 let highlightTD: GameEventType = {
   type: "TDbloom",
 };
@@ -129,6 +134,25 @@ let enablemonsters: GameEventType = {
   type: "enableMonsters",
 };
 
+let playerDamage: GameEventType = {
+  type: "damageFlash",
+};
+
+let locationDamage: GameEventType = {
+  type: "locationFlash",
+};
+
+let highlightMonsters: GameEventType = {
+  type: "bloomMonsters",
+};
+
+let unBloomMonster: GameEventType = {
+  type: "unbloomMonster",
+};
+
+let promptPlayersHand: GameEventType = {
+  type: "prompt_playerHand",
+};
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
@@ -142,15 +166,30 @@ export let updateStatEffects: GameEventSequence = {
 };
 
 export let lowerHealth1: GameEventSequence = {
-  sequence: [shortdelay, lose1Health, shortdelay],
+  sequence: [shortdelay, playerDamage, lose1Health, shortdelay],
 };
 
 export let lowerHealth2: GameEventSequence = {
-  sequence: [shortdelay, lose2Health, shortdelay],
+  sequence: [shortdelay, playerDamage, lose2Health, shortdelay],
 };
 
 export let hideTD: GameEventSequence = {
-  sequence: [shortdelay, hideTDcard, shortdelay, indexProgressBar_td, enablemonsters],
+  sequence: [hideTDcard, shortdelay, shortdelay, indexProgressBar_td, enablemonsters],
+};
+
+export let locDamage: GameEventSequence = {
+  sequence: [locationDamage],
+};
+
+export let bloomMonsters: GameEventSequence = {
+  sequence: [highlightMonsters],
+};
+
+export let skipMonsters: GameEventSequence = {
+  sequence: [shortdelay, indexProgressBar_monster, shortdelay, promptPlayersHand],
+};
+export let MonsterPlayed: GameEventSequence = {
+  sequence: [unBloomMonster, shortdelay, indexProgressBar_monster, promptPlayersHand],
 };
 
 class GameEvent {
@@ -181,6 +220,53 @@ class GameEvent {
     });
 
     this.state.myToast.addToast("effect", `Player received status effect`);
+    resolve();
+  }
+
+  prompt_playerHand(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    //this.state.myNavBar.increment("passives");
+    if (myTurn) {
+      //show start turn button
+
+      this.state.myNavInput.buttons = [];
+      this.state.myNavInput.buttons.push({
+        label: "Play your hand?",
+        action: (event, model, element) => {
+          utils.playPcard();
+          utils.playSound("button");
+          this.state.myNavInput.isVisible = false;
+        },
+        unaction: (event, model, element) => {},
+        style: "",
+      });
+      this.state.myNavInput.isVisible = true;
+    } else {
+    }
+  }
+
+  damageFlash(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    this.state.mypUI.allPlayers[usr].bloomStatus = this.state.mypUI.allPlayers[usr].bloomStatus + " playerdamage";
+    resolve();
+  }
+
+  locationFlash(resolve) {
+    this.state.myLocation.cssString = " locationdamage";
+    setTimeout(() => {
+      this.state.myLocation.cssString = "";
+    }, 500);
+    resolve();
+  }
+
+  enableMonsters(resolve) {
+    utils.enableM();
     resolve();
   }
 
@@ -230,6 +316,26 @@ class GameEvent {
     } else {
       this.state.myTowerD.cssString = "td_bloom";
     }
+    resolve();
+  }
+
+  bloomMonsters(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    //this.state.myNavBar.increment("passives");
+    if (myTurn) {
+      this.state.myMonster.cssString = " td_bloom td_clickable nohover";
+    } else {
+      this.state.myMonster.cssString = "td_bloom";
+    }
+    resolve();
+  }
+
+  unbloomMonster(resolve) {
+    this.state.myMonster.cssString = "";
     resolve();
   }
 
@@ -315,7 +421,7 @@ class GameEvent {
         action: (event, model, element) => {
           utils.passives();
           utils.playSound("button");
-          this.state.myNavInput.isVisble = false;
+          this.state.myNavInput.isVisible = false;
         },
         unaction: (event, model, element) => {},
         style: "",
