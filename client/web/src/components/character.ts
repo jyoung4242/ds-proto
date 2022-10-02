@@ -1,9 +1,9 @@
 import { Gender, Roles } from "../../../../api/types";
 import { bmale, bfemale, wmale, wfemale, rmale, rfemale, pmale, pfemale } from "../assets/assetPool";
 
-type iStatusMessage = {
+export type iStatusMessage = {
   img: string;
-  test: string;
+  effect: string;
   angle: number;
   negAngle?: number;
 };
@@ -48,10 +48,11 @@ export class Character {
   };
 
   constructor(config) {
+    console.log("character, 51, config: ", config);
     this.attack = 0;
     this.coin = 0;
     this.health = 10;
-    this.index = config.index || 1;
+    this.index = config.index + 1;
     this.name = config.name || "noman";
     this.role = config.role || Roles.Barbarian;
     this.gender = config.gender || Gender.Male;
@@ -59,6 +60,7 @@ export class Character {
     this.bloomStatus = config.bloomStatus;
     this.hovered = false;
     this.statusEffects = config.statusEffects;
+    console.log("character 63, index: ", this.index);
   }
 
   addHealth(num: number) {
@@ -74,6 +76,7 @@ export class Character {
   lowerHealth(num: number) {
     this.health = this.health - num >= 0 ? this.health - num : 0;
     let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
+    console.log("character, 77, myUI: ", myUI);
     let newAngle = (10 - this.health) * 36;
     myUI.style.setProperty(`--angle${this.index}`, `${newAngle}`);
     if (this.health <= 4 && this.health > 2) myUI.style.stroke = "yellow";

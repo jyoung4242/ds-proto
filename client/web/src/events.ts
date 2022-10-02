@@ -1,11 +1,23 @@
 import { resolve } from "../webpack.config";
 import { utils } from "./utils";
+import { iStatusMessage } from "./components/character";
+
+import { discard, nodraw, location } from "./assets/assetPool";
+
+let SE_map = {
+  0: { img: "", effect: "STUNNED" },
+  1: { img: "", effect: "NO HEALING" },
+  2: { img: nodraw, effect: "CANNOT DRAW CARD" },
+  3: { img: location, effect: "LOCATION CURSE" },
+  4: { img: discard, effect: "DISCARD CURSE" },
+};
 
 type GameEventType = {
   type: string;
   message?: string;
   timeout?: number;
   state?: string;
+  value?: number;
   //add optional
 };
 
@@ -49,7 +61,7 @@ let alert: GameEventType = {
 
 let longdelay: GameEventType = {
   type: "delay",
-  timeout: 4000,
+  timeout: 3000,
 };
 
 let shortdelay: GameEventType = {
@@ -73,9 +85,18 @@ let playerPassives: GameEventType = {
   type: "pPassives",
 };
 
+let updateStatusEffects: GameEventType = {
+  type: "statEffects",
+};
+
 let indexProgressBar_passive: GameEventType = {
   type: "indexProgress",
   state: "passives",
+};
+
+let indexProgressBar_td: GameEventType = {
+  type: "indexProgress",
+  state: "td",
 };
 
 let highlightTD: GameEventType = {
@@ -90,6 +111,24 @@ let debug: GameEventType = {
   type: "debug",
 };
 
+let lose1Health: GameEventType = {
+  type: "lowerhealth",
+  value: 1,
+};
+
+let lose2Health: GameEventType = {
+  type: "lowerhealth",
+  value: 2,
+};
+
+let hideTDcard: GameEventType = {
+  type: "hideTD",
+};
+
+let enablemonsters: GameEventType = {
+  type: "enableMonsters",
+};
+
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
@@ -98,12 +137,70 @@ export let startTurn: GameEventSequence = {
 export let passives: GameEventSequence = {
   sequence: [hideNavButton, shortdelay, indexProgressBar_passive, shortdelay, highlightTD],
 };
+export let updateStatEffects: GameEventSequence = {
+  sequence: [shortdelay, updateStatusEffects, shortdelay],
+};
+
+export let lowerHealth1: GameEventSequence = {
+  sequence: [shortdelay, lose1Health, shortdelay],
+};
+
+export let lowerHealth2: GameEventSequence = {
+  sequence: [shortdelay, lose2Health, shortdelay],
+};
+
+export let hideTD: GameEventSequence = {
+  sequence: [shortdelay, hideTDcard, shortdelay, indexProgressBar_td, enablemonsters],
+};
 
 class GameEvent {
   state: any;
   event: GameEventType;
   constructor(event: GameEventType) {
     this.event = event;
+  }
+
+  statEffects(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
+    //clear UI statusEffects
+    this.state.mypUI.allPlayers[usr].statusEffects = [];
+    //loop through statuseffects call execute callbacks
+    this.state.gameData.Players[usr].statusEffects.forEach(se => {
+      let msg: iStatusMessage = {
+        img: SE_map[se].img,
+        effect: SE_map[se].effect,
+        angle: 0,
+        negAngle: 0,
+      };
+      this.state.mypUI.allPlayers[usr].addStatusMessage(msg);
+    });
+
+    this.state.myToast.addToast("effect", `Player received status effect`);
+    resolve();
+  }
+
+  hideTD(resolve) {
+    this.state.myTowerD.cssString = "";
+    this.state.myTowerD.isVisible = false;
+    resolve();
+  }
+
+  lowerhealth(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    console.log("events 176, losing health", usr);
+    console.log("health value to lower: ", this.event.value);
+    this.state.mypUI.allPlayers[usr].lowerHealth(this.event.value);
+    resolve();
   }
 
   debug(resolve) {

@@ -17,6 +17,7 @@ export const setupLocationDeck = (library: LCard[], level: number): LCard[] => {
 
 export const setupTowerDefenseDeck = (library: TDCard[], level: number, c: Context): TDCard[] => {
   let tempDeck = library.filter(card => card.level <= level);
+
   return c.chance.shuffle(tempDeck);
 };
 

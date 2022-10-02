@@ -74,7 +74,7 @@
   transform: rotateY(180deg);
 }
 
-.monster_card_outer:hover .monster_card {
+.monster_card_outer:not(.nohover):hover .monster_card {
   transform: rotateY(180deg);
 }
 

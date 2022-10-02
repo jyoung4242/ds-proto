@@ -1,9 +1,19 @@
 import { utils } from "../utils";
 import { Router, Card } from "../components";
 import { Character } from "../components/character";
-import { Gender, MCard, Roles } from "../../../../api/types";
+import { Gender, MCard, Roles, RoundState } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
-import { passives, startEventSequence, startSequence, startSetupSeq, startTurn } from "../events";
+import {
+  hideTD,
+  lowerHealth1,
+  lowerHealth2,
+  passives,
+  startEventSequence,
+  startSequence,
+  startSetupSeq,
+  startTurn,
+  updateStatEffects,
+} from "../events";
 
 import {
   bmale,
@@ -21,9 +31,6 @@ import {
   effectIcon,
   mute,
   unmute,
-  discard,
-  nodraw,
-  location,
 } from "../assets/assetPool";
 
 const MOUSELIMIT = 10;
@@ -620,9 +627,21 @@ export class State {
       myTowerD: {
         cssString: "",
         isVisible: false,
-        title: "Net Trap",
+        id: "",
+        title: "",
         level: 1,
-        desc: "Add 1 influence point to location",
+        desc: "",
+        clicked: (event, model, element) => {
+          const usr = model.gameData.Players.findIndex(p => {
+            return model.gameData.turn === p.id;
+          });
+          const myTurn = model.gameData.Players[usr].id == model.playerData.id;
+          if (model.gameData.roundState == RoundState.waitingOnTD && myTurn) {
+            //playTD Card
+            console.log("state 631, playing card");
+            utils.playTD(model.myTowerD.id);
+          }
+        },
       },
       myMonster: {
         isVisible: false,
@@ -755,7 +774,7 @@ export class State {
           },
           {
             title: "Tower Defense",
-            done: "TD Card enabled",
+            done: "TD Card Played",
             style: "",
             doneFlag: false,
             connector: true,
@@ -813,7 +832,7 @@ export class State {
           //let elementStateLabel = element.getAttribute("data-state");
           let elementStateLabel = barstate;
           if (elementStateLabel == this.state.myNavBar.globalstates[this.state.myNavBar.progressIndex]) {
-            this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].style = "complete glow";
+            this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].style = "NBcomplete NBglow";
             this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].doneFlag = true;
             this.state.myNavBar.timestamps[this.state.myNavBar.progressIndex].connStyle = "NBglow";
             this.state.myNavBar.progressIndex++;
@@ -893,7 +912,14 @@ export class State {
       }
 
       this.state.gameData.location = update.state.location;
-      this.state.gameData.td = update.state.TDcard;
+
+      this.state.gameData.TDCard = update.state.TDcard;
+      if (this.state.gameData.TDCard) {
+        this.state.myTowerD.desc = this.state.gameData.TDCard.effectString;
+        this.state.myTowerD.level = this.state.gameData.TDCard.level;
+        this.state.myTowerD.title = this.state.gameData.TDCard.title;
+        this.state.myTowerD.id = this.state.gameData.TDCard.id;
+      }
 
       let lastMessage = update.state.Messages.length;
       if (update.state.Messages.length != this.state.myChat.messages.length) {
@@ -953,7 +979,7 @@ export class State {
         this.state.mypUI.allPlayers.forEach((p, i) => {
           p.coin = this.state.gameData.Players[i].coin;
           p.attack = this.state.gameData.Players[i].attack;
-          p.health = this.state.gameData.Players[i].health;
+          //p.health = this.state.gameData.Players[i].health;
           if (this.state.gameData.Players[i].id == this.state.gameData.turn) p.bloomStatus = "playerBloom";
           else p.bloomStatus = "";
         });
@@ -980,7 +1006,7 @@ export class State {
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
           }
-
+          console.log("state 1009, players: ", this.state.mypUI.allPlayers);
           startEventSequence(startSetupSeq, this.state);
           startEventSequence(startSequence, this.state);
 
@@ -990,6 +1016,28 @@ export class State {
           break;
         case "PASSIVES":
           startEventSequence(passives, this.state);
+          break;
+        case "STATUSEFFECT ADDED":
+          startEventSequence(updateStatEffects, this.state);
+          break;
+        case "Lose1Health":
+          console.trace("state, line 1023 broadcast event, lose health");
+          startEventSequence(lowerHealth1, this.state);
+          break;
+
+        case "Lose2Health":
+          console.trace("state, line 1027 broadcast event, lose 2 health");
+          startEventSequence(lowerHealth2, this.state);
+          break;
+
+        case "add1toLocation":
+          console.trace("state, line 1033 broadcast event, add 1 to location");
+          this.state.myLocation.damage = this.state.gameData.location.damage;
+
+          break;
+        case "hideTD":
+          //console.trace("state, line 1039 broadcast event, hide td");
+          startEventSequence(hideTD, this.state);
           break;
       }
     });

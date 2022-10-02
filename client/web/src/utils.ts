@@ -154,4 +154,8 @@ export const utils = {
   passives() {
     myConnection.runMonsterPassives({});
   },
+  playTD(cardID: string) {
+    console.log("utils 158, sending rpc");
+    myConnection.playTD({ cardID: cardID });
+  },
 };

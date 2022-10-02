@@ -64,8 +64,9 @@ import {
   setupNewPlayer,
   setupTowerDefenseDeck,
 } from "./lib/util";
+import { executeCallback } from "./lib/effects";
 
-type InternalState = {
+export type InternalState = {
   roundState: RoundState;
   gameState: GameState;
   activeMonsters: MCard[];
@@ -188,12 +189,16 @@ export class Impl implements Methods<InternalState> {
     //Deal starting cards
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
     state.Location = locationDeck.pop(); //Location Cards
-    if (state.Location) numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
+    if (state.Location) {
+      numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
+      state.Location.damage = 0;
+    }
 
     state.cardPool = setupCardPool(abilityCardDeck); //Ability Cards - cardpool
 
     //setup each users hands based on role
     for (const player of state.players) {
+      player.health = 10;
       player.deck = setPlayerDeckbyRole(player.role, ctx);
       player.hand = dealPlayerCardsFromDeck(5, player.deck);
     }
@@ -240,12 +245,12 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningMonsterPassives;
+    const playerIndex = state.players.findIndex(p => p.id === userId);
 
-    //TODO - cycle through all active monsters and apply their passive effects
     state.activeMonsters.forEach((monster, index) => {
       if (monster.PassiveEffect != undefined) {
-        //do something
-        console.log(monster.PassiveEffect);
+        executeCallback(monster.PassiveEffect.callback, state, playerIndex, ctx);
+        ctx.broadcastEvent("STATUSEFFECT ADDED");
       }
     });
 
@@ -272,19 +277,24 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningTDEffects;
 
-    ctx.broadcastEvent("TD card played");
-    let cardPlayed = request.cardID;
+    let pIndex = state.players.findIndex(p => {
+      return p.id == userId;
+    });
 
-    //TODO - add both/all TD effects here
+    console.log("impl 282, checking for td card callbacks");
+    if (state.TD?.ActiveEffect) executeCallback(state.TD?.ActiveEffect.callback, state, pIndex, ctx);
+    if (state.TD?.PassiveEffect) executeCallback(state.TD?.PassiveEffect.callback, state, pIndex, ctx);
 
     if (numberOfTDCardsForThisLocation > 1) {
       numberOfTDCardsForThisLocation -= 1;
       state.roundState = RoundState.waitingOnTD;
       state.TD = towerDefenseDeck.pop();
+      ctx.broadcastEvent("updateTD");
     } else {
       state.roundState = RoundState.waitingOnMonster;
       //discard TD
       state.TD = undefined;
+      ctx.broadcastEvent("hideTD");
     }
     return Response.ok();
   }
