@@ -9,6 +9,7 @@ import {
   add2Coin,
   bloomMonsters,
   drawNewCard,
+  healOthers1,
   hideTD,
   locDamage,
   lowerHealth1,
@@ -17,6 +18,7 @@ import {
   passives,
   playerHandShow,
   raiseHealth1,
+  remove1Location,
   skipMonsters,
   startEventSequence,
   startSequence,
@@ -304,52 +306,6 @@ export class State {
       },
       myGame: {
         showModal: false,
-        test1: (event, model, element) => {
-          if (model.mypUI.allPlayers[0].attackPlacard.color == "limegreen") {
-            model.mypUI.allPlayers[0].attackPlacard.color = "red";
-            model.mypUI.allPlayers[0].attackPlacard.text = "-1";
-          } else {
-            model.mypUI.allPlayers[0].attackPlacard.color = "limegreen";
-            model.mypUI.allPlayers[0].attackPlacard.text = "+1";
-          }
-          model.mypUI.allPlayers[0].attackPlacard.isVisible = true;
-          const mInt = setInterval(() => {
-            model.mypUI.allPlayers[0].attackPlacard.offset -= 2;
-            if (model.mypUI.allPlayers[0].attackPlacard.offset < -25) {
-              model.mypUI.allPlayers[0].attackPlacard.opacity -= 0.05;
-            }
-
-            if (model.mypUI.allPlayers[0].attackPlacard.offset <= -75) {
-              clearInterval(mInt);
-              model.mypUI.allPlayers[0].attackPlacard.offset = 0;
-              model.mypUI.allPlayers[0].attackPlacard.opacity = 1;
-              model.mypUI.allPlayers[0].attackPlacard.isVisible = false;
-            }
-          }, 50);
-        },
-        test2: (event, model, element) => {
-          if (model.mypUI.allPlayers[0].coinPlacard.color == "limegreen") {
-            model.mypUI.allPlayers[0].coinPlacard.color = "red";
-            model.mypUI.allPlayers[0].coinPlacard.text = "-1";
-          } else {
-            model.mypUI.allPlayers[0].coinPlacard.color = "limegreen";
-            model.mypUI.allPlayers[0].coinPlacard.text = "+1";
-          }
-          model.mypUI.allPlayers[0].coinPlacard.isVisible = true;
-          const mInt = setInterval(() => {
-            model.mypUI.allPlayers[0].coinPlacard.offset -= 2;
-            if (model.mypUI.allPlayers[0].coinPlacard.offset < -25) {
-              model.mypUI.allPlayers[0].coinPlacard.opacity -= 0.05;
-            }
-
-            if (model.mypUI.allPlayers[0].coinPlacard.offset <= -75) {
-              clearInterval(mInt);
-              model.mypUI.allPlayers[0].coinPlacard.offset = 0;
-              model.mypUI.allPlayers[0].coinPlacard.opacity = 1;
-              model.mypUI.allPlayers[0].coinPlacard.isVisible = false;
-            }
-          }, 50);
-        },
       },
       attributes: {
         icons:
@@ -981,8 +937,10 @@ export class State {
         case "ENABLE_Player":
           startEventSequence(playerHandShow, this.state);
         case "PLAYERDONE":
+          //TODO - what to do if players' done with hand
           break;
         case "STUNNED":
+          //TODO - come up with Stunned practice
           break;
         case "+1Attack":
           startEventSequence(add1Attack, this.state);
@@ -1004,9 +962,11 @@ export class State {
           break;
 
         case "+1HealthtoAllOthers":
+          startEventSequence(healOthers1, this.state);
           break;
 
         case "remove1fromLocation":
+          startEventSequence(remove1Location, this.state);
           break;
 
         case "chooseAttack1Ability1":

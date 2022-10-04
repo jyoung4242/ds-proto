@@ -152,6 +152,10 @@ let locationDamage: GameEventType = {
   type: "locationFlash",
 };
 
+let locationHeal: GameEventType = {
+  type: "locationHealFlash",
+};
+
 let highlightMonsters: GameEventType = {
   type: "bloomMonsters",
 };
@@ -191,8 +195,9 @@ let addCoin1: GameEventType = {
   message: "add",
 };
 
-let updatePlayerUIs: GameEventType = {
-  type: "updatePlayerUIs",
+let healOthers: GameEventType = {
+  type: "healOthers",
+  value: 1,
 };
 
 let drawCard: GameEventType = {
@@ -273,6 +278,14 @@ export let drawNewCard: GameEventSequence = {
   sequence: [drawCard],
 };
 
+export let healOthers1: GameEventSequence = {
+  sequence: [shortdelay, healOthers, shortdelay],
+};
+
+export let remove1Location: GameEventSequence = {
+  sequence: [locationHeal],
+};
+
 class GameEvent {
   state: any;
   event: GameEventType;
@@ -301,6 +314,20 @@ class GameEvent {
     });
 
     this.state.myToast.addToast("effect", `Player received status effect`);
+    resolve();
+  }
+
+  healOthers(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const arrayOfPlayersToHeal = this.state.gameData.Players.splice(usr, 1);
+
+    arrayOfPlayersToHeal.forEach(p => {
+      p.addHealth(this.event.value);
+      p.bloomStatus = p.bloomStatus + " playerHeal";
+    });
+
     resolve();
   }
 
@@ -451,6 +478,14 @@ class GameEvent {
 
   locationFlash(resolve) {
     this.state.myLocation.cssString = " locationdamage";
+    setTimeout(() => {
+      this.state.myLocation.cssString = "";
+    }, 500);
+    resolve();
+  }
+
+  locationHealFlash(resolve) {
+    this.state.myLocation.cssString = " locationHeal";
     setTimeout(() => {
       this.state.myLocation.cssString = "";
     }, 500);

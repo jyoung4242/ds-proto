@@ -49,6 +49,7 @@ export class Game {
     this.template = `
     
     <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}>
+    
     ${this.cardPool.template}
     ${this.toast.template}
     ${this.chat.template}
