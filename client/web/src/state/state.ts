@@ -4,13 +4,19 @@ import { Character } from "../components/character";
 import { Gender, MCard, Roles, RoundState } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
 import {
+  add1Attack,
+  add1Coin,
+  add2Coin,
   bloomMonsters,
+  drawNewCard,
   hideTD,
   locDamage,
   lowerHealth1,
   lowerHealth2,
   MonsterPlayed,
   passives,
+  playerHandShow,
+  raiseHealth1,
   skipMonsters,
   startEventSequence,
   startSequence,
@@ -298,6 +304,52 @@ export class State {
       },
       myGame: {
         showModal: false,
+        test1: (event, model, element) => {
+          if (model.mypUI.allPlayers[0].attackPlacard.color == "limegreen") {
+            model.mypUI.allPlayers[0].attackPlacard.color = "red";
+            model.mypUI.allPlayers[0].attackPlacard.text = "-1";
+          } else {
+            model.mypUI.allPlayers[0].attackPlacard.color = "limegreen";
+            model.mypUI.allPlayers[0].attackPlacard.text = "+1";
+          }
+          model.mypUI.allPlayers[0].attackPlacard.isVisible = true;
+          const mInt = setInterval(() => {
+            model.mypUI.allPlayers[0].attackPlacard.offset -= 2;
+            if (model.mypUI.allPlayers[0].attackPlacard.offset < -25) {
+              model.mypUI.allPlayers[0].attackPlacard.opacity -= 0.05;
+            }
+
+            if (model.mypUI.allPlayers[0].attackPlacard.offset <= -75) {
+              clearInterval(mInt);
+              model.mypUI.allPlayers[0].attackPlacard.offset = 0;
+              model.mypUI.allPlayers[0].attackPlacard.opacity = 1;
+              model.mypUI.allPlayers[0].attackPlacard.isVisible = false;
+            }
+          }, 50);
+        },
+        test2: (event, model, element) => {
+          if (model.mypUI.allPlayers[0].coinPlacard.color == "limegreen") {
+            model.mypUI.allPlayers[0].coinPlacard.color = "red";
+            model.mypUI.allPlayers[0].coinPlacard.text = "-1";
+          } else {
+            model.mypUI.allPlayers[0].coinPlacard.color = "limegreen";
+            model.mypUI.allPlayers[0].coinPlacard.text = "+1";
+          }
+          model.mypUI.allPlayers[0].coinPlacard.isVisible = true;
+          const mInt = setInterval(() => {
+            model.mypUI.allPlayers[0].coinPlacard.offset -= 2;
+            if (model.mypUI.allPlayers[0].coinPlacard.offset < -25) {
+              model.mypUI.allPlayers[0].coinPlacard.opacity -= 0.05;
+            }
+
+            if (model.mypUI.allPlayers[0].coinPlacard.offset <= -75) {
+              clearInterval(mInt);
+              model.mypUI.allPlayers[0].coinPlacard.offset = 0;
+              model.mypUI.allPlayers[0].coinPlacard.opacity = 1;
+              model.mypUI.allPlayers[0].coinPlacard.isVisible = false;
+            }
+          }, 50);
+        },
       },
       attributes: {
         icons:
@@ -373,15 +425,30 @@ export class State {
         },
       },
       mypUI: {
-        clear: (_event, model) => (model.myHand.isVisible = false),
+        clear: (_event, model) => {
+          if (
+            this.state.gameData.roundState === RoundState.waitingOnPlayer ||
+            this.state.gameData.roundState === RoundState.activeRunningPlayer
+          )
+            return;
+
+          model.myHand.isVisible = false;
+        },
         checkHover: (event, model) => {
+          if (
+            this.state.gameData.roundState === RoundState.waitingOnPlayer ||
+            this.state.gameData.roundState === RoundState.activeRunningPlayer
+          )
+            return;
           mouseCount += 1;
           if (mouseCount >= MOUSELIMIT) {
             mouseCount = 0;
             model.myHand.hand = [];
             model.myHand.isVisible = false;
+
             model.mypUI.allPlayers.forEach((p, i) => {
               if (p.isHovered()) {
+                console.log("sanity check: ", model.myHand.player1Hand);
                 switch (i) {
                   case 0:
                     model.myHand.hand = [...model.myHand.player1Hand];
@@ -425,6 +492,43 @@ export class State {
         player4Hand: [],
         footer: "",
         hand: [],
+        clickHandler: (event, model, element) => {
+          const usr = this.state.gameData.Players.findIndex(p => {
+            return this.state.gameData.turn === p.id;
+          });
+
+          const cardId = element.getAttribute("id");
+          if (
+            this.state.gameData.roundState == RoundState.activeRunningPlayer ||
+            this.state.gameData.roundState == RoundState.waitingOnPlayer
+          ) {
+            utils.playPcard(cardId);
+            //remove card from myHand
+            let cardindex = this.state.myHand.hand.findIndex(c => c.id === cardId);
+            this.state.myHand.hand.splice(cardindex, 1);
+            //remove card from PLAYERXHand
+            switch (usr) {
+              case 0:
+                cardindex = this.state.myHand.player1Hand.findIndex(c => c.id === cardId);
+                this.state.myHand.player1Hand.splice(cardindex, 1);
+                break;
+              case 1:
+                cardindex = this.state.myHand.player2Hand.findIndex(c => c.id === cardId);
+                this.state.myHand.player2Hand.splice(cardindex, 1);
+                break;
+              case 2:
+                cardindex = this.state.myHand.player3Hand.findIndex(c => c.id === cardId);
+                this.state.myHand.player3Hand.splice(cardindex, 1);
+                break;
+              case 3:
+                cardindex = this.state.myHand.player4Hand.findIndex(c => c.id === cardId);
+                this.state.myHand.player4Hand.splice(cardindex, 1);
+                break;
+            }
+          }
+          if (this.state.myHand.hand.length == 0) this.state.myHand.isVisible = false;
+          return;
+        },
       },
       myLocation: {
         isVisible: false,
@@ -470,7 +574,6 @@ export class State {
         isVisible: false,
         cssString: "",
         clickHandler: (event, model, element, object) => {
-          console.log("click happened", element, model);
           const cardId = element.getAttribute("id");
           if (this.state.gameData.roundState == RoundState.activeRunningMonster) {
             utils.playMcard(cardId);
@@ -839,7 +942,7 @@ export class State {
             this.state.myContainer.screenSwitch(Router.Game);
             utils.playGameMusic();
           }
-          console.log("state 1009, players: ", this.state.mypUI.allPlayers);
+
           startEventSequence(startSetupSeq, this.state);
           startEventSequence(startSequence, this.state);
 
@@ -854,23 +957,16 @@ export class State {
           startEventSequence(updateStatEffects, this.state);
           break;
         case "Lose1Health":
-          console.trace("state, line 1023 broadcast event, lose health");
           startEventSequence(lowerHealth1, this.state);
           break;
-
         case "Lose2Health":
-          console.trace("state, line 1027 broadcast event, lose 2 health");
           startEventSequence(lowerHealth2, this.state);
           break;
-
         case "add1toLocation":
-          console.trace("state, line 1033 broadcast event, add 1 to location");
           startEventSequence(locDamage, this.state);
           this.state.myLocation.addPoint(1, this.state);
-
           break;
         case "hideTD":
-          //console.trace("state, line 1039 broadcast event, hide td");
           startEventSequence(hideTD, this.state);
           break;
         case "ENABLE_Monster":
@@ -881,6 +977,58 @@ export class State {
           break;
         case "MONSTER_PLAYED":
           startEventSequence(MonsterPlayed, this.state);
+          break;
+        case "ENABLE_Player":
+          startEventSequence(playerHandShow, this.state);
+        case "PLAYERDONE":
+          break;
+        case "STUNNED":
+          break;
+        case "+1Attack":
+          startEventSequence(add1Attack, this.state);
+          break;
+        case "+1Health":
+          startEventSequence(raiseHealth1, this.state);
+          break;
+
+        case "+2Coin":
+          startEventSequence(add2Coin, this.state);
+          break;
+
+        case "+1Coin":
+          startEventSequence(add1Coin, this.state);
+          break;
+
+        case "draw":
+          startEventSequence(drawNewCard, this.state);
+          break;
+
+        case "+1HealthtoAllOthers":
+          break;
+
+        case "remove1fromLocation":
+          break;
+
+        case "chooseAttack1Ability1":
+          break;
+
+        case "chooseHealth1Ability1":
+          break;
+
+        case "chooseAttack1Draw1":
+          break;
+
+        case "chooseAbility1Draw1":
+          break;
+        case "discard":
+          break;
+        case "chooseHealth1Draw1":
+          break;
+        case "addHealth1anyPlayer":
+          break;
+        case "otherplayer+1Health":
+          break;
+        case "":
           break;
       }
     });

@@ -126,7 +126,7 @@ export default AbilityLibrary = [
     title: "Holy Tempest",
     level: 1,
     cost: 4,
-    ActiveEffect: { callback: "choose_addHealth1_Draw1", userPrompt: "choose_addHealth1_Draw1" },
+    ActiveEffect: { callback: "chooseHealth1Draw1", userPrompt: "choose_addHealth1_Draw1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
     effectString: "Choose: Health +1 -or- Draw 1",
@@ -147,7 +147,7 @@ export default AbilityLibrary = [
     level: 1,
     cost: 3,
     ActiveEffect: {
-      callback: "choose_addAbility1_Draw1",
+      callback: "chooseAbility1Draw1",
       userPrompt: "choose_addAbility1_Draw1",
     },
     PassiveEffect: undefined,

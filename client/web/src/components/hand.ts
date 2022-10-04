@@ -7,7 +7,7 @@ export class Hand {
        <div class="hand_blurdiv" \${===myHand.isVisible}>
           <div class="hand_container" >
             <div class="hand">
-              <div class="card_container" \${card<=*myHand.hand}>
+              <div id="\${card.id}" class="card_container" \${card<=*myHand.hand} \${click@=>myHand.clickHandler}>
                       <div class="card_title">\${card.title}</div>
                       <div class="card_level">Level \${card.level}</div>
                       <div class="card_desc">\${card.effectString}</div>

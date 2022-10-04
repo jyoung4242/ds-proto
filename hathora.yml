@@ -56,6 +56,11 @@ types:
     - NoDraw
     - LocationCursed
     - DiscardCurse
+    - MonsterBonus
+
+  UserResponse:
+    Callback: string
+    Response: string
 
   Effect:
     callback: string
@@ -77,6 +82,7 @@ types:
     PassiveEffect: Effect?
     Rewards: Effect
     StatusEffects: StatusEffects[]
+
   TDCard:
     id: string
     title: string
@@ -161,6 +167,8 @@ methods:
     msg: string
   seenMessage:
     msgID: int
+  userResponse:
+    response: UserResponse
 
 auth:
   anonymous: {}

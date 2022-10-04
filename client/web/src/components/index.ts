@@ -19,6 +19,7 @@ import { StatusEffect } from "./statusEffect";
 import { NavBar } from "./navbar";
 import { NavInput } from "./navInput";
 import { MessageOverlay } from "./messageOverlay";
+import { PointPlacard } from "./pointPlacard";
 
 export * from "./gameContainer";
 export * from "./SceneTransition";
@@ -41,3 +42,4 @@ export * from "./statusEffect";
 export * from "./navbar";
 export * from "./navInput";
 export * from "./messageOverlay";
+export * from "./pointPlacard";

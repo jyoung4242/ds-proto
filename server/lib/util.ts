@@ -108,3 +108,9 @@ export const getNumberOfActiveMonstersWithActiveEvents = (monsters: MCard[]): nu
   });
   return tempNumber;
 };
+
+export const reshuffleDeck = (ctx: Context, deck: ABCard[], discard: ABCard[]) => {
+  deck = [...discard];
+  discard = [];
+  deck = ctx.chance.shuffle(deck);
+};

@@ -61,12 +61,12 @@ let alert: GameEventType = {
 
 let longdelay: GameEventType = {
   type: "delay",
-  timeout: 3000,
+  timeout: 2000,
 };
 
 let shortdelay: GameEventType = {
   type: "delay",
-  timeout: 1000,
+  timeout: 500,
 };
 
 let hideNavButton: GameEventType = {
@@ -108,10 +108,6 @@ let highlightTD: GameEventType = {
   type: "TDbloom",
 };
 
-type GameEventSequence = {
-  sequence: GameEventType[];
-};
-
 let debug: GameEventType = {
   type: "debug",
 };
@@ -126,6 +122,16 @@ let lose2Health: GameEventType = {
   value: 2,
 };
 
+let gain1Health: GameEventType = {
+  type: "raisehealth",
+  value: 1,
+};
+
+let gain2Health: GameEventType = {
+  type: "raisehealth",
+  value: 2,
+};
+
 let hideTDcard: GameEventType = {
   type: "hideTD",
 };
@@ -136,6 +142,10 @@ let enablemonsters: GameEventType = {
 
 let playerDamage: GameEventType = {
   type: "damageFlash",
+};
+
+let playerHeal: GameEventType = {
+  type: "healFlash",
 };
 
 let locationDamage: GameEventType = {
@@ -153,6 +163,46 @@ let unBloomMonster: GameEventType = {
 let promptPlayersHand: GameEventType = {
   type: "prompt_playerHand",
 };
+let showPlayerHand: GameEventType = {
+  type: "show_playerHand",
+};
+
+let addAttack1: GameEventType = {
+  type: "showAttackAnimation",
+  value: 1,
+  message: "add",
+};
+
+let addAttack2: GameEventType = {
+  type: "showAttackAnimation",
+  value: 2,
+  message: "add",
+};
+
+let addCoin2: GameEventType = {
+  type: "showCoinAnimation",
+  value: 2,
+  message: "add",
+};
+
+let addCoin1: GameEventType = {
+  type: "showCoinAnimation",
+  value: 1,
+  message: "add",
+};
+
+let updatePlayerUIs: GameEventType = {
+  type: "updatePlayerUIs",
+};
+
+let drawCard: GameEventType = {
+  type: "draw",
+};
+
+type GameEventSequence = {
+  sequence: GameEventType[];
+};
+
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
@@ -167,6 +217,14 @@ export let updateStatEffects: GameEventSequence = {
 
 export let lowerHealth1: GameEventSequence = {
   sequence: [shortdelay, playerDamage, lose1Health, shortdelay],
+};
+
+export let raiseHealth2: GameEventSequence = {
+  sequence: [shortdelay, playerHeal, gain2Health, shortdelay],
+};
+
+export let raiseHealth1: GameEventSequence = {
+  sequence: [shortdelay, playerHeal, gain1Health, shortdelay],
 };
 
 export let lowerHealth2: GameEventSequence = {
@@ -190,6 +248,29 @@ export let skipMonsters: GameEventSequence = {
 };
 export let MonsterPlayed: GameEventSequence = {
   sequence: [unBloomMonster, shortdelay, indexProgressBar_monster, promptPlayersHand],
+};
+
+export let playerHandShow: GameEventSequence = {
+  sequence: [shortdelay, showPlayerHand],
+};
+
+export let add1Attack: GameEventSequence = {
+  sequence: [addAttack1],
+};
+
+export let add2Attack: GameEventSequence = {
+  sequence: [addAttack2],
+};
+export let add1Coin: GameEventSequence = {
+  sequence: [addCoin1],
+};
+
+export let add2Coin: GameEventSequence = {
+  sequence: [addCoin2],
+};
+
+export let drawNewCard: GameEventSequence = {
+  sequence: [drawCard],
 };
 
 class GameEvent {
@@ -237,7 +318,7 @@ class GameEvent {
       this.state.myNavInput.buttons.push({
         label: "Play your hand?",
         action: (event, model, element) => {
-          utils.playPcard();
+          utils.showPcard();
           utils.playSound("button");
           this.state.myNavInput.isVisible = false;
         },
@@ -249,11 +330,122 @@ class GameEvent {
     }
   }
 
+  draw(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    //grab card from state
+    const lastcardindex = this.state.gameData.Players[usr].hand.length;
+    const newCard = this.state.gameData.Players[usr].hand[lastcardindex];
+
+    //update player hand
+    this.state.mypUI.allPlayers[usr].hand.push(newCard);
+    //update current hand
+    this.state.mypUI.hand.push(newCard);
+    resolve();
+  }
+
+  show_playerHand(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
+    switch (usr) {
+      case 0:
+        this.state.myHand.hand = [...this.state.myHand.player1Hand];
+
+        break;
+      case 1:
+        this.state.myHand.hand = [...this.state.myHand.player2Hand];
+        break;
+      case 2:
+        this.state.myHand.hand = [...this.state.myHand.player3Hand];
+        break;
+      case 3:
+        this.state.myHand.hand = [...this.state.myHand.player4Hand];
+        break;
+    }
+    this.state.myHand.footer = `${username.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+    if (this.state.myHand.hand.length != 0) this.state.myHand.isVisible = true;
+    //make cards clickable
+    resolve();
+  }
+
+  showCoinAnimation(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    if (this.event.message == "add") {
+      this.state.mypUI.allPlayers[usr].coinPlacard.color = "limegreen";
+      this.state.mypUI.allPlayers[usr].coinPlacard.text = `+${this.event.value}`;
+    } else if (this.event.message == "remove") {
+      this.state.mypUI.allPlayers[usr].coinPlacard.color = "red";
+      this.state.mypUI.allPlayers[usr].coinPlacard.text = `-${this.event.value}`;
+    }
+
+    this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = true;
+    const mInt = setInterval(() => {
+      this.state.mypUI.allPlayers[usr].coinPlacard.offset -= 2;
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -25) {
+        this.state.mypUI.allPlayers[usr].coinPlacard.opacity -= 0.05;
+      }
+
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -75) {
+        clearInterval(mInt);
+        this.state.mypUI.allPlayers[usr].coinPlacard.offset = 0;
+        this.state.mypUI.allPlayers[usr].coinPlacard.opacity = 1;
+        this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
+      }
+    }, 50);
+    resolve();
+  }
+
+  showAttackAnimation(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    if (this.event.message == "add") {
+      this.state.mypUI.allPlayers[usr].attackPlacard.color = "limegreen";
+      this.state.mypUI.allPlayers[usr].attackPlacard.text = `+${this.event.value}`;
+    } else if (this.event.message == "remove") {
+      this.state.mypUI.allPlayers[usr].attackPlacard.color = "red";
+      this.state.mypUI.allPlayers[usr].attackPlacard.text = `-${this.event.value}`;
+    }
+
+    this.state.mypUI.allPlayers[usr].attackPlacard.isVisible = true;
+    const mInt = setInterval(() => {
+      this.state.mypUI.allPlayers[usr].attackPlacard.offset -= 2;
+      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset < -25) {
+        this.state.mypUI.allPlayers[usr].attackPlacard.opacity -= 0.05;
+      }
+
+      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset <= -75) {
+        clearInterval(mInt);
+        this.state.mypUI.allPlayers[usr].attackPlacard.offset = 0;
+        this.state.mypUI.allPlayers[usr].attackPlacard.opacity = 1;
+        this.state.mypUI.allPlayers[usr].attackPlacard.isVisible = false;
+      }
+    }, 50);
+    resolve();
+  }
+
   damageFlash(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
     this.state.mypUI.allPlayers[usr].bloomStatus = this.state.mypUI.allPlayers[usr].bloomStatus + " playerdamage";
+    resolve();
+  }
+
+  healFlash(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    this.state.mypUI.allPlayers[usr].bloomStatus = this.state.mypUI.allPlayers[usr].bloomStatus + " playerHeal";
     resolve();
   }
 
@@ -280,22 +472,15 @@ class GameEvent {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
-
-    const username = this.state.gameData.Players[usr].name;
-    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
-    console.log("events 176, losing health", usr);
-    console.log("health value to lower: ", this.event.value);
     this.state.mypUI.allPlayers[usr].lowerHealth(this.event.value);
     resolve();
   }
 
-  debug(resolve) {
-    let mutObs = new MutationObserver(entries => {
-      console.log(entries);
+  raisehealth(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
     });
-    let target = document.getElementById("mon");
-    console.log("target: ", target);
-    mutObs.observe(target, { childList: true });
+    this.state.mypUI.allPlayers[usr].addHealth(this.event.value);
     resolve();
   }
 
@@ -308,7 +493,6 @@ class GameEvent {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
-    const username = this.state.gameData.Players[usr].name;
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
     //this.state.myNavBar.increment("passives");
     if (myTurn) {
@@ -323,7 +507,6 @@ class GameEvent {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
-    const username = this.state.gameData.Players[usr].name;
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
     //this.state.myNavBar.increment("passives");
     if (myTurn) {
@@ -390,10 +573,6 @@ class GameEvent {
 
     resolve();
   }
-
-  dealLocation(resolve) {}
-
-  dealPlayer(resolve) {}
 
   startBanner(resolve) {
     this.state.myMessageOverlay.mainMessage = "STARTING GAME";

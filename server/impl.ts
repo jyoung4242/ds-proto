@@ -39,6 +39,7 @@ import {
   Message,
   ISendMessageRequest,
   ISeenMessageRequest,
+  IUserResponseRequest,
 } from "../api/types";
 
 //importing decks
@@ -77,6 +78,9 @@ export type InternalState = {
   cardPool: ABCard[];
   turnOrder: UserId[];
   Messages: Message[];
+  responseData: {
+    response: string | undefined;
+  };
 };
 
 //nonstate variables
@@ -118,7 +122,24 @@ export class Impl implements Methods<InternalState> {
       cardPool: [],
       turnOrder: [],
       Messages: [],
+      responseData: {
+        response: undefined,
+      },
     };
+  }
+
+  userResponse(state: InternalState, userId: UserId, ctx: Context, request: IUserResponseRequest): Response {
+    const callback = request.response.Callback;
+    let card = undefined;
+    let response = undefined;
+    const playerIndex = state.players.findIndex(p => p.id === userId);
+
+    if (request.response.Response) response = request.response.Response;
+    state.responseData = {
+      response: response,
+    };
+    executeCallback(callback, state, playerIndex, ctx);
+    return Response.ok();
   }
 
   sendMessage(state: InternalState, userId: UserId, ctx: Context, request: ISendMessageRequest): Response {
@@ -281,7 +302,6 @@ export class Impl implements Methods<InternalState> {
       return p.id == userId;
     });
 
-    console.log("impl 282, checking for td card callbacks");
     if (state.TD?.ActiveEffect) executeCallback(state.TD?.ActiveEffect.callback, state, pIndex, ctx);
     if (state.TD?.PassiveEffect) executeCallback(state.TD?.PassiveEffect.callback, state, pIndex, ctx);
 
@@ -306,11 +326,7 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    //ctx.broadcastEvent("ENABLE_Monster");
-
-    //setup looping index for monsters with active effects, used in next method
     numberOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
-    console.log(numberOfActiveMonstersThatHaveActiveEvents);
     if (numberOfActiveMonstersThatHaveActiveEvents === 0) {
       ctx.broadcastEvent("NO MONSTERS READY");
       state.roundState = RoundState.waitingOnPlayer;
@@ -329,14 +345,10 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
     let cardPlayed = request.cardID;
-    console.log("monster card: ", cardPlayed);
-    //TODO - add both/all Monster effects here
-
     let pIndex = state.players.findIndex(p => {
       return p.id == userId;
     });
 
-    console.log("impl 335, checking for monster card callbacks");
     if (state.activeMonsters[0].ActiveEffect)
       executeCallback(state.activeMonsters[0].ActiveEffect.callback, state, pIndex, ctx);
 
@@ -374,12 +386,17 @@ export class Impl implements Methods<InternalState> {
 
     ctx.broadcastEvent("Player Card Played");
     let cardPlayed = request.cardID;
+    console.log("player card played: ", cardPlayed);
     const playerIndex = state.players.findIndex(p => p.id === userId);
 
-    //TODO - Process active events of players cards
+    const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
+    if (state.players[playerIndex].hand[cardindex].ActiveEffect)
+      executeCallback(state.players[playerIndex].hand[cardindex].ActiveEffect?.callback!, state, playerIndex, ctx);
+    if (state.players[playerIndex].hand[cardindex].PassiveEffect)
+      executeCallback(state.players[playerIndex].hand[cardindex].PassiveEffect?.callback!, state, playerIndex, ctx);
+    playerIndex;
 
     //remove card from hand and discard
-    const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
     state.players[playerIndex].discard.push(state.players[playerIndex].hand[cardindex]);
     state.players[playerIndex].hand.splice(cardindex, 1);
 
@@ -387,6 +404,7 @@ export class Impl implements Methods<InternalState> {
     if (state.players[playerIndex].hand.length) {
       state.roundState = RoundState.waitingOnPlayer;
     } else {
+      ctx.broadcastEvent("PLAYERDONE");
       state.roundState = RoundState.waitingToBuyCard;
     }
     return Response.ok();

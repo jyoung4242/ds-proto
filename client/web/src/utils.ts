@@ -1,9 +1,8 @@
-import { HathoraClient, HathoraConnection, StateId, UpdateArgs } from "../../.hathora/client";
+import { HathoraClient, HathoraConnection, StateId } from "../../.hathora/client";
 import { AnonymousUserData } from "../../../api/base";
 import { Router } from "./components/index";
 import { Gender, IInitializeRequest, ISeenMessageRequest, ISendMessageRequest, Roles } from "../../../api/types";
 import { BGM, SFX } from "./sound";
-import { Character } from "./components/character";
 
 /**********************************************************
  * Hathora Client variables
@@ -155,7 +154,6 @@ export const utils = {
     myConnection.runMonsterPassives({});
   },
   playTD(cardID: string) {
-    console.log("utils 158, sending rpc");
     myConnection.playTD({ cardID: cardID });
   },
   enableM() {
@@ -164,7 +162,11 @@ export const utils = {
   playMcard(cardID: string) {
     myConnection.playMonster({ cardID: cardID });
   },
-  playPcard() {
+  showPcard() {
     myConnection.enablePlayer({});
   },
+  playPcard(cardID: string) {
+    myConnection.playPlayerCard({ cardID: cardID });
+  },
+  userResponse(response: any) {},
 };

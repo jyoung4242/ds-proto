@@ -136,6 +136,47 @@
   animation-iteration-count: 1;
 }
 
+.playerHeal {
+  animation: heal 0.5s;
+  animation-iteration-count: 1;
+}
+
+@keyframes heal {
+  0% {
+    background-color: rgba(14, 232, 14, 1);
+  }
+  10% {
+    background-color: rgba(14, 232, 14, 0.9);
+  }
+  20% {
+    background-color: rgba(14, 232, 14, 0.8);
+  }
+  30% {
+    background-color: rgba(14, 232, 14, 0.7);
+  }
+  40% {
+    background-color: rgba(14, 232, 14, 0.6);
+  }
+  50% {
+    background-color: rgba(14, 232, 14, 0.5);
+  }
+  60% {
+    background-color: rgba(14, 232, 14, 0.4);
+  }
+  70% {
+    background-color: rgba(14, 232, 14, 0.3);
+  }
+  80% {
+    background-color: rgba(14, 232, 14, 0.2);
+  }
+  90% {
+    background-color: rgba(14, 232, 14, 0.1);
+  }
+  100% {
+    background-color: rgba(14, 232, 14, 0);
+  }
+}
+
 @keyframes shake {
   0% {
     transform: translate(-49%, -49%) rotate(0deg);

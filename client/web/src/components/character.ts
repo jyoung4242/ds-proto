@@ -20,6 +20,8 @@ export class Character {
   bloomStatus: "";
   hovered: boolean;
   statusEffects: Array<iStatusMessage>;
+  attackPlacard: any;
+  coinPlacard: any;
 
   roleMap = {
     [Roles.Barbarian]: {
@@ -48,7 +50,6 @@ export class Character {
   };
 
   constructor(config) {
-    console.log("character, 51, config: ", config);
     this.attack = 0;
     this.coin = 0;
     this.health = 10;
@@ -60,7 +61,20 @@ export class Character {
     this.bloomStatus = config.bloomStatus;
     this.hovered = false;
     this.statusEffects = config.statusEffects;
-    console.log("character 63, index: ", this.index);
+    this.coinPlacard = {
+      isVisible: false,
+      text: "+1",
+      offset: 0,
+      color: "limegreen",
+      opacity: 1,
+    };
+    this.attackPlacard = {
+      isVisible: false,
+      text: "+1",
+      offset: 0,
+      color: "limegreen",
+      opacity: 1,
+    };
   }
 
   addHealth(num: number) {
