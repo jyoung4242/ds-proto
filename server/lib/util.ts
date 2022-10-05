@@ -104,7 +104,7 @@ export const getActivePlayerName = (players: Player[], turn: UserId): string => 
 export const getNumberOfActiveMonstersWithActiveEvents = (monsters: MCard[]): number => {
   let tempNumber = 0;
   monsters.forEach(m => {
-    if (m.ActiveEffect) tempNumber += 1;
+    if (m.ActiveEffect != undefined) tempNumber += 1;
   });
   return tempNumber;
 };

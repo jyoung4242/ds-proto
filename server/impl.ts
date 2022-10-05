@@ -40,6 +40,7 @@ import {
   ISendMessageRequest,
   ISeenMessageRequest,
   IUserResponseRequest,
+  IPlayerHandCompleteRequest,
 } from "../api/types";
 
 //importing decks
@@ -65,7 +66,7 @@ import {
   setupNewPlayer,
   setupTowerDefenseDeck,
 } from "./lib/util";
-import { executeCallback } from "./lib/effects";
+import { executeCallback, resetUserResponse } from "./lib/effects";
 
 export type InternalState = {
   roundState: RoundState;
@@ -303,7 +304,10 @@ export class Impl implements Methods<InternalState> {
     });
 
     if (state.TD?.ActiveEffect) executeCallback(state.TD?.ActiveEffect.callback, state, pIndex, ctx);
-    if (state.TD?.PassiveEffect) executeCallback(state.TD?.PassiveEffect.callback, state, pIndex, ctx);
+    if (state.TD?.PassiveEffect) {
+      executeCallback(state.TD?.PassiveEffect.callback, state, pIndex, ctx);
+      ctx.broadcastEvent("STATUSEFFECT ADDED");
+    }
 
     if (numberOfTDCardsForThisLocation > 1) {
       numberOfTDCardsForThisLocation -= 1;
@@ -320,18 +324,21 @@ export class Impl implements Methods<InternalState> {
   }
 
   enableMonsters(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonstersRequest): Response {
+    ctx.broadcastEvent("TEST");
     //gaurd conditions
     if (state.roundState != RoundState.waitingOnMonster)
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
+    numberOfActiveMonstersThatHaveActiveEvents = 0;
     numberOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
-    if (numberOfActiveMonstersThatHaveActiveEvents === 0) {
+    if (numberOfActiveMonstersThatHaveActiveEvents == 0) {
       ctx.broadcastEvent("NO MONSTERS READY");
       state.roundState = RoundState.waitingOnPlayer;
       return Response.ok();
     }
+
     ctx.broadcastEvent("ENABLE_Monster");
     state.roundState = RoundState.activeRunningMonster;
     return Response.ok();
@@ -372,26 +379,27 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+
     ctx.broadcastEvent("ENABLE_Player");
     return Response.ok();
   }
 
   playPlayerCard(state: InternalState, userId: UserId, ctx: Context, request: IPlayPlayerCardRequest): Response {
     //guard conditions
-    if (state.roundState != RoundState.waitingOnPlayer)
+    if (state.roundState != RoundState.waitingOnPlayer && state.roundState != RoundState.activeRunningPlayer)
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningPlayer;
 
-    ctx.broadcastEvent("Player Card Played");
     let cardPlayed = request.cardID;
-    console.log("player card played: ", cardPlayed);
     const playerIndex = state.players.findIndex(p => p.id === userId);
-
     const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
+
+    resetUserResponse();
     if (state.players[playerIndex].hand[cardindex].ActiveEffect)
       executeCallback(state.players[playerIndex].hand[cardindex].ActiveEffect?.callback!, state, playerIndex, ctx);
+    //executeCallback("chooseAttack1Ability1", state, playerIndex, ctx);
     if (state.players[playerIndex].hand[cardindex].PassiveEffect)
       executeCallback(state.players[playerIndex].hand[cardindex].PassiveEffect?.callback!, state, playerIndex, ctx);
     playerIndex;
@@ -399,6 +407,18 @@ export class Impl implements Methods<InternalState> {
     //remove card from hand and discard
     state.players[playerIndex].discard.push(state.players[playerIndex].hand[cardindex]);
     state.players[playerIndex].hand.splice(cardindex, 1);
+    return Response.ok();
+  }
+
+  playerHandComplete(state: InternalState, userId: string, ctx: Context, request: IPlayerHandCompleteRequest): Response {
+    //guard conditions
+    if (state.roundState != RoundState.activeRunningPlayer)
+      return Response.error("Cannot process this command, the round isn't at this step");
+    if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
+    if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
+    state.roundState = RoundState.activeRunningPlayer;
+
+    const playerIndex = state.players.findIndex(p => p.id === userId);
 
     //if cards remain, wait on next player card to be played
     if (state.players[playerIndex].hand.length) {

@@ -27,7 +27,7 @@ export class pUI {
                 <img class="pui_coinIMG" src=${coin} alt="" width="25" height="25"/>
                 ${this.coinPlac.template}
                 <img class="pui_character" src="\${player.img}" alt="" width="60" height="100" \${mouseenter@=>player.setHover} \${mouseleave@=>player.clearHover} />
-                <svg class="pui_svg \${player.bloomStatus}" \${animationend@=>animationEnd} >
+                <svg class="pui_svg \${player.bloomStatus}" >
                     <style>
                       pui_meter-\${player.index}{
                         stroke-dashoffset: calc((65 * 0.01745 * 36)*(10-\${player.health}));

@@ -154,6 +154,7 @@ methods:
   enablePlayer:
   playPlayerCard:
     cardID: string
+  playerHandComplete:
   enableMonsterDamage:
   applyMonsterDamage:
     cardID: string

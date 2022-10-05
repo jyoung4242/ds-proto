@@ -1,6 +1,6 @@
 .NIcontainer {
   position: absolute;
-  top: 55%;
+  top: var(--component-top);
   left: 50%;
   transform: translateX(-50%);
 
@@ -19,6 +19,7 @@
   gap: 15px;
   opacity: 1;
   transition: opacity 1s ease-in-out;
+  z-index: 15;
 }
 
 .NIcontainer.pui-adding {

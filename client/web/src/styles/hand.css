@@ -50,3 +50,10 @@
   font-size: medium;
   text-shadow: 1px 1px black;
 }
+
+.card_done_button {
+  position: absolute;
+  top: 40%;
+  right: -20%;
+  transform: translateY(-50%);
+}

@@ -41,24 +41,6 @@ let setPlayerBloom: GameEventType = {
   type: "setBloom",
 };
 
-let log1: GameEventType = {
-  type: "log",
-  message: "log message 1",
-};
-let log2: GameEventType = {
-  type: "log",
-  message: "log message 2",
-};
-let log3: GameEventType = {
-  type: "log",
-  message: "log message 3",
-};
-
-let alert: GameEventType = {
-  type: "alert",
-  message: "alert message",
-};
-
 let longdelay: GameEventType = {
   type: "delay",
   timeout: 2000,
@@ -102,6 +84,11 @@ let indexProgressBar_td: GameEventType = {
 let indexProgressBar_monster: GameEventType = {
   type: "indexProgress",
   state: "monster",
+};
+
+let indexProgressBar_player: GameEventType = {
+  type: "indexProgress",
+  state: "player",
 };
 
 let highlightTD: GameEventType = {
@@ -204,6 +191,30 @@ let drawCard: GameEventType = {
   type: "draw",
 };
 
+let choose_Atk1Coin1: GameEventType = {
+  type: "handChoiceAttack1Ability1",
+};
+
+let choose_Health1Coin1: GameEventType = {
+  type: "handChoiceHealth1Ability1",
+};
+
+let choose_Atk1Draw1: GameEventType = {
+  type: "handChoiceAtk1Draw1",
+};
+
+let choose_Coin1Draw1: GameEventType = {
+  type: "handChoiceCoin1Draw1",
+};
+
+let choose_Health1Draw1: GameEventType = {
+  type: "handChoiceHealth1Draw1",
+};
+
+let hidePlayerHand: GameEventType = {
+  type: "hideHand",
+};
+
 type GameEventSequence = {
   sequence: GameEventType[];
 };
@@ -217,27 +228,27 @@ export let passives: GameEventSequence = {
   sequence: [hideNavButton, shortdelay, indexProgressBar_passive, shortdelay, highlightTD],
 };
 export let updateStatEffects: GameEventSequence = {
-  sequence: [shortdelay, updateStatusEffects, shortdelay],
+  sequence: [updateStatusEffects, shortdelay],
 };
 
 export let lowerHealth1: GameEventSequence = {
-  sequence: [shortdelay, playerDamage, lose1Health, shortdelay],
+  sequence: [playerDamage, lose1Health, shortdelay],
 };
 
 export let raiseHealth2: GameEventSequence = {
-  sequence: [shortdelay, playerHeal, gain2Health, shortdelay],
+  sequence: [playerHeal, gain2Health, shortdelay],
 };
 
 export let raiseHealth1: GameEventSequence = {
-  sequence: [shortdelay, playerHeal, gain1Health, shortdelay],
+  sequence: [playerHeal, gain1Health, shortdelay],
 };
 
 export let lowerHealth2: GameEventSequence = {
-  sequence: [shortdelay, playerDamage, lose2Health, shortdelay],
+  sequence: [playerDamage, lose2Health, shortdelay],
 };
 
 export let hideTD: GameEventSequence = {
-  sequence: [hideTDcard, shortdelay, shortdelay, indexProgressBar_td, enablemonsters],
+  sequence: [hideTDcard, shortdelay, indexProgressBar_td, shortdelay, enablemonsters],
 };
 
 export let locDamage: GameEventSequence = {
@@ -286,11 +297,219 @@ export let remove1Location: GameEventSequence = {
   sequence: [locationHeal],
 };
 
+export let chooseAtk1Coin1: GameEventSequence = {
+  sequence: [choose_Atk1Coin1],
+};
+
+export let chooseHealth1Coin1: GameEventSequence = {
+  sequence: [choose_Health1Coin1],
+};
+
+export let chooseAtk1Draw1: GameEventSequence = {
+  sequence: [choose_Atk1Draw1],
+};
+
+export let chooseCoin1Draw1: GameEventSequence = {
+  sequence: [choose_Coin1Draw1],
+};
+
+export let chooseHealth1Draw1: GameEventSequence = {
+  sequence: [choose_Health1Draw1],
+};
+
+export let playerHandDone: GameEventSequence = {
+  sequence: [hidePlayerHand, shortdelay, indexProgressBar_player],
+};
+
 class GameEvent {
   state: any;
   event: GameEventType;
   constructor(event: GameEventType) {
     this.event = event;
+  }
+
+  handChoiceAttack1Ability1(resolve) {
+    console.log("in the choice event");
+    this.state.myNavInput.buttons = [
+      {
+        label: "Attack +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAttack1Ability1",
+            Response: "Attack",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+      {
+        label: "Coin +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAttack1Ability1",
+            Response: "Coin",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+    ];
+    console.log("showing nav input");
+    this.state.myNavInput.contTop = "25%";
+    this.state.myNavInput.isVisible = true;
+    resolve();
+  }
+
+  handChoiceCoin1Draw1(resolve) {
+    this.state.myNavInput.buttons = [
+      {
+        label: "Coin +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAbility1Draw1",
+            Response: "Coin",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+      {
+        label: "Draw 1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAbility1Draw1",
+            Response: "Draw",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+    ];
+    this.state.myNavInput.contTop = "25%";
+    this.state.myNavInput.isVisible = true;
+    resolve();
+  }
+
+  handChoiceAtk1Draw1(resolve) {
+    this.state.myNavInput.buttons = [
+      {
+        label: "Attack +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAttack1Draw1",
+            Response: "Attack",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+      {
+        label: "Draw 1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseAttack1Draw1",
+            Response: "Draw",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+    ];
+    this.state.myNavInput.contTop = "25%";
+    this.state.myNavInput.isVisible = true;
+    resolve();
+  }
+
+  handChoiceHealth1Draw1(resolve) {
+    this.state.myNavInput.buttons = [
+      {
+        label: "Health +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseHealth1Draw1",
+            Response: "Health",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+      {
+        label: "Draw 1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseHealth1Draw1",
+            Response: "Draw",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+    ];
+    this.state.myNavInput.contTop = "25%";
+    this.state.myNavInput.isVisible = true;
+    resolve();
+  }
+
+  handChoiceHealth1Ability1(resolve) {
+    console.log("in the handChoiceHealth1Ability1 event");
+    this.state.myNavInput.buttons = [
+      {
+        label: "Health +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseHealth1Ability1",
+            Response: "Health",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+      {
+        label: "Coin +1",
+        action: () => {
+          utils.userResponse({
+            Callback: "chooseHealth1Ability1",
+            Response: "Coin",
+          });
+          this.state.myNavInput.isVisible = false;
+          this.state.myNavInput.contTop = "55%";
+          this.state.myNavInput.buttons = [];
+        },
+        unaction: () => {},
+        style: "",
+      },
+    ];
+    console.log(this.state.myNavInput.buttons);
+    this.state.myNavInput.contTop = "25%";
+    this.state.myNavInput.isVisible = true;
+    resolve();
   }
 
   statEffects(resolve) {
@@ -355,20 +574,37 @@ class GameEvent {
       this.state.myNavInput.isVisible = true;
     } else {
     }
+    resolve();
   }
 
   draw(resolve) {
+    console.log("drawing card");
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
     //grab card from state
     const lastcardindex = this.state.gameData.Players[usr].hand.length;
-    const newCard = this.state.gameData.Players[usr].hand[lastcardindex];
-
+    const newCard = this.state.gameData.Players[usr].hand[lastcardindex - 1];
+    console.log("card status", newCard, lastcardindex);
     //update player hand
-    this.state.mypUI.allPlayers[usr].hand.push(newCard);
+    console.log(this.state.mypUI.allPlayers);
+
     //update current hand
-    this.state.mypUI.hand.push(newCard);
+    switch (usr) {
+      case 0:
+        this.state.myHand.player1Hand.push(newCard);
+        break;
+      case 1:
+        this.state.myHand.player2Hand.push(newCard);
+        break;
+      case 2:
+        this.state.myHand.player3Hand.push(newCard);
+        break;
+      case 3:
+        this.state.myHand.player4Hand.push(newCard);
+        break;
+    }
+    this.state.myHand.hand.push(newCard);
     resolve();
   }
 
@@ -468,6 +704,11 @@ class GameEvent {
     resolve();
   }
 
+  hideHand(resolve) {
+    this.state.myHand.isVisible = false;
+    resolve();
+  }
+
   healFlash(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -493,6 +734,7 @@ class GameEvent {
   }
 
   enableMonsters(resolve) {
+    console.log("events: enabling monsters");
     utils.enableM();
     resolve();
   }
@@ -520,6 +762,7 @@ class GameEvent {
   }
 
   indexProgress(resolve) {
+    console.trace("nav bar incrementing", this.event.state);
     this.state.myNavBar.increment(`${this.event.state}`);
     resolve();
   }
@@ -583,6 +826,7 @@ class GameEvent {
     this.state.myNavInput.isVisible = false;
     this.state.myNavInput.buttons = [];
     this.state.myHand.hand = [];
+    resolve();
   }
 
   dealCards(resolve) {
@@ -663,7 +907,7 @@ class GameEvent {
         action: (event, model, element) => {
           utils.startTurn();
           utils.playSound("button");
-          this.state.myNavInput.isVisble = false;
+          this.state.myNavInput.isVisible = false;
         },
         unaction: (event, model, element) => {},
         style: "",
@@ -680,6 +924,7 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
     this.state.mypUI.allPlayers[usr].bloomStatus = "playerBloom";
+    resolve();
   }
 
   asyncShowMessage(resolve) {}

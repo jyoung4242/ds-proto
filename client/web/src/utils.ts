@@ -1,7 +1,14 @@
 import { HathoraClient, HathoraConnection, StateId } from "../../.hathora/client";
 import { AnonymousUserData } from "../../../api/base";
 import { Router } from "./components/index";
-import { Gender, IInitializeRequest, ISeenMessageRequest, ISendMessageRequest, Roles } from "../../../api/types";
+import {
+  Gender,
+  IInitializeRequest,
+  ISeenMessageRequest,
+  ISendMessageRequest,
+  Roles,
+  UserResponse,
+} from "../../../api/types";
 import { BGM, SFX } from "./sound";
 
 /**********************************************************
@@ -73,7 +80,7 @@ export const utils = {
   },
   async leaveRoom() {
     if (roomID == "") return;
-    myConnection.disconnect();
+    await myConnection.disconnect();
     roomID = "";
   },
   async findMatch() {
@@ -83,8 +90,8 @@ export const utils = {
     });
     console.log("result response: ", response);
   },
-  startGame() {
-    myConnection.startGame({});
+  async startGame() {
+    await myConnection.startGame({});
   },
   playGameMusic() {
     bgm.play("game");
@@ -134,39 +141,56 @@ export const utils = {
       this.updateSFXvolume(settings.sfx);
     }
   },
-  sendChat(msg: string) {
+  async sendChat(msg: string) {
     const message: ISendMessageRequest = {
       msg: msg,
     };
-    myConnection.sendMessage(message);
+    await myConnection.sendMessage(message);
   },
-  seenChat(msgID: number) {
+  async seenChat(msgID: number) {
     const message: ISeenMessageRequest = {
       msgID: msgID,
     };
-    myConnection.seenMessage(message);
+    await myConnection.seenMessage(message);
   },
   setupGame() {},
-  startTurn() {
-    myConnection.startTurn({});
+  async startTurn() {
+    await myConnection.startTurn({});
   },
-  passives() {
-    myConnection.runMonsterPassives({});
+  async passives() {
+    await myConnection.runMonsterPassives({});
   },
-  playTD(cardID: string) {
-    myConnection.playTD({ cardID: cardID });
+  async playTD(cardID: string) {
+    await myConnection.playTD({ cardID: cardID });
   },
-  enableM() {
-    myConnection.enableMonsters({});
+  async enableM() {
+    console.log("enabling monsters, utils");
+    await myConnection.enableMonsters({});
   },
-  playMcard(cardID: string) {
-    myConnection.playMonster({ cardID: cardID });
+  async playMcard(cardID: string) {
+    await myConnection.playMonster({ cardID: cardID });
   },
-  showPcard() {
-    myConnection.enablePlayer({});
+  async showPcard() {
+    await myConnection.enablePlayer({});
   },
-  playPcard(cardID: string) {
-    myConnection.playPlayerCard({ cardID: cardID });
+  async playPcard(cardID: string) {
+    console.log(`sending server this card: ${cardID}`);
+    let m = await myConnection.playPlayerCard({ cardID: cardID });
+    console.log(`response from server :`, m);
   },
-  userResponse(response: any) {},
+  async userResponse(response: any) {
+    let resp: UserResponse = {
+      Callback: response.Callback,
+      Response: response.Response,
+    };
+    console.log("utils: 184, sending back user response: ", resp);
+    await myConnection.userResponse({
+      response: resp,
+    });
+  },
+  async playerDone() {
+    console.log("utils done");
+    let m = await myConnection.playerHandComplete({});
+    console.log("done server returned:  ", m);
+  },
 };

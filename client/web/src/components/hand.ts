@@ -12,6 +12,7 @@ export class Hand {
                       <div class="card_level">Level \${card.level}</div>
                       <div class="card_desc">\${card.effectString}</div>
               </div>
+              <button class="lobbyButton card_done_button" \${click@=>myHand.done}  \${===myHand.isEmpty}>FINISHED</button>
             </div>
             <div class="footer">
                   \${myHand.footer}

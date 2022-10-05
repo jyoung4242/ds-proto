@@ -8,6 +8,11 @@ import {
   add1Coin,
   add2Coin,
   bloomMonsters,
+  chooseAtk1Coin1,
+  chooseAtk1Draw1,
+  chooseCoin1Draw1,
+  chooseHealth1Coin1,
+  chooseHealth1Draw1,
   drawNewCard,
   healOthers1,
   hideTD,
@@ -16,6 +21,7 @@ import {
   lowerHealth2,
   MonsterPlayed,
   passives,
+  playerHandDone,
   playerHandShow,
   raiseHealth1,
   remove1Location,
@@ -44,6 +50,15 @@ import {
   mute,
   unmute,
 } from "../assets/assetPool";
+
+//TODO - curses
+//STUNNED
+//lose location
+//defeat monster
+//win demo game
+//end of turn, next turn
+//card pool
+//assigning damage to monsters
 
 const MOUSELIMIT = 10;
 let mouseCount = 0;
@@ -75,9 +90,6 @@ export class State {
 
   constructor() {
     this.state = {
-      animationEnd(...args) {
-        console.log("animationEnd", args);
-      },
       playerData: {
         username: "",
         name: "",
@@ -316,6 +328,7 @@ export class State {
         intervalID: null,
         messages: [],
         addToast: (icontype: "user" | "location" | "monster" | "card" | "effect", msg: string, event, model, element) => {
+          console.trace("toast: where called?");
           let iconMap = {
             user: userIcon,
             location: locationIcon,
@@ -404,7 +417,6 @@ export class State {
 
             model.mypUI.allPlayers.forEach((p, i) => {
               if (p.isHovered()) {
-                console.log("sanity check: ", model.myHand.player1Hand);
                 switch (i) {
                   case 0:
                     model.myHand.hand = [...model.myHand.player1Hand];
@@ -448,20 +460,30 @@ export class State {
         player4Hand: [],
         footer: "",
         hand: [],
+        done: () => {
+          utils.playerDone();
+        },
+        get isEmpty() {
+          return this.hand.length == 0;
+        },
+
         clickHandler: (event, model, element) => {
           const usr = this.state.gameData.Players.findIndex(p => {
             return this.state.gameData.turn === p.id;
           });
 
           const cardId = element.getAttribute("id");
+          console.log(`card clicked: ${cardId}, roundstate: ${this.state.gameData.roundState} `);
           if (
             this.state.gameData.roundState == RoundState.activeRunningPlayer ||
             this.state.gameData.roundState == RoundState.waitingOnPlayer
           ) {
+            console.log("player card being played", cardId);
             utils.playPcard(cardId);
             //remove card from myHand
             let cardindex = this.state.myHand.hand.findIndex(c => c.id === cardId);
             this.state.myHand.hand.splice(cardindex, 1);
+            console.log("index of card in hand", cardindex);
             //remove card from PLAYERXHand
             switch (usr) {
               case 0:
@@ -482,7 +504,7 @@ export class State {
                 break;
             }
           }
-          if (this.state.myHand.hand.length == 0) this.state.myHand.isVisible = false;
+          //if (this.state.myHand.hand.length == 0) this.state.myHand.isVisible = false;
           return;
         },
       },
@@ -494,7 +516,6 @@ export class State {
         title: "Cellar",
         sequence: 1,
         addPoint: (pts, model) => {
-          console.log(model);
           if (model.myLocation.damage < model.myLocation.health) {
             model.myLocation.damage += pts;
             if (model.myLocation.damage == model.myLocation.health) alert("location lost"); //do something here
@@ -518,6 +539,7 @@ export class State {
           const usr = model.gameData.Players.findIndex(p => {
             return model.gameData.turn === p.id;
           });
+          console.log("TD clicked: ", model.gameData.roundState);
           const myTurn = model.gameData.Players[usr].id == model.playerData.id;
           if (model.gameData.roundState == RoundState.waitingOnTD && myTurn) {
             //playTD Card
@@ -530,6 +552,7 @@ export class State {
         isVisible: false,
         cssString: "",
         clickHandler: (event, model, element, object) => {
+          console.log("monster click");
           const cardId = element.getAttribute("id");
           if (this.state.gameData.roundState == RoundState.activeRunningMonster) {
             utils.playMcard(cardId);
@@ -739,8 +762,9 @@ export class State {
         },
       },
       myNavInput: {
-        isVisible: true,
+        isVisible: false,
         contWidth: "190px",
+        contTop: "55%",
         buttons: [
           {
             label: "click me",
@@ -879,6 +903,9 @@ export class State {
     }
 
     //events
+    if (update.events.length) {
+      console.log("SERVER EVENTS: ", update.events);
+    }
     update.events.forEach(event => {
       switch (event) {
         case "START":
@@ -923,12 +950,15 @@ export class State {
           this.state.myLocation.addPoint(1, this.state);
           break;
         case "hideTD":
+          console.log("done with TD");
           startEventSequence(hideTD, this.state);
           break;
         case "ENABLE_Monster":
+          console.log("enable monsters");
           startEventSequence(bloomMonsters, this.state);
           break;
         case "NO MONSTERS READY":
+          console.log("skipping monsters");
           startEventSequence(skipMonsters, this.state);
           break;
         case "MONSTER_PLAYED":
@@ -936,8 +966,10 @@ export class State {
           break;
         case "ENABLE_Player":
           startEventSequence(playerHandShow, this.state);
+          break;
         case "PLAYERDONE":
-          //TODO - what to do if players' done with hand
+          console.log("player done");
+          startEventSequence(playerHandDone, this.state);
           break;
         case "STUNNED":
           //TODO - come up with Stunned practice
@@ -970,23 +1002,30 @@ export class State {
           break;
 
         case "chooseAttack1Ability1":
+          startEventSequence(chooseAtk1Coin1, this.state);
           break;
 
         case "chooseHealth1Ability1":
+          startEventSequence(chooseHealth1Coin1, this.state);
           break;
 
         case "chooseAttack1Draw1":
+          startEventSequence(chooseAtk1Draw1, this.state);
           break;
 
         case "chooseAbility1Draw1":
+          startEventSequence(chooseCoin1Draw1, this.state);
           break;
         case "discard":
+          //TODO - develope discard routine
           break;
         case "chooseHealth1Draw1":
+          startEventSequence(chooseHealth1Draw1, this.state);
           break;
         case "addHealth1anyPlayer":
           break;
         case "otherplayer+1Health":
+          //TODO - develop this routine, based off previous
           break;
         case "":
           break;

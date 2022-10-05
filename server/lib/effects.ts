@@ -8,6 +8,10 @@ type CallbackName = keyof Callbacks;
 
 let userResponseFlag = false;
 
+export const resetUserResponse = () => {
+  userResponseFlag = false;
+};
+
 export const executeCallback = (callback: string, state: InternalState, index: number, ctx: Context) => {
   callbacks[callback as CallbackName](state, index, ctx);
 };
@@ -19,7 +23,6 @@ const noDraw = (state: InternalState, index: number, ctx: Context) => {
 
   if (isAlreadyThere != -1) return;
   state.players[index].statusEffects.push(StatusEffects.NoDraw);
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
 };
 
 const ifActiveHeroLosesOneHealthLocationCurse = (state: InternalState, index: number, ctx: Context) => {
@@ -29,7 +32,6 @@ const ifActiveHeroLosesOneHealthLocationCurse = (state: InternalState, index: nu
 
   if (isAlreadyThere != -1) return;
   state.players[index].statusEffects.push(StatusEffects.LocationCursed);
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
 };
 
 const ifDiscardLose1Health = (state: InternalState, index: number, ctx: Context) => {
@@ -39,7 +41,6 @@ const ifDiscardLose1Health = (state: InternalState, index: number, ctx: Context)
 
   if (isAlreadyThere != -1) return;
   state.players[index].statusEffects.push(StatusEffects.DiscardCurse);
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
 };
 
 const stunned = (state: InternalState, index: number, ctx: Context) => {
@@ -58,7 +59,6 @@ const noHeal = (state: InternalState, index: number, ctx: Context) => {
   });
   if (isAlreadyThere != -1) return;
   state.players[index].statusEffects.push(StatusEffects.NoHeal);
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
 };
 
 const addHealth1ifMonsterDefeated = (state: InternalState, index: number, ctx: Context) => {
@@ -67,7 +67,6 @@ const addHealth1ifMonsterDefeated = (state: InternalState, index: number, ctx: C
   });
   if (isAlreadyThere != -1) return;
   state.players[index].statusEffects.push(StatusEffects.MonsterBonus);
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
 };
 
 const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
@@ -75,15 +74,26 @@ const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
   ctx.broadcastEvent("Lose2Health");
 };
 const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
-  console.trace("add to location, old value", state.Location?.damage);
   if (state.Location) state.Location.damage += 1;
   console.log("new location damage", state.Location?.damage);
   ctx.broadcastEvent("add1toLocation");
+
+  //location curse check
+  console.log(state.players[index].statusEffects);
+
+  if (
+    state.players[index].statusEffects.some(se => {
+      return se == StatusEffects.LocationCursed;
+    })
+  ) {
+    //found location curse
+    state.players[index].health -= 1;
+    ctx.broadcastEvent("Lose1Health");
+    //TODO - stun check
+  }
 };
 const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
-  console.log("lose 1 health", state.players[index].health);
   if (state.players[index]) state.players[index].health -= 1;
-  console.log("new health", state.players[index].health);
   ctx.broadcastEvent("Lose1Health");
 };
 
@@ -159,15 +169,19 @@ const removeLocationPoint = (state: InternalState, index: number, ctx: Context) 
 };
 
 const chooseAttack1Ability1 = (state: InternalState, index: number, ctx: Context) => {
+  console.log("choose card played");
   if (!userResponseFlag) {
+    console.log("request sent");
     ctx.broadcastEvent("chooseAttack1Ability1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Attack") {
+      console.log("attack chosen");
       if (state.players[index]) state.players[index].attack += 1;
       ctx.broadcastEvent("+1Attack");
     } else if (state.responseData.response == "Coin") {
+      console.log("coin chosen");
       if (state.players[index]) state.players[index].coin += 1;
       ctx.broadcastEvent("+1Coin");
     }
@@ -175,6 +189,7 @@ const chooseAttack1Ability1 = (state: InternalState, index: number, ctx: Context
 };
 
 const chooseHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
+  console.log("chooseHealthAbility", userResponseFlag);
   if (!userResponseFlag) {
     ctx.broadcastEvent("chooseHealth1Ability1");
     userResponseFlag = true;

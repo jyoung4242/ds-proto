@@ -79,9 +79,7 @@ export class Character {
 
   addHealth(num: number) {
     this.health = this.health + num <= 10 ? this.health + num : 10;
-    console.log(`${this.classMap[this.index]}`);
     let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
-    console.log(myUI);
     let newAngle = (10 - this.health) * 36;
     myUI.style.setProperty(`--angle${this.index}`, `${newAngle}`);
     if (this.health <= 4 && this.health > 2) myUI.style.stroke = "yellow";
@@ -90,7 +88,6 @@ export class Character {
   lowerHealth(num: number) {
     this.health = this.health - num >= 0 ? this.health - num : 0;
     let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
-    console.log("character, 77, myUI: ", myUI);
     let newAngle = (10 - this.health) * 36;
     myUI.style.setProperty(`--angle${this.index}`, `${newAngle}`);
     if (this.health <= 4 && this.health > 2) myUI.style.stroke = "yellow";
