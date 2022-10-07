@@ -33,6 +33,7 @@ let indexProgressBar_player: GameEventType = { type: "indexProgress", state: "pl
 let indexProgressBar_cardPool: GameEventType = { type: "indexProgress", state: "purchase" };
 let indexProgressBar_mDamage: GameEventType = { type: "indexProgress", state: "damage" };
 let indexProgressBar_EndTurn: GameEventType = { type: "indexProgress", state: "endturn" };
+let indexProgressBar_reset: GameEventType = { type: "resetTimebar" };
 let lose1Health: GameEventType = { type: "lowerhealth", value: 1 };
 let lose2Health: GameEventType = { type: "lowerhealth", value: 2 };
 let gain1Health: GameEventType = { type: "raisehealth", value: 1 };
@@ -45,10 +46,13 @@ let healOthers: GameEventType = { type: "healOthers", value: 1 };
 let dealCards: GameEventType = { type: "dealCards" };
 let clearscreen: GameEventType = { type: "clearscreen" };
 let startScreen: GameEventType = { type: "startBanner" };
+let nextRound: GameEventType = { type: "nextRound" };
+
 let showStartTurn: GameEventType = { type: "showStartTurn" };
 let setPlayerBloom: GameEventType = { type: "setBloom" };
 let hideNavButton: GameEventType = { type: "hideNavButton" };
 let showNavBar: GameEventType = { type: "showNavBar" };
+let hideNavbar: GameEventType = { type: "hideNavBar" };
 let dealTD: GameEventType = { type: "dealTD" };
 let playerPassives: GameEventType = { type: "pPassives" };
 let updateStatusEffects: GameEventType = { type: "statEffects" };
@@ -164,6 +168,9 @@ export let hideCardpool: GameEventSequence = {
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
 export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
+export let endturn: GameEventSequence = {
+  sequence: [indexProgressBar_EndTurn, shortdelay, indexProgressBar_reset, shortdelay, hideNavbar, nextRound],
+};
 
 class GameEvent {
   state: any;
@@ -728,6 +735,11 @@ class GameEvent {
     resolve();
   }
 
+  resetTimebar(resolve) {
+    this.state.myNavBar.resetTimeline();
+    resolve();
+  }
+
   buyCardfromPool(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -1156,6 +1168,11 @@ class GameEvent {
     resolve();
   }
 
+  hideNavBar(resolve) {
+    this.state.myNavBar.showNavBar = false;
+    resolve();
+  }
+
   clearscreen(resolve) {
     this.state.myGame.showModal = false;
     this.state.myChat.isActive = false;
@@ -1201,7 +1218,19 @@ class GameEvent {
     setTimeout(() => {
       this.state.myMessageOverlay.isVisble = false;
       resolve();
-    }, 5000);
+    }, 3000);
+  }
+
+  nextRound(resolve) {
+    this.state.myMessageOverlay.mainMessage = "Next Turn";
+    this.state.myMessageOverlay.subMessage = "";
+    this.state.myMessageOverlay.isVisble = true;
+    setTimeout(() => {
+      this.state.myMessageOverlay.isVisble = false;
+      console.log("starting turn");
+      utils.startTurn();
+      resolve();
+    }, 3000);
   }
 
   pPassives(resolve) {

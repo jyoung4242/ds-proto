@@ -235,6 +235,8 @@ const draw2discard1 = (state: InternalState, index: number, ctx: Context) => {
 
   let myCard = state.players[index].deck.pop()!; //Draw Card
   state.players[index].hand.push(myCard);
+  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
   myCard = state.players[index].deck.pop()!; //Draw Card
   state.players[index].hand.push(myCard);
   ctx.broadcastEvent("draw2");

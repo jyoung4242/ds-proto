@@ -21,6 +21,7 @@ import {
   draw2NewCard,
   drawNewCard,
   enablemonsterDamage,
+  endturn,
   healOthers1,
   hideCardpool,
   hideTD,
@@ -1177,6 +1178,10 @@ export class State {
           break;
         case "Applying Damage":
           startEventSequence(damageMonster, this.state);
+          break;
+        case "Ready for next player":
+          console.log("running endturn");
+          startEventSequence(endturn, this.state);
           break;
       }
     });

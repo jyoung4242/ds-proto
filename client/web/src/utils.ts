@@ -145,58 +145,70 @@ export const utils = {
     const message: ISendMessageRequest = {
       msg: msg,
     };
-    await myConnection.sendMessage(message);
+    let m = await myConnection.sendMessage(message);
+    console.log(`response from server :`, m);
   },
   async seenChat(msgID: number) {
     const message: ISeenMessageRequest = {
       msgID: msgID,
     };
-    await myConnection.seenMessage(message);
+    let m = await myConnection.seenMessage(message);
+    console.log(`response from server :`, m);
   },
   setupGame() {},
   async startTurn() {
-    await myConnection.startTurn({});
+    let m = await myConnection.startTurn({});
+    console.log("m is: ", m);
   },
   async passives() {
-    await myConnection.runMonsterPassives({});
+    let m = await myConnection.runMonsterPassives({});
+    console.log(`response from server :`, m);
   },
   async playTD(cardID: string) {
-    await myConnection.playTD({ cardID: cardID });
+    let m = await myConnection.playTD({ cardID: cardID });
+    console.log(`response from server :`, m);
   },
   async enableM() {
-    console.log("enabling monsters, utils");
-    await myConnection.enableMonsters({});
+    let m = await myConnection.enableMonsters({});
+    console.log(`response from server :`, m);
   },
   async playMcard(cardID: string) {
-    await myConnection.playMonster({ cardID: cardID });
+    let m = await myConnection.playMonster({ cardID: cardID });
+    console.log(`response from server :`, m);
   },
   async showPcard() {
-    await myConnection.enablePlayer({});
+    let m = await myConnection.enablePlayer({});
+    console.log(`response from server :`, m);
   },
   async showCardPool() {
-    await myConnection.enableCardPool({});
+    let m = await myConnection.enableCardPool({});
+    console.log(`response from server :`, m);
   },
   async buyCard(cardID: string) {
     let m = await myConnection.buyFromCardPool({ cardID: cardID });
     console.log(`response from server :`, m);
   },
   async doneBuyingCards() {
-    await myConnection.closeCardPool({});
+    let m = await myConnection.closeCardPool({});
+    console.log(`response from server :`, m);
   },
   async endTurn() {
-    await myConnection.endRound({});
+    let m = await myConnection.endRound({});
+    console.log(`response from server :`, m);
   },
   async enableMonsterDamage() {
-    await myConnection.enableMonsterDamage({});
+    let m = await myConnection.enableMonsterDamage({});
+    console.log(`response from server :`, m);
   },
   async monsterDamageDone() {
-    await myConnection.disableMonsterDamage({});
+    let m = await myConnection.disableMonsterDamage({});
+    console.log(`response from server :`, m);
   },
   async applyDamage(cardID: string) {
-    await myConnection.applyMonsterDamage({ cardID: cardID });
+    let m = await myConnection.applyMonsterDamage({ cardID: cardID });
+    console.log(`response from server :`, m);
   },
   async playPcard(cardID: string) {
-    console.log(`sending server this card: ${cardID}`);
     let m = await myConnection.playPlayerCard({ cardID: cardID });
     console.log(`response from server :`, m);
   },
@@ -205,11 +217,13 @@ export const utils = {
       Callback: response.Callback,
       Response: response.Response,
     };
-    await myConnection.userResponse({
+    let m = await myConnection.userResponse({
       response: resp,
     });
+    console.log(`response from server :`, m);
   },
   async playerDone() {
     let m = await myConnection.playerHandComplete({});
+    console.log(`response from server :`, m);
   },
 };

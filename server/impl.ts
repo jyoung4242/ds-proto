@@ -205,11 +205,12 @@ export class Impl implements Methods<InternalState> {
     //Setting State and turn order
     state.gameState = GameState.GameSetup;
     state.turnOrder = setTurnOrder(state.players, ctx);
+    console.log("turn order: ", state.turnOrder);
     state.turn = state.turnOrder[0];
 
     //Deal starting cards
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
-
+    state.activeMonsters.forEach(m => (m.damage = 0));
     state.Location = locationDeck.pop(); //Location Cards
     if (state.Location) {
       numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
@@ -508,9 +509,8 @@ export class Impl implements Methods<InternalState> {
     //we have monster card, players has attack to give
 
     //apply damage
-    console.log("before: ", state.activeMonsters[cardIndex].damage);
     state.activeMonsters[cardIndex].damage += 1;
-    console.log("after: ", state.activeMonsters[cardIndex].damage);
+
     //if monster damage reached zero, monster defeated
     if (state.activeMonsters[cardIndex].damage == 0) {
       //TODO - Monster Defeated
@@ -562,7 +562,9 @@ export class Impl implements Methods<InternalState> {
     //shift turn via turn order
     let numberOfPlayers = state.players.length;
     let turnIndex = state.turnOrder.findIndex(u => u == userId);
-    if (turnIndex - 1 == numberOfPlayers) turnIndex = 0; //next player is turnOrder 0
+
+    console.log("changing turn order: ", numberOfPlayers, turnIndex);
+    if (turnIndex + 1 == numberOfPlayers) turnIndex = 0; //next player is turnOrder 0
     else turnIndex += 1; //next player is next index
     state.turn = state.turnOrder[turnIndex];
 
