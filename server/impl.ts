@@ -54,7 +54,6 @@ import PaladinLibrary from "./lib/paladin";
 import RogueLibrary from "./lib/rogue";
 import {
   dealPlayerCardsFromDeck,
-  getActivePlayerName,
   getNumberOfActiveMonstersWithActiveEvents,
   setPlayerDeckbyRole,
   setTurnOrder,

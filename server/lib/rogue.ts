@@ -9,7 +9,7 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "chooseHealth1Ability1", userPrompt: "chooseHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Choose: Health +1 -or- Ability +1",
+    effectString: "Choose: Health +1 -or- Coin +1",
   },
   {
     id: "starterarmor",
@@ -39,7 +39,7 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "startercossbow",
@@ -69,7 +69,7 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "addHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Health +1, Ability +1",
+    effectString: "Health +1, Coin +1",
   },
   {
     id: "startersneak",
@@ -79,7 +79,7 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "startersmoke",
@@ -89,7 +89,7 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "addAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1, Attack +1",
+    effectString: "Coin +1, Attack +1",
   },
   {
     id: "startertools",
@@ -99,6 +99,6 @@ export default RogueLibrary = [
     ActiveEffect: { callback: "chooseAbility1Draw1", userPrompt: "chooseAbility1Draw1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Choose: Ability +1 -or- Draw 1 Card",
+    effectString: "Choose: Coin +1 -or- Draw 1 Card",
   },
 ];

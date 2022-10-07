@@ -9,7 +9,7 @@ export default PaladinLibrary = [
     ActiveEffect: { callback: "chooseHealth1Ability1", userPrompt: "chooseHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Choose: Health +1 -or- Ability +1",
+    effectString: "Choose: Health +1 -or- Coin +1",
   },
   {
     id: "starterconcentration",
@@ -19,17 +19,17 @@ export default PaladinLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "starterdefense",
     title: "Celestial Defense",
     level: 1,
     cost: 0,
-    ActiveEffect: { callback: "addAbility1" },
+    ActiveEffect: { callback: "addCoin1anyPlayer" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1, for any hero",
+    effectString: "Coin +1, for any hero",
   },
   {
     id: "starterhammer",
@@ -89,7 +89,7 @@ export default PaladinLibrary = [
     ActiveEffect: { callback: "chooseHealth1Ability1", userPrompt: "chooseHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Choose: Health +1 -or- Ability +1",
+    effectString: "Choose: Health +1 -or- Coin +1",
   },
   {
     id: "startertalisman",

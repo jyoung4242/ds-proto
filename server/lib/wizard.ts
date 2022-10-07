@@ -9,7 +9,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "chooseHealth1Ability1", userPrompt: "chooseHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Choose: Health +1 -or- Ability +1",
+    effectString: "Choose: Health +1 -or- Coin +1",
   },
   {
     id: "starterwand",
@@ -29,7 +29,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "addAbility2" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Ability +2",
+    effectString: "Coin +2",
   },
   {
     id: "starterstaff",
@@ -39,7 +39,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "chooseAttack1Ability1", userPrompt: "chooseAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Weapon,
-    effectString: "Choose: Attack +1 -or- Ability +1",
+    effectString: "Choose: Attack +1 -or- Coin +1",
   },
   {
     id: "starterpet",
@@ -49,7 +49,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "addAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Friend,
-    effectString: "Attack +1, Ability +1",
+    effectString: "Attack +1, Coin +1",
   },
   {
     id: "starterfirespell",
@@ -79,7 +79,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "addAbility1Draw1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1, Draw 1",
+    effectString: "Coin +1, Draw 1",
   },
   {
     id: "starterwizardfocus",
@@ -89,7 +89,7 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "startermagicarrow",
@@ -99,6 +99,6 @@ export default WizardLibrary = [
     ActiveEffect: { callback: "chooseAttack1Ability1", userPrompt: "chooseAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Choose: Attack +1 -or- Ability +1",
+    effectString: "Choose: Attack +1 -or- Coin +1",
   },
 ];

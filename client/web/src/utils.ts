@@ -173,6 +173,9 @@ export const utils = {
   async showPcard() {
     await myConnection.enablePlayer({});
   },
+  async showCardPool() {
+    await myConnection.enableCardPool({});
+  },
   async playPcard(cardID: string) {
     console.log(`sending server this card: ${cardID}`);
     let m = await myConnection.playPlayerCard({ cardID: cardID });

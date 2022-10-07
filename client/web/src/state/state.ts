@@ -7,12 +7,16 @@ import {
   add1Attack,
   add1Coin,
   add2Coin,
+  anyPlayer1Coin,
+  anyPlayer1Health,
   bloomMonsters,
   chooseAtk1Coin1,
   chooseAtk1Draw1,
   chooseCoin1Draw1,
   chooseHealth1Coin1,
   chooseHealth1Draw1,
+  discard1,
+  draw2NewCard,
   drawNewCard,
   healOthers1,
   hideTD,
@@ -20,11 +24,22 @@ import {
   lowerHealth1,
   lowerHealth2,
   MonsterPlayed,
+  otherPlayer1Health,
+  p1Coin1,
+  p1Health1,
+  p2Coin1,
+  p2Health1,
+  p3Coin1,
+  p3Health1,
+  p4Coin1,
+  p4Health1,
   passives,
   playerHandDone,
   playerHandShow,
   raiseHealth1,
+  refreshHand,
   remove1Location,
+  showCardPool,
   skipMonsters,
   startEventSequence,
   startSequence,
@@ -54,11 +69,12 @@ import {
 //TODO - curses
 //STUNNED
 //lose location
-//defeat monster
+//defeat monster - rewards
 //win demo game
 //end of turn, next turn
 //card pool
 //assigning damage to monsters
+//last few events
 
 const MOUSELIMIT = 10;
 let mouseCount = 0;
@@ -319,6 +335,7 @@ export class State {
       myGame: {
         showModal: false,
       },
+
       attributes: {
         icons:
           '<a href="https://www.flaticon.com/free-icons/card" title="card icons">Card icons created by Pixel perfect - Flaticon</a>',
@@ -328,7 +345,6 @@ export class State {
         intervalID: null,
         messages: [],
         addToast: (icontype: "user" | "location" | "monster" | "card" | "effect", msg: string, event, model, element) => {
-          console.trace("toast: where called?");
           let iconMap = {
             user: userIcon,
             location: locationIcon,
@@ -463,27 +479,25 @@ export class State {
         done: () => {
           utils.playerDone();
         },
-        get isEmpty() {
-          return this.hand.length == 0;
-        },
-
-        clickHandler: (event, model, element) => {
+        isEmpty: false,
+        clickHandler: (_event, model, element, _attribute, object) => {
           const usr = this.state.gameData.Players.findIndex(p => {
             return this.state.gameData.turn === p.id;
           });
 
+          const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+          if (!myTurn) return;
+
           const cardId = element.getAttribute("id");
-          console.log(`card clicked: ${cardId}, roundstate: ${this.state.gameData.roundState} `);
           if (
             this.state.gameData.roundState == RoundState.activeRunningPlayer ||
             this.state.gameData.roundState == RoundState.waitingOnPlayer
           ) {
-            console.log("player card being played", cardId);
             utils.playPcard(cardId);
             //remove card from myHand
             let cardindex = this.state.myHand.hand.findIndex(c => c.id === cardId);
             this.state.myHand.hand.splice(cardindex, 1);
-            console.log("index of card in hand", cardindex);
+
             //remove card from PLAYERXHand
             switch (usr) {
               case 0:
@@ -504,7 +518,9 @@ export class State {
                 break;
             }
           }
-          //if (this.state.myHand.hand.length == 0) this.state.myHand.isVisible = false;
+          console.log(object);
+          object.$parent.$model.myHand.isEmpty = myTurn && object.$parent.$model.myHand.hand.length == 0;
+
           return;
         },
       },
@@ -539,11 +555,11 @@ export class State {
           const usr = model.gameData.Players.findIndex(p => {
             return model.gameData.turn === p.id;
           });
-          console.log("TD clicked: ", model.gameData.roundState);
+
           const myTurn = model.gameData.Players[usr].id == model.playerData.id;
           if (model.gameData.roundState == RoundState.waitingOnTD && myTurn) {
             //playTD Card
-            console.log("state 631, playing card");
+
             utils.playTD(model.myTowerD.id);
           }
         },
@@ -552,7 +568,6 @@ export class State {
         isVisible: false,
         cssString: "",
         clickHandler: (event, model, element, object) => {
-          console.log("monster click");
           const cardId = element.getAttribute("id");
           if (this.state.gameData.roundState == RoundState.activeRunningMonster) {
             utils.playMcard(cardId);
@@ -765,6 +780,7 @@ export class State {
         isVisible: false,
         contWidth: "190px",
         contTop: "55%",
+        contZ: "15",
         buttons: [
           {
             label: "click me",
@@ -950,15 +966,12 @@ export class State {
           this.state.myLocation.addPoint(1, this.state);
           break;
         case "hideTD":
-          console.log("done with TD");
           startEventSequence(hideTD, this.state);
           break;
         case "ENABLE_Monster":
-          console.log("enable monsters");
           startEventSequence(bloomMonsters, this.state);
           break;
         case "NO MONSTERS READY":
-          console.log("skipping monsters");
           startEventSequence(skipMonsters, this.state);
           break;
         case "MONSTER_PLAYED":
@@ -968,7 +981,6 @@ export class State {
           startEventSequence(playerHandShow, this.state);
           break;
         case "PLAYERDONE":
-          console.log("player done");
           startEventSequence(playerHandDone, this.state);
           break;
         case "STUNNED":
@@ -991,6 +1003,9 @@ export class State {
 
         case "draw":
           startEventSequence(drawNewCard, this.state);
+          break;
+        case "draw2":
+          startEventSequence(draw2NewCard, this.state);
           break;
 
         case "+1HealthtoAllOthers":
@@ -1017,17 +1032,46 @@ export class State {
           startEventSequence(chooseCoin1Draw1, this.state);
           break;
         case "discard":
-          //TODO - develope discard routine
+          startEventSequence(discard1, this.state);
+          break;
+        case "discarded":
+          startEventSequence(refreshHand, this.state);
           break;
         case "chooseHealth1Draw1":
           startEventSequence(chooseHealth1Draw1, this.state);
           break;
         case "addHealth1anyPlayer":
+          startEventSequence(anyPlayer1Health, this.state);
           break;
-        case "otherplayer+1Health":
-          //TODO - develop this routine, based off previous
+        case "addCoin1anyPlayer":
+          startEventSequence(anyPlayer1Coin, this.state);
           break;
-        case "":
+        case "player1health":
+          startEventSequence(p1Health1, this.state);
+          break;
+        case "player2health":
+          startEventSequence(p2Health1, this.state);
+          break;
+        case "player3health":
+          startEventSequence(p3Health1, this.state);
+          break;
+        case "player4health":
+          startEventSequence(p4Health1, this.state);
+          break;
+        case "player1coin":
+          startEventSequence(p1Coin1, this.state);
+          break;
+        case "player2coin":
+          startEventSequence(p2Coin1, this.state);
+          break;
+        case "player3coin":
+          startEventSequence(p3Coin1, this.state);
+          break;
+        case "player4coin":
+          startEventSequence(p4Coin1, this.state);
+          break;
+        case "Show Card Pool":
+          startEventSequence(showCardPool, this.state);
           break;
       }
     });

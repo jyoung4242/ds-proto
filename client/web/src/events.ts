@@ -21,199 +21,69 @@ type GameEventType = {
   //add optional
 };
 
-let dealCards: GameEventType = {
-  type: "dealCards",
-};
-
-let clearscreen: GameEventType = {
-  type: "clearscreen",
-};
-
-let startScreen: GameEventType = {
-  type: "startBanner",
-};
-
-let showStartTurn: GameEventType = {
-  type: "showStartTurn",
-};
-
-let setPlayerBloom: GameEventType = {
-  type: "setBloom",
-};
-
-let longdelay: GameEventType = {
-  type: "delay",
-  timeout: 2000,
-};
-
-let shortdelay: GameEventType = {
-  type: "delay",
-  timeout: 500,
-};
-
-let hideNavButton: GameEventType = {
-  type: "hideNavButton",
-};
-
-let showNavBar: GameEventType = {
-  type: "showNavBar",
-};
-
-let dealTD: GameEventType = {
-  type: "dealTD",
-};
-
-let playerPassives: GameEventType = {
-  type: "pPassives",
-};
-
-let updateStatusEffects: GameEventType = {
-  type: "statEffects",
-};
-
-let indexProgressBar_passive: GameEventType = {
-  type: "indexProgress",
-  state: "passives",
-};
-
-let indexProgressBar_td: GameEventType = {
-  type: "indexProgress",
-  state: "td",
-};
-
-let indexProgressBar_monster: GameEventType = {
-  type: "indexProgress",
-  state: "monster",
-};
-
-let indexProgressBar_player: GameEventType = {
-  type: "indexProgress",
-  state: "player",
-};
-
-let highlightTD: GameEventType = {
-  type: "TDbloom",
-};
-
-let debug: GameEventType = {
-  type: "debug",
-};
-
-let lose1Health: GameEventType = {
-  type: "lowerhealth",
-  value: 1,
-};
-
-let lose2Health: GameEventType = {
-  type: "lowerhealth",
-  value: 2,
-};
-
-let gain1Health: GameEventType = {
-  type: "raisehealth",
-  value: 1,
-};
-
-let gain2Health: GameEventType = {
-  type: "raisehealth",
-  value: 2,
-};
-
-let hideTDcard: GameEventType = {
-  type: "hideTD",
-};
-
-let enablemonsters: GameEventType = {
-  type: "enableMonsters",
-};
-
-let playerDamage: GameEventType = {
-  type: "damageFlash",
-};
-
-let playerHeal: GameEventType = {
-  type: "healFlash",
-};
-
-let locationDamage: GameEventType = {
-  type: "locationFlash",
-};
-
-let locationHeal: GameEventType = {
-  type: "locationHealFlash",
-};
-
-let highlightMonsters: GameEventType = {
-  type: "bloomMonsters",
-};
-
-let unBloomMonster: GameEventType = {
-  type: "unbloomMonster",
-};
-
-let promptPlayersHand: GameEventType = {
-  type: "prompt_playerHand",
-};
-let showPlayerHand: GameEventType = {
-  type: "show_playerHand",
-};
-
-let addAttack1: GameEventType = {
-  type: "showAttackAnimation",
-  value: 1,
-  message: "add",
-};
-
-let addAttack2: GameEventType = {
-  type: "showAttackAnimation",
-  value: 2,
-  message: "add",
-};
-
-let addCoin2: GameEventType = {
-  type: "showCoinAnimation",
-  value: 2,
-  message: "add",
-};
-
-let addCoin1: GameEventType = {
-  type: "showCoinAnimation",
-  value: 1,
-  message: "add",
-};
-
-let healOthers: GameEventType = {
-  type: "healOthers",
-  value: 1,
-};
-
-let drawCard: GameEventType = {
-  type: "draw",
-};
-
-let choose_Atk1Coin1: GameEventType = {
-  type: "handChoiceAttack1Ability1",
-};
-
-let choose_Health1Coin1: GameEventType = {
-  type: "handChoiceHealth1Ability1",
-};
-
-let choose_Atk1Draw1: GameEventType = {
-  type: "handChoiceAtk1Draw1",
-};
-
-let choose_Coin1Draw1: GameEventType = {
-  type: "handChoiceCoin1Draw1",
-};
-
-let choose_Health1Draw1: GameEventType = {
-  type: "handChoiceHealth1Draw1",
-};
-
-let hidePlayerHand: GameEventType = {
-  type: "hideHand",
-};
+let longdelay: GameEventType = { type: "delay", timeout: 1500 };
+let shortdelay: GameEventType = { type: "delay", timeout: 300 };
+let indexProgressBar_passive: GameEventType = { type: "indexProgress", state: "passives" };
+let indexProgressBar_td: GameEventType = { type: "indexProgress", state: "td" };
+let indexProgressBar_monster: GameEventType = { type: "indexProgress", state: "monster" };
+let indexProgressBar_player: GameEventType = { type: "indexProgress", state: "player" };
+let lose1Health: GameEventType = { type: "lowerhealth", value: 1 };
+let lose2Health: GameEventType = { type: "lowerhealth", value: 2 };
+let gain1Health: GameEventType = { type: "raisehealth", value: 1 };
+let gain2Health: GameEventType = { type: "raisehealth", value: 2 };
+let addAttack1: GameEventType = { type: "showAttackAnimation", value: 1, message: "add" };
+let addAttack2: GameEventType = { type: "showAttackAnimation", value: 2, message: "add" };
+let addCoin2: GameEventType = { type: "showCoinAnimation", value: 2, message: "add" };
+let addCoin1: GameEventType = { type: "showCoinAnimation", value: 1, message: "add" };
+let healOthers: GameEventType = { type: "healOthers", value: 1 };
+let dealCards: GameEventType = { type: "dealCards" };
+let clearscreen: GameEventType = { type: "clearscreen" };
+let startScreen: GameEventType = { type: "startBanner" };
+let showStartTurn: GameEventType = { type: "showStartTurn" };
+let setPlayerBloom: GameEventType = { type: "setBloom" };
+let hideNavButton: GameEventType = { type: "hideNavButton" };
+let showNavBar: GameEventType = { type: "showNavBar" };
+let dealTD: GameEventType = { type: "dealTD" };
+let playerPassives: GameEventType = { type: "pPassives" };
+let updateStatusEffects: GameEventType = { type: "statEffects" };
+let highlightTD: GameEventType = { type: "TDbloom" };
+let hideTDcard: GameEventType = { type: "hideTD" };
+let enablemonsters: GameEventType = { type: "enableMonsters" };
+let playerDamage: GameEventType = { type: "damageFlash" };
+let playerHeal: GameEventType = { type: "healFlash" };
+let locationDamage: GameEventType = { type: "locationFlash" };
+let locationHeal: GameEventType = { type: "locationHealFlash" };
+let highlightMonsters: GameEventType = { type: "bloomMonsters" };
+let unBloomMonster: GameEventType = { type: "unbloomMonster" };
+let promptPlayersHand: GameEventType = { type: "prompt_playerHand" };
+let showPlayerHand: GameEventType = { type: "show_playerHand" };
+let drawCard: GameEventType = { type: "draw" };
+let drawCard2: GameEventType = { type: "draw2" };
+let choose_Atk1Coin1: GameEventType = { type: "handChoiceAttack1Ability1" };
+let choose_Health1Coin1: GameEventType = { type: "handChoiceHealth1Ability1" };
+let choose_Atk1Draw1: GameEventType = { type: "handChoiceAtk1Draw1" };
+let choose_Coin1Draw1: GameEventType = { type: "handChoiceCoin1Draw1" };
+let choose_Health1Draw1: GameEventType = { type: "handChoiceHealth1Draw1" };
+let hidePlayerHand: GameEventType = { type: "hideHand" };
+let chooseOtherPlayerToHeal: GameEventType = { type: "otherplayerheal" };
+let chooseAnyPlayerToHeal: GameEventType = { type: "anyplayerheal" };
+let chooseAnyPlayerToCoin: GameEventType = { type: "anyplayercoin" };
+let discard1card: GameEventType = { type: "discard1" };
+let raisep1health: GameEventType = { type: "raiseOtherhealth1", value: 0 };
+let raisep2health: GameEventType = { type: "raiseOtherhealth1", value: 1 };
+let raisep3health: GameEventType = { type: "raiseOtherhealth1", value: 2 };
+let raisep4health: GameEventType = { type: "raiseOtherhealth1", value: 3 };
+let flashp1: GameEventType = { type: "otherHealthFlash", value: 0 };
+let flashp2: GameEventType = { type: "otherHealthFlash", value: 1 };
+let flashp3: GameEventType = { type: "otherHealthFlash", value: 2 };
+let flashp4: GameEventType = { type: "otherHealthFlash", value: 3 };
+let refreshPlayerHand: GameEventType = { type: "handRefresh" };
+let raisep1Coin: GameEventType = { type: "otherCoinAdd", value: 0 };
+let raisep2Coin: GameEventType = { type: "otherCoinAdd", value: 1 };
+let raisep3Coin: GameEventType = { type: "otherCoinAdd", value: 2 };
+let raisep4Coin: GameEventType = { type: "otherCoinAdd", value: 3 };
+let showCardPoolEnable: GameEventType = { type: "prompt_CardPool" };
+let openCardPool: GameEventType = { type: "openCardPool" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
@@ -227,99 +97,53 @@ export let startTurn: GameEventSequence = {
 export let passives: GameEventSequence = {
   sequence: [hideNavButton, shortdelay, indexProgressBar_passive, shortdelay, highlightTD],
 };
-export let updateStatEffects: GameEventSequence = {
-  sequence: [updateStatusEffects, shortdelay],
-};
-
-export let lowerHealth1: GameEventSequence = {
-  sequence: [playerDamage, lose1Health, shortdelay],
-};
-
-export let raiseHealth2: GameEventSequence = {
-  sequence: [playerHeal, gain2Health, shortdelay],
-};
-
-export let raiseHealth1: GameEventSequence = {
-  sequence: [playerHeal, gain1Health, shortdelay],
-};
-
-export let lowerHealth2: GameEventSequence = {
-  sequence: [playerDamage, lose2Health, shortdelay],
-};
-
+export let updateStatEffects: GameEventSequence = { sequence: [updateStatusEffects, shortdelay] };
+export let lowerHealth1: GameEventSequence = { sequence: [playerDamage, lose1Health, shortdelay, refreshPlayerHand] };
+export let raiseHealth2: GameEventSequence = { sequence: [playerHeal, gain2Health, shortdelay, refreshPlayerHand] };
+export let raiseHealth1: GameEventSequence = { sequence: [playerHeal, gain1Health, shortdelay, refreshPlayerHand] };
+export let lowerHealth2: GameEventSequence = { sequence: [playerDamage, lose2Health, shortdelay, refreshPlayerHand] };
 export let hideTD: GameEventSequence = {
   sequence: [hideTDcard, shortdelay, indexProgressBar_td, shortdelay, enablemonsters],
 };
-
-export let locDamage: GameEventSequence = {
-  sequence: [locationDamage],
-};
-
-export let bloomMonsters: GameEventSequence = {
-  sequence: [highlightMonsters],
-};
-
+export let locDamage: GameEventSequence = { sequence: [locationDamage] };
+export let bloomMonsters: GameEventSequence = { sequence: [highlightMonsters] };
 export let skipMonsters: GameEventSequence = {
   sequence: [shortdelay, indexProgressBar_monster, shortdelay, promptPlayersHand],
 };
 export let MonsterPlayed: GameEventSequence = {
   sequence: [unBloomMonster, shortdelay, indexProgressBar_monster, promptPlayersHand],
 };
-
-export let playerHandShow: GameEventSequence = {
-  sequence: [shortdelay, showPlayerHand],
-};
-
-export let add1Attack: GameEventSequence = {
-  sequence: [addAttack1],
-};
-
-export let add2Attack: GameEventSequence = {
-  sequence: [addAttack2],
-};
-export let add1Coin: GameEventSequence = {
-  sequence: [addCoin1],
-};
-
-export let add2Coin: GameEventSequence = {
-  sequence: [addCoin2],
-};
-
-export let drawNewCard: GameEventSequence = {
-  sequence: [drawCard],
-};
-
-export let healOthers1: GameEventSequence = {
-  sequence: [shortdelay, healOthers, shortdelay],
-};
-
-export let remove1Location: GameEventSequence = {
-  sequence: [locationHeal],
-};
-
-export let chooseAtk1Coin1: GameEventSequence = {
-  sequence: [choose_Atk1Coin1],
-};
-
-export let chooseHealth1Coin1: GameEventSequence = {
-  sequence: [choose_Health1Coin1],
-};
-
-export let chooseAtk1Draw1: GameEventSequence = {
-  sequence: [choose_Atk1Draw1],
-};
-
-export let chooseCoin1Draw1: GameEventSequence = {
-  sequence: [choose_Coin1Draw1],
-};
-
-export let chooseHealth1Draw1: GameEventSequence = {
-  sequence: [choose_Health1Draw1],
-};
-
+export let playerHandShow: GameEventSequence = { sequence: [shortdelay, showPlayerHand] };
+export let add1Attack: GameEventSequence = { sequence: [addAttack1, refreshPlayerHand] };
+export let add2Attack: GameEventSequence = { sequence: [addAttack2, refreshPlayerHand] };
+export let add1Coin: GameEventSequence = { sequence: [addCoin1, refreshPlayerHand] };
+export let add2Coin: GameEventSequence = { sequence: [addCoin2, refreshPlayerHand] };
+export let drawNewCard: GameEventSequence = { sequence: [drawCard, refreshPlayerHand] };
+export let draw2NewCard: GameEventSequence = { sequence: [drawCard2, refreshPlayerHand] };
+export let healOthers1: GameEventSequence = { sequence: [healOthers, refreshPlayerHand] };
+export let remove1Location: GameEventSequence = { sequence: [locationHeal, refreshPlayerHand] };
+export let chooseAtk1Coin1: GameEventSequence = { sequence: [choose_Atk1Coin1, refreshPlayerHand] };
+export let chooseHealth1Coin1: GameEventSequence = { sequence: [choose_Health1Coin1, refreshPlayerHand] };
+export let chooseAtk1Draw1: GameEventSequence = { sequence: [choose_Atk1Draw1, refreshPlayerHand] };
+export let chooseCoin1Draw1: GameEventSequence = { sequence: [choose_Coin1Draw1, refreshPlayerHand] };
+export let chooseHealth1Draw1: GameEventSequence = { sequence: [choose_Health1Draw1, refreshPlayerHand] };
 export let playerHandDone: GameEventSequence = {
-  sequence: [hidePlayerHand, shortdelay, indexProgressBar_player],
+  sequence: [hidePlayerHand, shortdelay, indexProgressBar_player, shortdelay, showCardPoolEnable],
 };
+export let otherPlayer1Health: GameEventSequence = { sequence: [chooseOtherPlayerToHeal, refreshPlayerHand] };
+export let anyPlayer1Health: GameEventSequence = { sequence: [chooseAnyPlayerToHeal, refreshPlayerHand] };
+export let discard1: GameEventSequence = { sequence: [discard1card, refreshPlayerHand] };
+export let p1Health1: GameEventSequence = { sequence: [raisep1health, flashp1, refreshPlayerHand] };
+export let p2Health1: GameEventSequence = { sequence: [raisep2health, flashp2, refreshPlayerHand] };
+export let p3Health1: GameEventSequence = { sequence: [raisep3health, flashp3, refreshPlayerHand] };
+export let p4Health1: GameEventSequence = { sequence: [raisep4health, flashp4, refreshPlayerHand] };
+export let refreshHand: GameEventSequence = { sequence: [refreshPlayerHand] };
+export let anyPlayer1Coin: GameEventSequence = { sequence: [chooseAnyPlayerToCoin, refreshPlayerHand] };
+export let p1Coin1: GameEventSequence = { sequence: [raisep1Coin, refreshPlayerHand] };
+export let p2Coin1: GameEventSequence = { sequence: [raisep2Coin, refreshPlayerHand] };
+export let p3Coin1: GameEventSequence = { sequence: [raisep3Coin, refreshPlayerHand] };
+export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerHand] };
+export let showCardPool: GameEventSequence = { sequence: [openCardPool] };
 
 class GameEvent {
   state: any;
@@ -329,186 +153,362 @@ class GameEvent {
   }
 
   handChoiceAttack1Ability1(resolve) {
-    console.log("in the choice event");
-    this.state.myNavInput.buttons = [
-      {
-        label: "Attack +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAttack1Ability1",
-            Response: "Attack",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.contWidth = "250";
+
+      this.state.myNavInput.buttons = [
+        {
+          label: "Attack +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAttack1Ability1",
+              Response: "Attack",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-      {
-        label: "Coin +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAttack1Ability1",
-            Response: "Coin",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+        {
+          label: "Coin +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAttack1Ability1",
+              Response: "Coin",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-    ];
-    console.log("showing nav input");
-    this.state.myNavInput.contTop = "25%";
-    this.state.myNavInput.isVisible = true;
+      ];
+
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
     resolve();
   }
 
   handChoiceCoin1Draw1(resolve) {
-    this.state.myNavInput.buttons = [
-      {
-        label: "Coin +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAbility1Draw1",
-            Response: "Coin",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.contWidth = "250";
+      this.state.myNavInput.buttons = [
+        {
+          label: "Coin +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAbility1Draw1",
+              Response: "Coin",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+            this.state.myNavInput.contZ = "15";
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-      {
-        label: "Draw 1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAbility1Draw1",
-            Response: "Draw",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+        {
+          label: "Draw 1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAbility1Draw1",
+              Response: "draw",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+            this.state.myNavInput.contZ = "15";
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-    ];
-    this.state.myNavInput.contTop = "25%";
-    this.state.myNavInput.isVisible = true;
+      ];
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
     resolve();
   }
 
   handChoiceAtk1Draw1(resolve) {
-    this.state.myNavInput.buttons = [
-      {
-        label: "Attack +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAttack1Draw1",
-            Response: "Attack",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.contWidth = "250";
+      this.state.myNavInput.buttons = [
+        {
+          label: "Attack +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAttack1Draw1",
+              Response: "Attack",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-      {
-        label: "Draw 1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseAttack1Draw1",
-            Response: "Draw",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+        {
+          label: "Draw 1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseAttack1Draw1",
+              Response: "draw",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-    ];
-    this.state.myNavInput.contTop = "25%";
-    this.state.myNavInput.isVisible = true;
+      ];
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
     resolve();
   }
 
   handChoiceHealth1Draw1(resolve) {
-    this.state.myNavInput.buttons = [
-      {
-        label: "Health +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseHealth1Draw1",
-            Response: "Health",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.contWidth = "250";
+      this.state.myNavInput.buttons = [
+        {
+          label: "Health +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseHealth1Draw1",
+              Response: "Health",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-      {
-        label: "Draw 1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseHealth1Draw1",
-            Response: "Draw",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+        {
+          label: "Draw 1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseHealth1Draw1",
+              Response: "draw",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-    ];
-    this.state.myNavInput.contTop = "25%";
-    this.state.myNavInput.isVisible = true;
+      ];
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
+  openCardPool(resolve) {
+    this.state.myGame.showModal = true;
+    resolve();
+  }
+
+  anyplayerheal(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+
+      this.state.myNavInput.buttons = [];
+      const numPlayers = this.state.gameData.Players;
+      this.state.myNavInput.contWidth = `${190 * numPlayers}`;
+      this.state.gameData.Players.forEach(p => {
+        this.state.myNavInput.buttons.push({
+          label: `${p.name}`,
+          action: () => {
+            utils.userResponse({
+              Callback: "addHealth1anyPlayer",
+              Response: `${p.name}`,
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
+        });
+      });
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
+  anyplayercoin(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      const numPlayers = this.state.gameData.Players.length;
+      this.state.myNavInput.contWidth = `${190 * numPlayers}`;
+      this.state.myNavInput.buttons = [];
+      this.state.gameData.Players.forEach(p => {
+        this.state.myNavInput.buttons.push({
+          label: `${p.name}`,
+          action: () => {
+            utils.userResponse({
+              Callback: "addCoin1anyPlayer",
+              Response: `${p.name}`,
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
+        });
+      });
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
+  otherplayerheal(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      const listOfOtherPlayers = this.state.gameData.Players.filter((p, i) => i != usr);
+      const numOtherPlayers = listOfOtherPlayers.length;
+      this.state.myNavInput.contWidth = `${numOtherPlayers * 190}`;
+      this.state.myNavInput.buttons = [];
+      listOfOtherPlayers.forEach(p => {
+        this.state.myNavInput.buttons.push({
+          label: `${p.name}`,
+          action: () => {
+            utils.userResponse({
+              Callback: "addHealth1anyPlayer",
+              Response: `${p.name}`,
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
+        });
+      });
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
     resolve();
   }
 
   handChoiceHealth1Ability1(resolve) {
-    console.log("in the handChoiceHealth1Ability1 event");
-    this.state.myNavInput.buttons = [
-      {
-        label: "Health +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseHealth1Ability1",
-            Response: "Health",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.contWidth = "250";
+      this.state.myNavInput.buttons = [
+        {
+          label: "Health +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseHealth1Ability1",
+              Response: "Health",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-      {
-        label: "Coin +1",
-        action: () => {
-          utils.userResponse({
-            Callback: "chooseHealth1Ability1",
-            Response: "Coin",
-          });
-          this.state.myNavInput.isVisible = false;
-          this.state.myNavInput.contTop = "55%";
-          this.state.myNavInput.buttons = [];
+        {
+          label: "Coin +1",
+          action: () => {
+            utils.userResponse({
+              Callback: "chooseHealth1Ability1",
+              Response: "Coin",
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = "190";
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
         },
-        unaction: () => {},
-        style: "",
-      },
-    ];
-    console.log(this.state.myNavInput.buttons);
-    this.state.myNavInput.contTop = "25%";
-    this.state.myNavInput.isVisible = true;
+      ];
+
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
     resolve();
   }
 
@@ -536,17 +536,101 @@ class GameEvent {
     resolve();
   }
 
+  discard1(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.contZ = "17";
+      this.state.myNavInput.buttons = [];
+      const numCards = this.state.myHand.hand.length;
+      this.state.myNavInput.contWidth = `${numCards * 190}`;
+      this.state.myHand.hand.forEach(c => {
+        this.state.myNavInput.buttons.push({
+          label: `${c.title}`,
+          action: () => {
+            utils.userResponse({
+              Callback: "discard",
+              Response: `${c.id}`,
+            });
+            this.state.myNavInput.isVisible = false;
+            this.state.myNavInput.contZ = "15";
+            this.state.myNavInput.contTop = "55%";
+            this.state.myNavInput.contWidth = `190`;
+            this.state.myNavInput.buttons = [];
+          },
+          unaction: () => {},
+          style: "",
+        });
+      });
+      this.state.myNavInput.contTop = "25%";
+      this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
   healOthers(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
-    const arrayOfPlayersToHeal = this.state.gameData.Players.splice(usr, 1);
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      const listOfOtherPlayers = this.state.gameData.Players.filter((p, i) => i != usr);
+      listOfOtherPlayers.forEach(p => {
+        p.addHealth(this.event.value);
+        p.bloomStatus = p.bloomStatus + " playerHeal";
+      });
+    }
+    resolve();
+  }
 
-    arrayOfPlayersToHeal.forEach(p => {
-      p.addHealth(this.event.value);
-      p.bloomStatus = p.bloomStatus + " playerHeal";
+  otherCoinAdd(resolve) {
+    const usr = this.event.value;
+    console.log("made it here, usr: ", usr);
+
+    this.state.mypUI.allPlayers[usr].coinPlacard.color = "limegreen";
+    this.state.mypUI.allPlayers[usr].coinPlacard.text = `+1`;
+
+    this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = true;
+    const mInt = setInterval(() => {
+      this.state.mypUI.allPlayers[usr].coinPlacard.offset -= 2;
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -25) {
+        this.state.mypUI.allPlayers[usr].coinPlacard.opacity -= 0.05;
+      }
+
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -75) {
+        clearInterval(mInt);
+        this.state.mypUI.allPlayers[usr].coinPlacard.offset = 0;
+        this.state.mypUI.allPlayers[usr].coinPlacard.opacity = 1;
+        this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
+      }
+    }, 50);
+    resolve();
+  }
+
+  prompt_CardPool(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
     });
-
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.buttons = [];
+      this.state.myNavInput.buttons.push({
+        label: "Open Card Pool",
+        action: (event, model, element) => {
+          utils.showCardPool();
+          utils.playSound("button");
+          this.state.myNavInput.isVisible = false;
+        },
+        unaction: (event, model, element) => {},
+        style: "",
+      });
+      this.state.myNavInput.isVisible = true;
+    } else {
+    }
     resolve();
   }
 
@@ -576,35 +660,79 @@ class GameEvent {
     }
     resolve();
   }
-
-  draw(resolve) {
-    console.log("drawing card");
+  draw2(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
-    //grab card from state
-    const lastcardindex = this.state.gameData.Players[usr].hand.length;
-    const newCard = this.state.gameData.Players[usr].hand[lastcardindex - 1];
-    console.log("card status", newCard, lastcardindex);
-    //update player hand
-    console.log(this.state.mypUI.allPlayers);
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      //grab card from state
+      const lastcardindex = this.state.gameData.Players[usr].hand.length;
+      const newCard1 = this.state.gameData.Players[usr].hand[lastcardindex - 1];
+      const newCard2 = this.state.gameData.Players[usr].hand[lastcardindex - 2];
 
-    //update current hand
-    switch (usr) {
-      case 0:
-        this.state.myHand.player1Hand.push(newCard);
-        break;
-      case 1:
-        this.state.myHand.player2Hand.push(newCard);
-        break;
-      case 2:
-        this.state.myHand.player3Hand.push(newCard);
-        break;
-      case 3:
-        this.state.myHand.player4Hand.push(newCard);
-        break;
+      //update current hand
+      switch (usr) {
+        case 0:
+          this.state.myHand.player1Hand.push(newCard1);
+          this.state.myHand.player1Hand.push(newCard2);
+          break;
+        case 1:
+          this.state.myHand.player2Hand.push(newCard1);
+          this.state.myHand.player2Hand.push(newCard2);
+          break;
+        case 2:
+          this.state.myHand.player3Hand.push(newCard1);
+          this.state.myHand.player3Hand.push(newCard2);
+          break;
+        case 3:
+          this.state.myHand.player4Hand.push(newCard1);
+          this.state.myHand.player4Hand.push(newCard2);
+          break;
+      }
+      this.state.myHand.hand.push(newCard1);
+      this.state.myHand.hand.push(newCard2);
     }
-    this.state.myHand.hand.push(newCard);
+    resolve();
+  }
+
+  draw(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      //grab card from state
+      const lastcardindex = this.state.gameData.Players[usr].hand.length;
+      const newCard = this.state.gameData.Players[usr].hand[lastcardindex - 1];
+
+      console.log("state hand");
+      console.table(this.state.gameData.Players[0].hand);
+
+      console.log("display hand");
+      console.table(this.state.myHand.hand);
+
+      console.log("player ui hand");
+      console.table(this.state.myHand.player1Hand);
+
+      //update current hand
+      switch (usr) {
+        case 0:
+          this.state.myHand.player1Hand.push(newCard);
+          break;
+        case 1:
+          this.state.myHand.player2Hand.push(newCard);
+          break;
+        case 2:
+          this.state.myHand.player3Hand.push(newCard);
+          break;
+        case 3:
+          this.state.myHand.player4Hand.push(newCard);
+          break;
+      }
+      this.state.myHand.hand.push(newCard);
+    }
     resolve();
   }
 
@@ -613,7 +741,6 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
     const username = this.state.gameData.Players[usr].name;
-    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
 
     switch (usr) {
       case 0:
@@ -663,6 +790,29 @@ class GameEvent {
         this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
       }
     }, 50);
+    resolve();
+  }
+
+  handRefresh(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+
+    switch (usr) {
+      case 0:
+        this.state.myHand.player1Hand = [...this.state.gameData.Players[usr].hand];
+        break;
+      case 1:
+        this.state.myHand.player2Hand = [...this.state.gameData.Players[usr].hand];
+        break;
+      case 2:
+        this.state.myHand.player3Hand = [...this.state.gameData.Players[usr].hand];
+        break;
+      case 3:
+        this.state.myHand.player4Hand = [...this.state.gameData.Players[usr].hand];
+        break;
+    }
+    this.state.myHand.hand = [...this.state.gameData.Players[usr].hand];
     resolve();
   }
 
@@ -734,7 +884,6 @@ class GameEvent {
   }
 
   enableMonsters(resolve) {
-    console.log("events: enabling monsters");
     utils.enableM();
     resolve();
   }
@@ -761,8 +910,18 @@ class GameEvent {
     resolve();
   }
 
+  raiseOtherhealth1(resolve) {
+    this.state.mypUI.allPlayers[this.event.value].addHealth(1);
+    resolve();
+  }
+
+  otherHealthFlash(resolve) {
+    const index = this.event.value;
+    this.state.mypUI.allPlayers[index].bloomStatus = this.state.mypUI.allPlayers[index].bloomStatus + " playerHeal";
+    resolve();
+  }
+
   indexProgress(resolve) {
-    console.trace("nav bar incrementing", this.event.state);
     this.state.myNavBar.increment(`${this.event.state}`);
     resolve();
   }
@@ -927,22 +1086,7 @@ class GameEvent {
     resolve();
   }
 
-  asyncShowMessage(resolve) {}
-
-  syncShowMessage(resolve) {}
-
-  log(resolve) {
-    console.log(this.event.message);
-    resolve();
-  }
-
-  alert(resolve) {
-    window.alert(this.event.message);
-    resolve();
-  }
-
   delay(resolve) {
-    console.log("delay");
     setTimeout(() => {
       resolve();
     }, this.event.timeout);

@@ -39,7 +39,7 @@ export default BarbarianLibrary = [
     ActiveEffect: { callback: "chooseAttack1Ability1", userPrompt: "chooseAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Weapon,
-    effectString: "Choose: Attack +1 -or- Ability +1",
+    effectString: "Choose: Attack +1 -or- Coin +1",
   },
   {
     id: "startermedkit",
@@ -59,7 +59,7 @@ export default BarbarianLibrary = [
     ActiveEffect: { callback: "addAbility2" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Friend,
-    effectString: "Ability +2",
+    effectString: "Coin +2",
   },
   {
     id: "startersteward",
@@ -69,7 +69,7 @@ export default BarbarianLibrary = [
     ActiveEffect: { callback: "chooseHealth1Ability1", userPrompt: "chooseHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Friend,
-    effectString: "Choose: Health +1 -or- Ability +1",
+    effectString: "Choose: Health +1 -or- Coin +1",
   },
   {
     id: "starterrage",
@@ -89,7 +89,7 @@ export default BarbarianLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "starterbowarrow",
@@ -99,6 +99,6 @@ export default BarbarianLibrary = [
     ActiveEffect: { callback: "chooseAttack1Ability1", userPrompt: "chooseAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Weapon,
-    effectString: "Choose: Attack +1 -or- Ability +1",
+    effectString: "Choose: Attack +1 -or- Coin +1",
   },
 ];

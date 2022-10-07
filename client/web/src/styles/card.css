@@ -16,12 +16,14 @@
   position: absolute;
   top: 10px;
   left: 10px;
+  color: #101f6b;
 }
 
 .card_level {
   position: absolute;
   bottom: 10px;
   right: 10px;
+  color: #101f6b;
 }
 
 .card_desc {
@@ -32,4 +34,9 @@
   text-align: center;
   transform: translate(-50%, -50%);
   font-size: small;
+  color: #101f6b;
+}
+
+.smallCard {
+  font-size: xx-small;
 }

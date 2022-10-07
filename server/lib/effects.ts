@@ -61,7 +61,7 @@ const noHeal = (state: InternalState, index: number, ctx: Context) => {
   state.players[index].statusEffects.push(StatusEffects.NoHeal);
 };
 
-const addHealth1ifMonsterDefeated = (state: InternalState, index: number, ctx: Context) => {
+const addAbility1ifMonsterDefeated = (state: InternalState, index: number, ctx: Context) => {
   const isAlreadyThere = state.players[index].statusEffects.findIndex(s => {
     return s == StatusEffects.MonsterBonus;
   });
@@ -75,12 +75,8 @@ const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
 };
 const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location) state.Location.damage += 1;
-  console.log("new location damage", state.Location?.damage);
+
   ctx.broadcastEvent("add1toLocation");
-
-  //location curse check
-  console.log(state.players[index].statusEffects);
-
   if (
     state.players[index].statusEffects.some(se => {
       return se == StatusEffects.LocationCursed;
@@ -169,19 +165,15 @@ const removeLocationPoint = (state: InternalState, index: number, ctx: Context) 
 };
 
 const chooseAttack1Ability1 = (state: InternalState, index: number, ctx: Context) => {
-  console.log("choose card played");
   if (!userResponseFlag) {
-    console.log("request sent");
     ctx.broadcastEvent("chooseAttack1Ability1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Attack") {
-      console.log("attack chosen");
       if (state.players[index]) state.players[index].attack += 1;
       ctx.broadcastEvent("+1Attack");
     } else if (state.responseData.response == "Coin") {
-      console.log("coin chosen");
       if (state.players[index]) state.players[index].coin += 1;
       ctx.broadcastEvent("+1Coin");
     }
@@ -189,7 +181,6 @@ const chooseAttack1Ability1 = (state: InternalState, index: number, ctx: Context
 };
 
 const chooseHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
-  console.log("chooseHealthAbility", userResponseFlag);
   if (!userResponseFlag) {
     ctx.broadcastEvent("chooseHealth1Ability1");
     userResponseFlag = true;
@@ -240,36 +231,22 @@ const chooseAbility1Draw1 = (state: InternalState, index: number, ctx: Context) 
 };
 
 const draw2discard1 = (state: InternalState, index: number, ctx: Context) => {
-  if (!userResponseFlag) {
-    if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-    let myCard = state.players[index].deck.pop()!; //Draw Card
-    state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
-    myCard = state.players[index].deck.pop()!; //Draw Card
-    state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
-    userResponseFlag = true;
-  } else {
-    userResponseFlag = false;
-    const cardindex = state.players[index].hand.findIndex(c => c.id === state.responseData.response);
-    state.players[index].hand.splice(cardindex, 1);
-    ctx.broadcastEvent("discard");
-  }
+  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+  let myCard = state.players[index].deck.pop()!; //Draw Card
+  state.players[index].hand.push(myCard);
+  myCard = state.players[index].deck.pop()!; //Draw Card
+  state.players[index].hand.push(myCard);
+  ctx.broadcastEvent("draw2");
+  ctx.broadcastEvent("discard");
 };
 
 const Draw1Discard1 = (state: InternalState, index: number, ctx: Context) => {
-  if (!userResponseFlag) {
-    if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-    let myCard = state.players[index].deck.pop()!; //Draw Card
-    state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
-    userResponseFlag = true;
-  } else {
-    userResponseFlag = false;
-    const cardindex = state.players[index].hand.findIndex(c => c.id === state.responseData.response);
-    state.players[index].hand.splice(cardindex, 1);
-    ctx.broadcastEvent("discard");
-  }
+  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+  let myCard = state.players[index].deck.pop()!; //Draw Card
+  state.players[index].hand.push(myCard);
+  ctx.broadcastEvent("draw");
+  ctx.broadcastEvent("discard");
 };
 
 const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) => {
@@ -297,9 +274,59 @@ const addHealth1anyPlayer = (state: InternalState, index: number, ctx: Context) 
   } else {
     userResponseFlag = false;
     let playerChosen = state.responseData.response;
-    let pIndex = state.players.findIndex(p => p.name === playerChosen);
+
+    let pIndex = state.players.findIndex(p => p.name == playerChosen);
     state.players[pIndex].health += 1;
-    ctx.broadcastEvent("otherplayer+1Health");
+    switch (pIndex) {
+      case 0:
+        ctx.broadcastEvent("player1health");
+        break;
+      case 1:
+        ctx.broadcastEvent("player2health");
+        break;
+      case 2:
+        ctx.broadcastEvent("player3health");
+        break;
+      case 3:
+        ctx.broadcastEvent("player4health");
+        break;
+    }
+  }
+};
+
+const addCoin1anyPlayer = (state: InternalState, index: number, ctx: Context) => {
+  if (!userResponseFlag) {
+    ctx.broadcastEvent("addCoin1anyPlayer");
+    userResponseFlag = true;
+  } else {
+    userResponseFlag = false;
+    let playerChosen = state.responseData.response;
+
+    let pIndex = state.players.findIndex(p => p.name == playerChosen);
+    state.players[pIndex].coin += 1;
+    switch (pIndex) {
+      case 0:
+        ctx.broadcastEvent("player1coin");
+        break;
+      case 1:
+        ctx.broadcastEvent("player2coin");
+        break;
+      case 2:
+        ctx.broadcastEvent("player3coin");
+        break;
+      case 3:
+        ctx.broadcastEvent("player4coin");
+        break;
+    }
+  }
+};
+
+const discard = (state: InternalState, index: number, ctx: Context) => {
+  let cardToRemove = state.responseData.response;
+  let CIndex = state.players[index].hand.findIndex(c => c.id === cardToRemove);
+  if (CIndex != -1) {
+    state.players[index].hand.splice(CIndex, 1);
+    ctx.broadcastEvent("discarded");
   }
 };
 
@@ -309,7 +336,7 @@ const callbacks = {
   noDraw,
   ifActiveHeroLosesOneHealthLocationCurse,
   ifDiscardLose1Health,
-  addHealth1ifMonsterDefeated,
+  addAbility1ifMonsterDefeated,
   loseTwoHealth,
   addOneLocationPoint,
   loseOneHealth,
@@ -326,9 +353,11 @@ const callbacks = {
   addHealth1Ability1,
   chooseAbility1Draw1,
   addHealth1anyPlayer,
+  addCoin1anyPlayer,
   draw2discard1,
   Draw1Discard1,
   removeLocationPoint,
   chooseHealth1Draw1,
   addAttack1ToAHaddHealth1ToAll,
+  discard,
 } as const;

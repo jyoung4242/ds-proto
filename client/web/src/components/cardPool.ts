@@ -16,12 +16,36 @@ export class CardPool {
             </div>
         </div>
         <div class="CP_CardModal">
-            <div class="CP_cardspot CPspot1"></div>
-            <div class="CP_cardspot CPspot2"></div>
-            <div class="CP_cardspot CPspot3"></div>
-            <div class="CP_cardspot CPspot4"></div>
-            <div class="CP_cardspot CPspot5"></div>
-            <div class="CP_cardspot CPspot6"></div>
+            <div class="CP_cardspot CPspot1">
+              <div class="card_title smallCard">\${gameData.cardPool[0].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[0]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[0].effectString}</div>
+            </div>
+            <div class="CP_cardspot CPspot2">
+              <div class="card_title smallCard">\${gameData.cardPool[1].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[1]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[1].effectString}</div>
+            </div>
+            <div class="CP_cardspot CPspot3">
+              <div class="card_title smallCard">\${gameData.cardPool[2].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[2]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[2].effectString}</div>
+            </div>
+            <div class="CP_cardspot CPspot4">
+              <div class="card_title smallCard">\${gameData.cardPool[3].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[3]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[3].effectString}</div>
+            </div>
+            <div class="CP_cardspot CPspot5">
+              <div class="card_title smallCard">\${gameData.cardPool[4].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[4]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[4].effectString}</div>
+            </div>
+            <div class="CP_cardspot CPspot6">
+              <div class="card_title smallCard">\${gameData.cardPool[5].title}</div>
+              <div class="card_level smallCard">Level \${gameData.cardPool[5]..level}</div>
+              <div class="card_desc smallCard">\${gameData.cardPool[5].effectString}</div>
+            </div>
         </div>
         
     </div>

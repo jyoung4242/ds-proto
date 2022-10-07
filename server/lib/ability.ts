@@ -19,7 +19,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addAttack1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Weapon,
-    effectString: "Attack +1, Ability +1",
+    effectString: "Attack +1, Coin +1",
   },
   {
     id: "boradsword",
@@ -39,7 +39,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addHealth1Ability1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Health +1, Ability +1",
+    effectString: "Health +1, Coin +1",
   },
   {
     id: "bracelet",
@@ -49,7 +49,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "jewel",
@@ -59,7 +59,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Item,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "daydream",
@@ -69,7 +69,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "awakening",
@@ -79,7 +79,7 @@ export default AbilityLibrary = [
     ActiveEffect: { callback: "addAbility1" },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Ability +1",
+    effectString: "Coin +1",
   },
   {
     id: "torrent",
@@ -152,7 +152,7 @@ export default AbilityLibrary = [
     },
     PassiveEffect: undefined,
     type: AbilityCardTypes.Spell,
-    effectString: "Choose: Ability +1 -or Draw 1",
+    effectString: "Choose: Coin +1 -or Draw 1",
   },
   {
     id: "duraina",
@@ -170,8 +170,8 @@ export default AbilityLibrary = [
     level: 1,
     cost: 2,
     ActiveEffect: { callback: "addAttack1" },
-    PassiveEffect: { callback: "addHealth1ifMonsterDefeated" },
+    PassiveEffect: { callback: "addAbility1ifMonsterDefeated" },
     type: AbilityCardTypes.Friend,
-    effectString: "Active Hero, Attack +1, if monster defeated, +1 Ability",
+    effectString: "Active Hero, Attack +1, if monster defeated, +1 Coin",
   },
 ];
