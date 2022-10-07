@@ -1,8 +1,9 @@
 import { resolve } from "../webpack.config";
 import { utils } from "./utils";
 import { iStatusMessage } from "./components/character";
-
+import { clearIsChoiceFlag } from "./state/state";
 import { discard, nodraw, location } from "./assets/assetPool";
+import { RoundState } from "../../../api/types";
 
 let SE_map = {
   0: { img: "", effect: "STUNNED" },
@@ -21,12 +22,17 @@ type GameEventType = {
   //add optional
 };
 
+let isAttackPointsZero = false;
+
 let longdelay: GameEventType = { type: "delay", timeout: 1500 };
 let shortdelay: GameEventType = { type: "delay", timeout: 300 };
 let indexProgressBar_passive: GameEventType = { type: "indexProgress", state: "passives" };
 let indexProgressBar_td: GameEventType = { type: "indexProgress", state: "td" };
 let indexProgressBar_monster: GameEventType = { type: "indexProgress", state: "monster" };
 let indexProgressBar_player: GameEventType = { type: "indexProgress", state: "player" };
+let indexProgressBar_cardPool: GameEventType = { type: "indexProgress", state: "purchase" };
+let indexProgressBar_mDamage: GameEventType = { type: "indexProgress", state: "damage" };
+let indexProgressBar_EndTurn: GameEventType = { type: "indexProgress", state: "endturn" };
 let lose1Health: GameEventType = { type: "lowerhealth", value: 1 };
 let lose2Health: GameEventType = { type: "lowerhealth", value: 2 };
 let gain1Health: GameEventType = { type: "raisehealth", value: 1 };
@@ -84,11 +90,19 @@ let raisep3Coin: GameEventType = { type: "otherCoinAdd", value: 2 };
 let raisep4Coin: GameEventType = { type: "otherCoinAdd", value: 3 };
 let showCardPoolEnable: GameEventType = { type: "prompt_CardPool" };
 let openCardPool: GameEventType = { type: "openCardPool" };
+let buycard: GameEventType = { type: "buyCardfromPool" };
+let closeCardPool: GameEventType = { type: "closeCardPool" };
+let enableMonsterDamage: GameEventType = { type: "enableMonster" };
+let checkforCoins: GameEventType = { type: "checkCoins" };
+let checkforAttack: GameEventType = { type: "checkForAttackPoints" };
+let enableEndTurn: GameEventType = { type: "promptForEndTurn" };
+let damagemonster: GameEventType = { type: "applyDamage" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
 };
 
+export let damageMonster: GameEventSequence = { sequence: [damagemonster] };
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
@@ -143,7 +157,13 @@ export let p1Coin1: GameEventSequence = { sequence: [raisep1Coin, refreshPlayerH
 export let p2Coin1: GameEventSequence = { sequence: [raisep2Coin, refreshPlayerHand] };
 export let p3Coin1: GameEventSequence = { sequence: [raisep3Coin, refreshPlayerHand] };
 export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerHand] };
-export let showCardPool: GameEventSequence = { sequence: [openCardPool] };
+export let showCardPool: GameEventSequence = { sequence: [openCardPool, shortdelay, checkforCoins] };
+export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard] };
+export let hideCardpool: GameEventSequence = {
+  sequence: [shortdelay, closeCardPool, indexProgressBar_cardPool, shortdelay, enableMonsterDamage],
+};
+export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
+export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
 
 class GameEvent {
   state: any;
@@ -175,6 +195,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contZ = "15";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -191,6 +212,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contZ = "15";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -225,6 +247,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
             this.state.myNavInput.contZ = "15";
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -241,6 +264,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
             this.state.myNavInput.contZ = "15";
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -248,6 +272,31 @@ class GameEvent {
       ];
       this.state.myNavInput.contTop = "25%";
       this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
+  enableMonster(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
+    if (myTurn) {
+      this.state.myNavInput.buttons = [];
+      this.state.myNavInput.buttons.push({
+        label: "Apply Damage",
+        action: (event, model, element) => {
+          utils.enableMonsterDamage();
+          utils.playSound("button");
+          this.state.myNavInput.isVisible = false;
+        },
+        unaction: (event, model, element) => {},
+        style: "",
+      });
+      this.state.myNavInput.isVisible = true;
+    } else {
     }
     resolve();
   }
@@ -274,6 +323,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contZ = "15";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -290,6 +340,7 @@ class GameEvent {
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -323,6 +374,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -339,6 +391,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -380,6 +433,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contZ = "15";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -415,6 +469,7 @@ class GameEvent {
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -451,6 +506,7 @@ class GameEvent {
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -484,6 +540,7 @@ class GameEvent {
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -500,6 +557,7 @@ class GameEvent {
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.contWidth = "190";
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -559,6 +617,7 @@ class GameEvent {
             this.state.myNavInput.contTop = "55%";
             this.state.myNavInput.contWidth = `190`;
             this.state.myNavInput.buttons = [];
+            clearIsChoiceFlag();
           },
           unaction: () => {},
           style: "",
@@ -634,6 +693,76 @@ class GameEvent {
     resolve();
   }
 
+  checkCoins(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
+    //if player doesn't have enough money...
+    //can player afford any more cards
+
+    const remainingFunds = this.state.gameData.Players[usr].coin;
+    const newGroupOfBuyableCards = [
+      this.state.gameData.cardPool[0],
+      this.state.gameData.cardPool[1],
+      this.state.gameData.cardPool[2],
+      this.state.gameData.cardPool[3],
+      this.state.gameData.cardPool[4],
+      this.state.gameData.cardPool[5],
+    ];
+
+    const canBuy = newGroupOfBuyableCards.some(c => {
+      return remainingFunds >= c.cost;
+    });
+
+    console.log(`purchase test result: ${canBuy}`);
+    if (!canBuy) {
+      utils.playSound("sadT");
+      setTimeout(() => {
+        utils.doneBuyingCards();
+        resolve();
+      }, 1250);
+    }
+    resolve();
+  }
+
+  buyCardfromPool(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+
+    //can player afford any more cards
+
+    const remainingFunds = this.state.gameData.Players[usr].coin;
+    const newGroupOfBuyableCards = [
+      this.state.gameData.cardPool[0],
+      this.state.gameData.cardPool[1],
+      this.state.gameData.cardPool[2],
+      this.state.gameData.cardPool[3],
+      this.state.gameData.cardPool[4],
+      this.state.gameData.cardPool[5],
+    ];
+
+    const canBuy = newGroupOfBuyableCards.some(c => {
+      return remainingFunds >= c.cost;
+    });
+
+    console.log(`purchase test result: ${canBuy}`);
+    if (!canBuy) {
+      utils.doneBuyingCards();
+    }
+    resolve();
+  }
+
+  closeCardPool(resolve) {
+    this.state.myGame.showModal = false;
+    resolve();
+  }
+
   prompt_playerHand(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -692,6 +821,30 @@ class GameEvent {
       }
       this.state.myHand.hand.push(newCard1);
       this.state.myHand.hand.push(newCard2);
+    }
+    resolve();
+  }
+
+  promptForEndTurn(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    const username = this.state.gameData.Players[usr].name;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    if (myTurn) {
+      this.state.myNavInput.buttons = [];
+      this.state.myNavInput.buttons.push({
+        label: "End Turn?",
+        action: (event, model, element) => {
+          utils.endTurn();
+          utils.playSound("button");
+          this.state.myNavInput.isVisible = false;
+        },
+        unaction: (event, model, element) => {},
+        style: "",
+      });
+      this.state.myNavInput.isVisible = true;
+    } else {
     }
     resolve();
   }
@@ -790,6 +943,17 @@ class GameEvent {
         this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
       }
     }, 50);
+    resolve();
+  }
+
+  checkForAttackPoints(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    isAttackPointsZero = this.state.gameData.Players[usr].attack == 0;
+    if (isAttackPointsZero) {
+      utils.monsterDamageDone();
+    }
     resolve();
   }
 
@@ -920,6 +1084,23 @@ class GameEvent {
     this.state.mypUI.allPlayers[index].bloomStatus = this.state.mypUI.allPlayers[index].bloomStatus + " playerHeal";
     resolve();
   }
+  applyDamage(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    // add locationdamage css to monster card
+    const existingString = this.state.myMonster.cssString;
+    this.state.myMonster.cssString = existingString + " playerdamage";
+    setTimeout(() => {
+      this.state.myMonster.cssString = existingString;
+      if (this.state.gameData.Players[usr].attack == 0) {
+        console.log(`attack empty`);
+        this.state.myMonster.cssString = "";
+        utils.monsterDamageDone();
+      }
+      resolve();
+    }, 1000);
+  }
 
   indexProgress(resolve) {
     this.state.myNavBar.increment(`${this.event.state}`);
@@ -941,15 +1122,16 @@ class GameEvent {
   }
 
   bloomMonsters(resolve) {
+    if (isAttackPointsZero && RoundState.activeApplyingDamage) return;
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
-    //this.state.myNavBar.increment("passives");
+
     if (myTurn) {
       this.state.myMonster.cssString = " td_bloom td_clickable nohover";
     } else {
-      this.state.myMonster.cssString = "td_bloom";
+      this.state.myMonster.cssString = " td_bloom";
     }
     resolve();
   }

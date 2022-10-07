@@ -10,6 +10,16 @@
   color: #101f6b;
   font-size: small;
   position: relative;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.card_container.pui-adding {
+  opacity: 0;
+}
+
+.card_container.pui-removing {
+  opacity: 0;
 }
 
 .card_title {
@@ -34,6 +44,13 @@
   text-align: center;
   transform: translate(-50%, -50%);
   font-size: small;
+  color: #101f6b;
+}
+
+.card_cost {
+  position: absolute;
+  bottom: 25px;
+  right: 10px;
   color: #101f6b;
 }
 

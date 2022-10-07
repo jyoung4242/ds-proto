@@ -10,15 +10,19 @@ import {
   anyPlayer1Coin,
   anyPlayer1Health,
   bloomMonsters,
+  cardpurchased,
   chooseAtk1Coin1,
   chooseAtk1Draw1,
   chooseCoin1Draw1,
   chooseHealth1Coin1,
   chooseHealth1Draw1,
+  damageMonster,
   discard1,
   draw2NewCard,
   drawNewCard,
+  enablemonsterDamage,
   healOthers1,
+  hideCardpool,
   hideTD,
   locDamage,
   lowerHealth1,
@@ -37,6 +41,7 @@ import {
   playerHandDone,
   playerHandShow,
   raiseHealth1,
+  readyToEndTurn,
   refreshHand,
   remove1Location,
   showCardPool,
@@ -74,8 +79,9 @@ import {
 //end of turn, next turn
 //card pool
 //assigning damage to monsters
-//last few events
+//validate all ability cards work
 
+let isChoiceButtonActive = false;
 const MOUSELIMIT = 10;
 let mouseCount = 0;
 let keybinding = undefined;
@@ -99,6 +105,10 @@ let roleMap = {
     [Gender.Male]: pmale,
     [Gender.Female]: pfemale,
   },
+};
+
+export const clearIsChoiceFlag = () => {
+  isChoiceButtonActive = false;
 };
 
 export class State {
@@ -335,11 +345,62 @@ export class State {
       myGame: {
         showModal: false,
       },
+      myCardPool: {
+        //open issues
+        //toasts don't hover
+        //need to add cost to card
+        cardSelected: 0,
+        showConfirmation: false,
+        selectedCard: {
+          id: "",
+          title: "",
+          desc: "",
+          cost: 0,
+          level: 1,
+        },
+        confCancel: () => {
+          this.state.myCardPool.showConfirmation = false;
+        },
+        confAccept: () => {
+          utils.buyCard(this.state.myCardPool.selectedCard.id);
+          this.state.myCardPool.showConfirmation = false;
+        },
+        clickHandler: (event, model, element) => {
+          const usr = this.state.gameData.Players.findIndex(p => {
+            return this.state.gameData.turn === p.id;
+          });
 
+          const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+          if (!myTurn) return;
+
+          const clickedCard = element.getAttribute("id");
+          const cardPoolIndex = parseInt(clickedCard.split("P")[1]);
+
+          //check for user's coin amount
+          //if coins > card cost let them buy
+          //if coin < card cost, toast message
+          const userMoneyAmount = this.state.gameData.Players[usr].coin;
+
+          if (userMoneyAmount >= this.state.gameData.cardPool[cardPoolIndex].cost) {
+            this.state.myCardPool.cardSelected = cardPoolIndex;
+            this.state.myCardPool.selectedCard.title = this.state.gameData.cardPool[cardPoolIndex].title;
+            this.state.myCardPool.selectedCard.desc = this.state.gameData.cardPool[cardPoolIndex].effectString;
+            this.state.myCardPool.selectedCard.cost = this.state.gameData.cardPool[cardPoolIndex].cost;
+            this.state.myCardPool.selectedCard.level = this.state.gameData.cardPool[cardPoolIndex].level;
+            this.state.myCardPool.selectedCard.id = this.state.gameData.cardPool[cardPoolIndex].id;
+            this.state.myCardPool.showConfirmation = true;
+            //show card confirmation window
+          } else {
+            this.state.myToast.addToast("card", "Player lacks the funds");
+            return;
+          }
+        },
+      },
       attributes: {
         icons:
           '<a href="https://www.flaticon.com/free-icons/card" title="card icons">Card icons created by Pixel perfect - Flaticon</a>',
         sounds: "Sound from Zapsplat.com",
+        moresounds: "Sound from freesound.org, f4ngy user, dealing card effect",
       },
       myToast: {
         intervalID: null,
@@ -481,13 +542,15 @@ export class State {
         },
         isEmpty: false,
         clickHandler: (_event, model, element, _attribute, object) => {
+          if (isChoiceButtonActive) return;
+
           const usr = this.state.gameData.Players.findIndex(p => {
             return this.state.gameData.turn === p.id;
           });
 
           const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
           if (!myTurn) return;
-
+          utils.playSound("playCard");
           const cardId = element.getAttribute("id");
           if (
             this.state.gameData.roundState == RoundState.activeRunningPlayer ||
@@ -518,7 +581,7 @@ export class State {
                 break;
             }
           }
-          console.log(object);
+
           object.$parent.$model.myHand.isEmpty = myTurn && object.$parent.$model.myHand.hand.length == 0;
 
           return;
@@ -573,6 +636,7 @@ export class State {
             utils.playMcard(cardId);
           }
           if (this.state.gameData.roundState == RoundState.activeApplyingDamage) {
+            utils.applyDamage(cardId);
           }
           return;
         },
@@ -740,7 +804,7 @@ export class State {
           },
           {
             title: "Apply Damage",
-            done: "Select Monster",
+            done: "Attack Complete",
             style: "",
             doneFlag: false,
             connector: true,
@@ -821,6 +885,8 @@ export class State {
       b.forEach((card, i) => {
         if ("id" in a[i]) {
           if (card.id != a[i].id) failedtests++;
+          console.log(`card damage: ${card.damage} vs ${a[i].damage}`);
+          if (card.damage != a[i].damage) failedtests++;
         }
       });
 
@@ -839,8 +905,15 @@ export class State {
       this.state.gameData.cardPool = update.state.cardPool;
       this.state.gameData.turnOrder = update.state.turnOrder;
       this.state.gameData.turn = update.state.turn;
-      if (!this.areArraysEqual(this.state.gameData.activeMonsters, update.state.activeMonsters)) {
-        this.state.gameData.activeMonsters = [...update.state.activeMonsters];
+
+      if (update.state.activeMonsters.length > 0) {
+        if (this.state.gameData.activeMonsters.length == 0) {
+          this.state.gameData.activeMonsters = [...update.state.activeMonsters];
+        } else if (update.state.activeMonsters[0].id != this.state.gameData.activeMonsters[0].id) {
+          this.state.gameData.activeMonsters = [...update.state.activeMonsters];
+        } else if (update.state.activeMonsters[0].damage != this.state.gameData.activeMonsters[0].damage) {
+          this.state.gameData.activeMonsters[0].damage = update.state.activeMonsters[0].damage;
+        }
       }
 
       this.state.gameData.location = update.state.location;
@@ -1017,37 +1090,54 @@ export class State {
           break;
 
         case "chooseAttack1Ability1":
+          isChoiceButtonActive = true;
           startEventSequence(chooseAtk1Coin1, this.state);
+
           break;
 
         case "chooseHealth1Ability1":
+          isChoiceButtonActive = true;
           startEventSequence(chooseHealth1Coin1, this.state);
+
           break;
 
         case "chooseAttack1Draw1":
+          isChoiceButtonActive = true;
           startEventSequence(chooseAtk1Draw1, this.state);
+
           break;
 
         case "chooseAbility1Draw1":
+          isChoiceButtonActive = true;
           startEventSequence(chooseCoin1Draw1, this.state);
+
           break;
         case "discard":
+          isChoiceButtonActive = true;
           startEventSequence(discard1, this.state);
+
           break;
         case "discarded":
           startEventSequence(refreshHand, this.state);
           break;
         case "chooseHealth1Draw1":
+          isChoiceButtonActive = true;
           startEventSequence(chooseHealth1Draw1, this.state);
+
           break;
         case "addHealth1anyPlayer":
+          isChoiceButtonActive = true;
           startEventSequence(anyPlayer1Health, this.state);
+
           break;
         case "addCoin1anyPlayer":
+          isChoiceButtonActive = true;
           startEventSequence(anyPlayer1Coin, this.state);
+
           break;
         case "player1health":
           startEventSequence(p1Health1, this.state);
+
           break;
         case "player2health":
           startEventSequence(p2Health1, this.state);
@@ -1072,6 +1162,21 @@ export class State {
           break;
         case "Show Card Pool":
           startEventSequence(showCardPool, this.state);
+          break;
+        case "card purchased":
+          startEventSequence(cardpurchased, this.state);
+          break;
+        case "Close Card Pool":
+          startEventSequence(hideCardpool, this.state);
+          break;
+        case "Ready to apply damage":
+          startEventSequence(enablemonsterDamage, this.state);
+          break;
+        case "Ready to End Turn":
+          startEventSequence(readyToEndTurn, this.state);
+          break;
+        case "Applying Damage":
+          startEventSequence(damageMonster, this.state);
           break;
       }
     });

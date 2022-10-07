@@ -176,6 +176,25 @@ export const utils = {
   async showCardPool() {
     await myConnection.enableCardPool({});
   },
+  async buyCard(cardID: string) {
+    let m = await myConnection.buyFromCardPool({ cardID: cardID });
+    console.log(`response from server :`, m);
+  },
+  async doneBuyingCards() {
+    await myConnection.closeCardPool({});
+  },
+  async endTurn() {
+    await myConnection.endRound({});
+  },
+  async enableMonsterDamage() {
+    await myConnection.enableMonsterDamage({});
+  },
+  async monsterDamageDone() {
+    await myConnection.disableMonsterDamage({});
+  },
+  async applyDamage(cardID: string) {
+    await myConnection.applyMonsterDamage({ cardID: cardID });
+  },
   async playPcard(cardID: string) {
     console.log(`sending server this card: ${cardID}`);
     let m = await myConnection.playPlayerCard({ cardID: cardID });
@@ -186,14 +205,11 @@ export const utils = {
       Callback: response.Callback,
       Response: response.Response,
     };
-    console.log("utils: 184, sending back user response: ", resp);
     await myConnection.userResponse({
       response: resp,
     });
   },
   async playerDone() {
-    console.log("utils done");
     let m = await myConnection.playerHandComplete({});
-    console.log("done server returned:  ", m);
   },
 };

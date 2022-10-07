@@ -1,6 +1,6 @@
 .monster_container {
   position: fixed;
-  top: 130px;
+  top: 140px;
   left: 50%;
   transform: translateX(-50%);
   border: 25px solid;

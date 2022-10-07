@@ -125,7 +125,6 @@
   width: var(--game-width);
   height: var(--game-height);
   z-index: 3;
-  display: none;
 }
 
 .CP_Modal_Inner {

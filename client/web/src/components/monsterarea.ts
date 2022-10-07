@@ -5,7 +5,7 @@ export class Monster {
           <div  class="monster_rel_container" >
               <span class="monster_title">Monster Card</span>
               <div id="mon" class="monster_card_outer \${myMonster.cssString}" $\{===myMonster.isVisible}>
-                <div id="\${monster.id}" class="monster_card "  \${monster<=*gameData.activeMonsters} \${click@=>myMonster.clickHandler}>
+                <div id="\${monster.id}" class="monster_card"  \${monster<=*gameData.activeMonsters} \${click@=>myMonster.clickHandler}>
                   <div class="topside">
                     <div  class="monster_card_title">\${monster.title}</div>
                     <div  class="monster_card_level">Level \${monster.level}</div>

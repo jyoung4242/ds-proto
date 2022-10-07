@@ -209,6 +209,7 @@ export class Impl implements Methods<InternalState> {
 
     //Deal starting cards
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
+
     state.Location = locationDeck.pop(); //Location Cards
     if (state.Location) {
       numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
@@ -454,16 +455,19 @@ export class Impl implements Methods<InternalState> {
     if (state.players[playerIndex].coin < state.cardPool[cardIndex].cost)
       return Response.error("Cost of selected card exceeds players ability points");
 
-    ctx.broadcastEvent("card purchased");
-
     //we got the card and player, and they can afford it,
     //move card from pool to players discard
+
+    //reduce player coins by cost of card
+    state.players[playerIndex].coin -= state.cardPool[cardIndex].cost;
+
     let cardToMove = state.cardPool.splice(cardIndex, 1);
     state.players[playerIndex].discard.concat(cardToMove);
     //replace that card in pool form ability deck
     let cardToDeal = abilityCardDeck.pop();
     if (cardToDeal) state.cardPool.push(cardToDeal);
 
+    ctx.broadcastEvent("card purchased");
     return Response.ok();
   }
 
@@ -490,12 +494,11 @@ export class Impl implements Methods<InternalState> {
   }
   applyMonsterDamage(state: InternalState, userId: UserId, ctx: Context, request: IApplyMonsterDamageRequest): Response {
     //guard conditions
-    if (state.roundState != RoundState.waitingOnApplyingDamage)
+    if (state.roundState != RoundState.activeApplyingDamage)
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    ctx.broadcastEvent("Applying Damage");
     let cardPlayed = request.cardID;
     const cardIndex = state.activeMonsters.findIndex(m => m.id === cardPlayed);
     const playerIndex = state.players.findIndex(p => p.id === userId);
@@ -505,7 +508,9 @@ export class Impl implements Methods<InternalState> {
     //we have monster card, players has attack to give
 
     //apply damage
+    console.log("before: ", state.activeMonsters[cardIndex].damage);
     state.activeMonsters[cardIndex].damage += 1;
+    console.log("after: ", state.activeMonsters[cardIndex].damage);
     //if monster damage reached zero, monster defeated
     if (state.activeMonsters[cardIndex].damage == 0) {
       //TODO - Monster Defeated
@@ -513,7 +518,7 @@ export class Impl implements Methods<InternalState> {
     }
     //reduce hero's attack
     state.players[playerIndex].attack -= 1;
-
+    ctx.broadcastEvent("Applying Damage");
     return Response.ok();
   }
 

@@ -28,6 +28,8 @@ import gmMusic from "../assets/audio/ingame.wav";
 import buttonWav from "../assets/audio/button.wav";
 import woosh from "../assets/audio/woosh.mp3";
 import mail from "../assets/audio/mail.mp3";
+import dealcard from "../assets/audio/dealingcard.wav";
+import sad from "../assets/audio/sadtrombone.wav";
 
 export {
   bmale,
@@ -56,4 +58,4 @@ export {
   help,
 };
 
-export { mail, woosh, gmMusic, bgMusic, buttonWav };
+export { mail, woosh, gmMusic, bgMusic, buttonWav, dealcard, sad };
