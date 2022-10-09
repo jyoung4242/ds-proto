@@ -170,8 +170,8 @@ export default AbilityLibrary = [
     level: 1,
     cost: 2,
     ActiveEffect: { callback: "addAttack1" },
-    PassiveEffect: { callback: "addAbility1ifMonsterDefeated" },
+    PassiveEffect: { callback: "addAttack1ifMonsterDefeated" },
     type: AbilityCardTypes.Friend,
-    effectString: "Active Hero, Attack +1, if monster defeated, +1 Coin",
+    effectString: "Active Hero, Attack +1, if monster defeated, +1 Attack",
   },
 ];

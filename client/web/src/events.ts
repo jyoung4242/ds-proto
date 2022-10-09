@@ -4,6 +4,7 @@ import { iStatusMessage } from "./components/character";
 import { clearIsChoiceFlag } from "./state/state";
 import { discard, nodraw, location } from "./assets/assetPool";
 import { RoundState } from "../../../api/types";
+import { Router } from "./components";
 
 let SE_map = {
   0: { img: "", effect: "STUNNED" },
@@ -101,6 +102,18 @@ let checkforCoins: GameEventType = { type: "checkCoins" };
 let checkforAttack: GameEventType = { type: "checkForAttackPoints" };
 let enableEndTurn: GameEventType = { type: "promptForEndTurn" };
 let damagemonster: GameEventType = { type: "applyDamage" };
+let clearSe: GameEventType = { type: "clearStatusEffects" };
+let showMonster: GameEventType = { type: "monsterChange", message: "show" };
+let hideMonster: GameEventType = { type: "monsterChange", message: "hide" };
+let gameoverwin: GameEventType = { type: "Endbanner", message: "VICTORY" };
+let gameoverlose: GameEventType = { type: "Endbanner", message: "FAILURE, TRY AGAIN" };
+
+let hideloc: GameEventType = { type: "hidelocation" };
+let shownewloc: GameEventType = { type: "showlocation" };
+let showLocationToast: GameEventType = { type: "toastLocationCurse" };
+let showDrawToast: GameEventType = { type: "toastDrawCurse" };
+let showDiscardCurseToast: GameEventType = { type: "toastDiscardCurse" };
+let returnToLogin: GameEventType = { type: "resetGame" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
@@ -169,8 +182,17 @@ export let hideCardpool: GameEventSequence = {
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
 export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
 export let endturn: GameEventSequence = {
-  sequence: [indexProgressBar_EndTurn, shortdelay, indexProgressBar_reset, shortdelay, hideNavbar, nextRound],
+  sequence: [indexProgressBar_EndTurn, shortdelay, indexProgressBar_reset, shortdelay, hideNavbar, nextRound, dealCards],
 };
+export let clearSE: GameEventSequence = { sequence: [clearSe] };
+export let ChangeMonster: GameEventSequence = { sequence: [hideMonster, shortdelay, showMonster] };
+export let winGameOver: GameEventSequence = { sequence: [gameoverwin, clearscreen, returnToLogin] };
+export let loseGameOver: GameEventSequence = { sequence: [gameoverlose, clearscreen, returnToLogin] };
+export let hideLocation: GameEventSequence = { sequence: [hideloc] };
+export let showNewLocation: GameEventSequence = { sequence: [shortdelay, shownewloc] };
+export let sendToastLocation: GameEventSequence = { sequence: [showLocationToast] };
+export let sendToastDrawBlocked: GameEventSequence = { sequence: [showDrawToast] };
+export let sendToastDiscardCurse: GameEventSequence = { sequence: [showDiscardCurseToast] };
 
 class GameEvent {
   state: any;
@@ -577,6 +599,16 @@ class GameEvent {
     resolve();
   }
 
+  monsterChange(resolve) {
+    if (this.event.message == "hide") {
+      this.state.myMonster.isVisible = false;
+    } else if (this.event.message == "show") {
+      this.state.myToast.addToast("monster", "New Monster Appears");
+      this.state.myMonster.isVisible = true;
+    }
+    resolve();
+  }
+
   statEffects(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -662,17 +694,17 @@ class GameEvent {
     this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = true;
     const mInt = setInterval(() => {
       this.state.mypUI.allPlayers[usr].coinPlacard.offset -= 2;
-      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -25) {
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -15) {
         this.state.mypUI.allPlayers[usr].coinPlacard.opacity -= 0.05;
       }
 
-      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -75) {
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -50) {
         clearInterval(mInt);
         this.state.mypUI.allPlayers[usr].coinPlacard.offset = 0;
         this.state.mypUI.allPlayers[usr].coinPlacard.opacity = 1;
         this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
       }
-    }, 50);
+    }, 30);
     resolve();
   }
 
@@ -837,6 +869,30 @@ class GameEvent {
     resolve();
   }
 
+  hidelocation(resolve) {
+    this.state.location.isVisible = false;
+    resolve();
+  }
+
+  showlocation(resolve) {
+    this.state.location.isVisible = true;
+    resolve();
+  }
+
+  toastLocationCurse(resolve) {
+    this.state.myToast.addToast("location", "Location Curse Active");
+    resolve();
+  }
+
+  toastDrawCurse(resolve) {
+    this.state.myToast.addToast("card", "Player Draw Blocked");
+    resolve();
+  }
+  toastDiscardCurse(resolve) {
+    this.state.myToast.addToast("user", "Discard Curse Active");
+    resolve();
+  }
+
   promptForEndTurn(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -944,17 +1000,17 @@ class GameEvent {
     this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = true;
     const mInt = setInterval(() => {
       this.state.mypUI.allPlayers[usr].coinPlacard.offset -= 2;
-      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -25) {
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset < -15) {
         this.state.mypUI.allPlayers[usr].coinPlacard.opacity -= 0.05;
       }
 
-      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -75) {
+      if (this.state.mypUI.allPlayers[usr].coinPlacard.offset <= -50) {
         clearInterval(mInt);
         this.state.mypUI.allPlayers[usr].coinPlacard.offset = 0;
         this.state.mypUI.allPlayers[usr].coinPlacard.opacity = 1;
         this.state.mypUI.allPlayers[usr].coinPlacard.isVisible = false;
       }
-    }, 50);
+    }, 30);
     resolve();
   }
 
@@ -1008,18 +1064,28 @@ class GameEvent {
     this.state.mypUI.allPlayers[usr].attackPlacard.isVisible = true;
     const mInt = setInterval(() => {
       this.state.mypUI.allPlayers[usr].attackPlacard.offset -= 2;
-      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset < -25) {
+      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset < -15) {
         this.state.mypUI.allPlayers[usr].attackPlacard.opacity -= 0.05;
       }
 
-      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset <= -75) {
+      if (this.state.mypUI.allPlayers[usr].attackPlacard.offset <= -50) {
         clearInterval(mInt);
         this.state.mypUI.allPlayers[usr].attackPlacard.offset = 0;
         this.state.mypUI.allPlayers[usr].attackPlacard.opacity = 1;
         this.state.mypUI.allPlayers[usr].attackPlacard.isVisible = false;
       }
-    }, 50);
+    }, 30);
     resolve();
+  }
+
+  Endbanner(resolve) {
+    this.state.myMessageOverlay.mainMessage = "GAME OVER";
+    this.state.myMessageOverlay.subMessage = this.event.message;
+    this.state.myMessageOverlay.isVisble = true;
+    setTimeout(() => {
+      this.state.myMessageOverlay.isVisble = false;
+      resolve();
+    }, 5000);
   }
 
   damageFlash(resolve) {
@@ -1096,6 +1162,16 @@ class GameEvent {
     this.state.mypUI.allPlayers[index].bloomStatus = this.state.mypUI.allPlayers[index].bloomStatus + " playerHeal";
     resolve();
   }
+
+  clearStatusEffects(resolve) {
+    clearIsChoiceFlag();
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    this.state.mypUI.allPlayers[usr].clearStatusMessages();
+    resolve();
+  }
+
   applyDamage(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -1294,6 +1370,24 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
     this.state.mypUI.allPlayers[usr].bloomStatus = "playerBloom";
+    resolve();
+  }
+
+  resetGame(resolve) {
+    //change screen back to login
+    //clear out game data
+    this.state.myContainer.screenSwitch(Router.Lobby);
+    this.state.gameData.Players = [];
+    this.state.gameData.playerIndex = 1;
+    this.state.gameData.roundState = 0;
+    this.state.gameData.activeMonsters = [];
+    this.state.gameData.location = {};
+    this.state.gameData.TDcard = {};
+    this.state.gameData.cardPool = [];
+    this.state.gameData.turn = 0;
+    this.state.gameData.turnOrder = [];
+    this.state.gameData.gameID = "";
+
     resolve();
   }
 

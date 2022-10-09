@@ -87,7 +87,7 @@ export type InternalState = {
 let gameLevel: number;
 let monsterDeck: MCard[] = [];
 let towerDefenseDeck: TDCard[] = [];
-let locationDeck: LCard[] = [];
+export let locationDeck: LCard[] = [];
 let abilityCardDeck: ABCard[] = [];
 export let barbarianCardDeck: ABCard[] = [];
 export let wizardCardDeck: ABCard[] = [];
@@ -103,6 +103,16 @@ type PlayerDiscard = {
   pile: ABCard[];
 };
 const playerDiscards: PlayerDiscard[] = [];
+
+const checkForValidHand = (hand: ABCard[]) => {
+  //look through array for undefined cards
+  hand.forEach(c => {
+    if (!c) {
+      console.trace("FAILED HAND CHECK");
+      console.table(hand);
+    }
+  });
+};
 
 export class Impl implements Methods<InternalState> {
   initialize(ctx: Context, request: IInitializeRequest): InternalState {
@@ -205,12 +215,13 @@ export class Impl implements Methods<InternalState> {
     //Setting State and turn order
     state.gameState = GameState.GameSetup;
     state.turnOrder = setTurnOrder(state.players, ctx);
-    console.log("turn order: ", state.turnOrder);
+
     state.turn = state.turnOrder[0];
 
-    //Deal starting cards
+    //Deal starting cards - clearing out monster damage
+    monsterDeck.forEach(m => (m.damage = 0));
     state.activeMonsters = setupActiveMonsters(numberMonstersActiveByLevel[gameLevel], monsterDeck);
-    state.activeMonsters.forEach(m => (m.damage = 0));
+
     state.Location = locationDeck.pop(); //Location Cards
     if (state.Location) {
       numberOfTDCardsForThisLocation = state.Location.td; //set the TD number in case there's an iteration
@@ -269,7 +280,7 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningMonsterPassives;
     const playerIndex = state.players.findIndex(p => p.id === userId);
-
+    console.log("line 283", state.players[playerIndex].hand);
     state.activeMonsters.forEach((monster, index) => {
       if (monster.PassiveEffect != undefined) {
         executeCallback(monster.PassiveEffect.callback, state, playerIndex, ctx);
@@ -321,6 +332,13 @@ export class Impl implements Methods<InternalState> {
       state.TD = undefined;
       ctx.broadcastEvent("hideTD");
     }
+
+    //check if TD needs reshuffled
+    if (towerDefenseDeck.length == 0) {
+      //reset towerDefense deck
+      towerDefenseDeck = setupTowerDefenseDeck(TDLibrary, gameLevel, ctx);
+    }
+
     return Response.ok();
   }
 
@@ -352,7 +370,6 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    let cardPlayed = request.cardID;
     let pIndex = state.players.findIndex(p => {
       return p.id == userId;
     });
@@ -396,18 +413,30 @@ export class Impl implements Methods<InternalState> {
     let cardPlayed = request.cardID;
     const playerIndex = state.players.findIndex(p => p.id === userId);
     const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
-
+    console.log("line 410", state.players[playerIndex].hand);
     resetUserResponse();
-    if (state.players[playerIndex].hand[cardindex].ActiveEffect)
+    if (state.players[playerIndex].hand[cardindex].ActiveEffect) {
+      console.log("a callback: ", state.players[playerIndex].hand[cardindex].ActiveEffect?.callback);
       executeCallback(state.players[playerIndex].hand[cardindex].ActiveEffect?.callback!, state, playerIndex, ctx);
-    //executeCallback("chooseAttack1Ability1", state, playerIndex, ctx);
-    if (state.players[playerIndex].hand[cardindex].PassiveEffect)
+    }
+    if (state.players[playerIndex].hand[cardindex].PassiveEffect) {
+      console.log("p callback: ", state.players[playerIndex].hand[cardindex].PassiveEffect?.callback);
       executeCallback(state.players[playerIndex].hand[cardindex].PassiveEffect?.callback!, state, playerIndex, ctx);
+    }
     playerIndex;
 
     //remove card from hand and discard
-    state.players[playerIndex].discard.push(state.players[playerIndex].hand[cardindex]);
+    console.log(`card index: ${cardindex}`);
+    console.log("line 421", state.players[playerIndex].hand);
+    const moveCard = state.players[playerIndex].hand[cardindex];
+    console.log("before", state.players[playerIndex].hand);
+    state.players[playerIndex].discard.push(moveCard);
     state.players[playerIndex].hand.splice(cardindex, 1);
+    console.log("after", state.players[playerIndex].hand);
+    checkForValidHand(state.players[playerIndex].hand);
+    state.players[playerIndex].hand = state.players[playerIndex].hand.filter(function (x) {
+      return x !== undefined;
+    });
     return Response.ok();
   }
 
@@ -463,10 +492,15 @@ export class Impl implements Methods<InternalState> {
     state.players[playerIndex].coin -= state.cardPool[cardIndex].cost;
 
     let cardToMove = state.cardPool.splice(cardIndex, 1);
-    state.players[playerIndex].discard.concat(cardToMove);
+    if (cardToMove == undefined) {
+      console.log("bad card bought: ", cardToMove);
+    }
+    state.players[playerIndex].discard.push(cardToMove[0]);
     //replace that card in pool form ability deck
     let cardToDeal = abilityCardDeck.pop();
     if (cardToDeal) state.cardPool.push(cardToDeal);
+
+    checkForValidHand(state.players[playerIndex].discard);
 
     ctx.broadcastEvent("card purchased");
     return Response.ok();
@@ -512,10 +546,47 @@ export class Impl implements Methods<InternalState> {
     state.activeMonsters[cardIndex].damage += 1;
 
     //if monster damage reached zero, monster defeated
-    if (state.activeMonsters[cardIndex].damage == 0) {
-      //TODO - Monster Defeated
-      //TODO - End Game conditions
+    if (state.activeMonsters[cardIndex].damage == state.activeMonsters[cardIndex].health) {
+      //monster defeated
+      console.log("monster defeated");
+      ctx.broadcastEvent("monsterdefeated");
+
+      //issue reward to players
+      if (state.activeMonsters[0].ActiveEffect)
+        executeCallback(state.activeMonsters[0].Rewards.callback, state, playerIndex, ctx);
+
+      //check for monster bonus
+      const isBonuseActive = state.players[playerIndex].statusEffects.findIndex(se => se == StatusEffects.MonsterBonus);
+      if (isBonuseActive != -1) {
+        executeCallback("addAttack1", state, playerIndex, ctx);
+      }
+
+      //if this monster had a status effect tied to it, remove from players
+      if (state.activeMonsters[0].PassiveEffect) {
+        executeCallback("removeStatuseffect", state, playerIndex, ctx);
+      }
+
+      //show next monster
+      const nextMonster = monsterDeck.pop();
+
+      //test for no more monsters
+      if (nextMonster != undefined) state.activeMonsters[0] = nextMonster as MCard;
+      else {
+        //game over - you win
+        console.log("GAME OVER YOU WIN");
+        ctx.broadcastEvent("VICTORY");
+        state.roundState = RoundState.idle;
+        state.gameState = GameState.GameOver;
+        return Response.ok();
+      }
+
+      //if monster has passives, play
+      if (state.activeMonsters[0].PassiveEffect != undefined) {
+        executeCallback(state.activeMonsters[0].PassiveEffect.callback, state, playerIndex, ctx);
+        ctx.broadcastEvent("STATUSEFFECT ADDED");
+      }
     }
+
     //reduce hero's attack
     state.players[playerIndex].attack -= 1;
     ctx.broadcastEvent("Applying Damage");
@@ -542,16 +613,21 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     const playerIndex = state.players.findIndex(p => p.id === userId);
-    //redeal hand for user
 
+    //clear all status effects
+    state.players[playerIndex].statusEffects = [];
+    ctx.broadcastEvent("clearSE");
+
+    //redeal hand for user
     //test to see if 5 cards in deck, if not... reshuffle discard
-    if (state.players[playerIndex].deck.length < 5) {
-      state.players[playerIndex].deck = [
-        ...state.players[playerIndex].deck,
-        ...ctx.chance.shuffle(state.players[playerIndex].discard),
-      ];
-    }
-    state.players[playerIndex].discard = [];
+
+    if (state.players[playerIndex].deck.length < 5)
+      state.players[playerIndex].deck.push(
+        ...ctx.chance.shuffle([
+          ...state.players[playerIndex].deck.splice(0),
+          ...state.players[playerIndex].discard.splice(0),
+        ])
+      );
 
     //deal 5 cards to hand
     for (let cd = 0; cd < 5; cd++) {
@@ -559,11 +635,14 @@ export class Impl implements Methods<InternalState> {
       if (myCard) state.players[playerIndex].hand.push(myCard);
     }
 
+    //clear attack and coins
+    state.players[playerIndex].coin = 0;
+    state.players[playerIndex].attack = 0;
+
     //shift turn via turn order
     let numberOfPlayers = state.players.length;
     let turnIndex = state.turnOrder.findIndex(u => u == userId);
 
-    console.log("changing turn order: ", numberOfPlayers, turnIndex);
     if (turnIndex + 1 == numberOfPlayers) turnIndex = 0; //next player is turnOrder 0
     else turnIndex += 1; //next player is next index
     state.turn = state.turnOrder[turnIndex];
@@ -576,6 +655,10 @@ export class Impl implements Methods<InternalState> {
 
   getUserState(state: InternalState, userId: UserId): UserState {
     let userIndex = state.players.findIndex(p => p.id === userId);
+    state.players.forEach(p => {
+      //console.log(`${p.name}'s hand`);
+      //p.hand.forEach(c => console.log(c));
+    });
     if (userIndex != -1) {
       const clientState: UserState = {
         me: userIndex,

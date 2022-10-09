@@ -124,4 +124,8 @@ export class Character {
   }
 
   removeStatusMessage(msg: iStatusMessage) {}
+
+  clearStatusMessages() {
+    this.statusEffects.length = 0;
+  }
 }

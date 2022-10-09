@@ -32,7 +32,7 @@ export default MonsterLibrary = [
     PassiveEffect: undefined,
     rewardstring: " +1 Health",
     Rewards: {
-      callback: "allHereosGain1Ability1Health",
+      callback: "allHereosGain1Health",
     },
     StatusEffects: [],
   },
@@ -49,7 +49,7 @@ export default MonsterLibrary = [
     },
     rewardstring: "Remove one location point",
     Rewards: {
-      callback: "removeOneLocationPoint",
+      callback: "removeLocationPoint",
     },
     StatusEffects: [],
   },

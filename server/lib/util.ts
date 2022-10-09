@@ -110,7 +110,14 @@ export const getNumberOfActiveMonstersWithActiveEvents = (monsters: MCard[]): nu
 };
 
 export const reshuffleDeck = (ctx: Context, deck: ABCard[], discard: ABCard[]) => {
-  deck = [...discard];
+  console.log("reshuffle routine: before");
+  console.log(discard);
+  console.log(deck);
+  deck.push(...ctx.chance.shuffle([...deck.splice(0), ...discard.splice(0)]));
+  /* deck = [...discard];
   discard = [];
-  deck = ctx.chance.shuffle(deck);
+  deck = ctx.chance.shuffle(deck); */
+  console.log("reshuffle routine: after");
+  console.log(discard);
+  console.log(deck);
 };

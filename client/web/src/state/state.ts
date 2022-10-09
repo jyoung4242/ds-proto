@@ -11,11 +11,13 @@ import {
   anyPlayer1Health,
   bloomMonsters,
   cardpurchased,
+  ChangeMonster,
   chooseAtk1Coin1,
   chooseAtk1Draw1,
   chooseCoin1Draw1,
   chooseHealth1Coin1,
   chooseHealth1Draw1,
+  clearSE,
   damageMonster,
   discard1,
   draw2NewCard,
@@ -24,8 +26,10 @@ import {
   endturn,
   healOthers1,
   hideCardpool,
+  hideLocation,
   hideTD,
   locDamage,
+  loseGameOver,
   lowerHealth1,
   lowerHealth2,
   MonsterPlayed,
@@ -45,13 +49,18 @@ import {
   readyToEndTurn,
   refreshHand,
   remove1Location,
+  sendToastDiscardCurse,
+  sendToastDrawBlocked,
+  sendToastLocation,
   showCardPool,
+  showNewLocation,
   skipMonsters,
   startEventSequence,
   startSequence,
   startSetupSeq,
   startTurn,
   updateStatEffects,
+  winGameOver,
 } from "../events";
 
 import {
@@ -72,15 +81,12 @@ import {
   unmute,
 } from "../assets/assetPool";
 
-//TODO - curses
+//TODO -
+
 //STUNNED
-//lose location
-//defeat monster - rewards
-//win demo game
-//end of turn, next turn
-//card pool
-//assigning damage to monsters
 //validate all ability cards work
+//toast messages aren't high enough z index - try again later
+//helpfile needs finished
 
 let isChoiceButtonActive = false;
 const MOUSELIMIT = 10;
@@ -543,6 +549,7 @@ export class State {
         },
         isEmpty: false,
         clickHandler: (_event, model, element, _attribute, object) => {
+          console.log("choice button: ", isChoiceButtonActive);
           if (isChoiceButtonActive) return;
 
           const usr = this.state.gameData.Players.findIndex(p => {
@@ -550,6 +557,7 @@ export class State {
           });
 
           const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+          console.log(this.state.gameData.Players[usr].id, myTurn, this.state.playerData.id);
           if (!myTurn) return;
           utils.playSound("playCard");
           const cardId = element.getAttribute("id");
@@ -908,6 +916,7 @@ export class State {
       this.state.gameData.turn = update.state.turn;
 
       if (update.state.activeMonsters.length > 0) {
+        console.log("monsters", this.state.gameData.activeMonsters[0], update.state.activeMonsters[0]);
         if (this.state.gameData.activeMonsters.length == 0) {
           this.state.gameData.activeMonsters = [...update.state.activeMonsters];
         } else if (update.state.activeMonsters[0].id != this.state.gameData.activeMonsters[0].id) {
@@ -1182,6 +1191,33 @@ export class State {
         case "Ready for next player":
           console.log("running endturn");
           startEventSequence(endturn, this.state);
+          break;
+        case "clearSE":
+          startEventSequence(clearSE, this.state);
+          break;
+        case "monsterdefeated":
+          startEventSequence(ChangeMonster, this.state);
+          break;
+        case "VICTORY":
+          startEventSequence(winGameOver, this.state);
+          break;
+        case "drawBlocked":
+          startEventSequence(sendToastDrawBlocked, this.state);
+          break;
+        case "LOST":
+          startEventSequence(loseGameOver, this.state);
+          break;
+        case "LocationLost":
+          startEventSequence(hideLocation, this.state);
+          break;
+        case "newlocation":
+          startEventSequence(showNewLocation, this.state);
+          break;
+        case "locationCurseEffect":
+          startEventSequence(sendToastLocation, this.state);
+          break;
+        case "discardcurse":
+          startEventSequence(sendToastDiscardCurse, this.state);
           break;
       }
     });

@@ -1,6 +1,6 @@
-import { StatusEffects } from "../../api/types";
+import { ABCard, GameState, RoundState, StatusEffects } from "../../api/types";
 import { Context } from "../.hathora/methods";
-import { InternalState } from "../impl";
+import { InternalState, locationDeck } from "../impl";
 import { reshuffleDeck } from "./util";
 
 type Callbacks = typeof callbacks;
@@ -53,6 +53,22 @@ const stunned = (state: InternalState, index: number, ctx: Context) => {
   ctx.broadcastEvent("STUNNED");
 };
 
+const removeStatuseffect = (state: InternalState, index: number, ctx: Context) => {
+  //get callback
+  let curseIndex;
+  switch (state.activeMonsters[0].PassiveEffect?.callback) {
+    case "ifDiscardLose1Health":
+      curseIndex = state.players[index].statusEffects.findIndex(se => se == StatusEffects.DiscardCurse);
+      if (curseIndex != -1) state.players[index].statusEffects.splice(curseIndex, 1);
+      break;
+    case "ifActiveHeroLosesOneHealthLocationCurse":
+      curseIndex = state.players[index].statusEffects.findIndex(se => se == StatusEffects.LocationCursed);
+      if (curseIndex != -1) state.players[index].statusEffects.splice(curseIndex, 1);
+      break;
+  }
+  ctx.broadcastEvent("STATUSEFFECT ADDED");
+};
+
 const noHeal = (state: InternalState, index: number, ctx: Context) => {
   const isAlreadyThere = state.players[index].statusEffects.findIndex(s => {
     return s == StatusEffects.NoHeal;
@@ -61,7 +77,7 @@ const noHeal = (state: InternalState, index: number, ctx: Context) => {
   state.players[index].statusEffects.push(StatusEffects.NoHeal);
 };
 
-const addAbility1ifMonsterDefeated = (state: InternalState, index: number, ctx: Context) => {
+const addAttack1ifMonsterDefeated = (state: InternalState, index: number, ctx: Context) => {
   const isAlreadyThere = state.players[index].statusEffects.findIndex(s => {
     return s == StatusEffects.MonsterBonus;
   });
@@ -69,13 +85,32 @@ const addAbility1ifMonsterDefeated = (state: InternalState, index: number, ctx: 
   state.players[index].statusEffects.push(StatusEffects.MonsterBonus);
 };
 
+const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
+  if (state.players[index]) state.players[index].health -= 1;
+  ctx.broadcastEvent("Lose1Health");
+};
+
 const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
+  //STUN CHECK
+  if (state.players[index].health <= 2) {
+    //player will be stunned
+    state.players[index].health = 0;
+    addOneLocationPoint(state, index, ctx);
+    //lose half your cards
+    const numCardsToLose = Math.ceil(state.players[index].hand.length / 2);
+
+    for (let x = 0; x < numCardsToLose; x++) {
+      //TODO-finishe this here
+    }
+
+    ctx.broadcastEvent("STUNNED");
+  }
+
   if (state.players[index]) state.players[index].health -= 2;
   ctx.broadcastEvent("Lose2Health");
 };
 const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location) state.Location.damage += 1;
-
   ctx.broadcastEvent("add1toLocation");
   if (
     state.players[index].statusEffects.some(se => {
@@ -83,14 +118,27 @@ const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) 
     })
   ) {
     //found location curse
+    ctx.broadcastEvent("locationCurseEffect");
     state.players[index].health -= 1;
     ctx.broadcastEvent("Lose1Health");
     //TODO - stun check
   }
-};
-const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
-  if (state.players[index]) state.players[index].health -= 1;
-  ctx.broadcastEvent("Lose1Health");
+
+  //check for lost location
+  if (state.Location?.damage == state.Location?.health) {
+    //location lost
+    ctx.broadcastEvent("LocationLost");
+
+    //next location check
+    if (locationDeck.length > 0) {
+      state.Location = locationDeck.pop(); //Location Cards
+      ctx.broadcastEvent("newlocation");
+    } else {
+      ctx.broadcastEvent("LOST");
+      state.roundState = RoundState.idle;
+      state.gameState = GameState.GameOver;
+    }
+  }
 };
 
 const addAttack1 = (state: InternalState, index: number, ctx: Context) => {
@@ -122,24 +170,44 @@ const addAttack1Ability1 = (state: InternalState, index: number, ctx: Context) =
 
 const addAbility1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
-  //draw from deck
-  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-  const myCard = state.players[index].deck.pop()!; //Draw Card
-  state.players[index].hand.push(myCard);
-
   ctx.broadcastEvent("+1Coin");
-  ctx.broadcastEvent("draw");
+
+  //check for draw curse
+  const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+  if (isCurseActive == -1) {
+    //draw from deck
+    if (state.players[index].deck.length == 0)
+      state.players[index].deck.push(
+        ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+      ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+    const myCard = state.players[index].deck.pop()!; //Draw Card
+    state.players[index].hand.push(myCard);
+    ctx.broadcastEvent("draw");
+  } else {
+    ctx.broadcastEvent("drawBlocked");
+  }
 };
 
 const addAttack1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].attack += 1;
-  //draw from deck
-  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-  const myCard = state.players[index].deck.pop()!; //Draw Card
-  state.players[index].hand.push(myCard);
-
   ctx.broadcastEvent("+1Attack");
-  ctx.broadcastEvent("draw");
+
+  //check for draw curse
+  const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+  if (isCurseActive == -1) {
+    //draw from deck
+    if (state.players[index].deck.length == 0)
+      state.players[index].deck.push(
+        ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+      ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+    const myCard = state.players[index].deck.pop()!; //Draw Card
+    state.players[index].hand.push(myCard);
+    ctx.broadcastEvent("draw");
+  } else {
+    ctx.broadcastEvent("drawBlocked");
+  }
 };
 
 const addHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
@@ -205,10 +273,21 @@ const chooseAttack1Draw1 = (state: InternalState, index: number, ctx: Context) =
       if (state.players[index]) state.players[index].attack += 1;
       ctx.broadcastEvent("+1Attack");
     } else if (state.responseData.response == "draw") {
-      if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-      const myCard = state.players[index].deck.pop()!; //Draw Card
-      state.players[index].hand.push(myCard);
-      ctx.broadcastEvent("draw");
+      //check for draw curse
+      const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+      if (isCurseActive == -1) {
+        //draw from deck
+        if (state.players[index].deck.length == 0)
+          state.players[index].deck.push(
+            ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+          ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+        const myCard = state.players[index].deck.pop()!; //Draw Card
+        state.players[index].hand.push(myCard);
+        ctx.broadcastEvent("draw");
+      } else {
+        ctx.broadcastEvent("drawBlocked");
+      }
     }
   }
 };
@@ -222,32 +301,64 @@ const chooseAbility1Draw1 = (state: InternalState, index: number, ctx: Context) 
       if (state.players[index]) state.players[index].coin += 1;
       ctx.broadcastEvent("+1Coin");
     } else if (state.responseData.response == "draw") {
-      if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-      const myCard = state.players[index].deck.pop()!; //Draw Card
-      state.players[index].hand.push(myCard);
-      ctx.broadcastEvent("draw");
+      const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+      if (isCurseActive == -1) {
+        //draw from deck
+        if (state.players[index].deck.length == 0)
+          state.players[index].deck.push(
+            ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+          ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+        const myCard = state.players[index].deck.pop()!; //Draw Card
+        state.players[index].hand.push(myCard);
+        ctx.broadcastEvent("draw");
+      } else {
+        ctx.broadcastEvent("drawBlocked");
+      }
     }
   }
 };
 
 const draw2discard1 = (state: InternalState, index: number, ctx: Context) => {
-  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+  const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+  if (isCurseActive == -1) {
+    //draw from deck
+    if (state.players[index].deck.length == 0)
+      state.players[index].deck.push(
+        ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+      ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
 
-  let myCard = state.players[index].deck.pop()!; //Draw Card
-  state.players[index].hand.push(myCard);
-  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+    let myCard = state.players[index].deck.pop()!; //Draw Card
+    state.players[index].hand.push(myCard);
+    if (state.players[index].deck.length == 0)
+      state.players[index].deck.push(
+        ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+      ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
 
-  myCard = state.players[index].deck.pop()!; //Draw Card
-  state.players[index].hand.push(myCard);
-  ctx.broadcastEvent("draw2");
+    myCard = state.players[index].deck.pop()!; //Draw Card
+    state.players[index].hand.push(myCard);
+    ctx.broadcastEvent("draw2");
+  } else {
+    ctx.broadcastEvent("drawBlocked");
+  }
   ctx.broadcastEvent("discard");
 };
 
 const Draw1Discard1 = (state: InternalState, index: number, ctx: Context) => {
-  if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-  let myCard = state.players[index].deck.pop()!; //Draw Card
-  state.players[index].hand.push(myCard);
-  ctx.broadcastEvent("draw");
+  const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+  if (isCurseActive == -1) {
+    //draw from deck
+    if (state.players[index].deck.length == 0)
+      state.players[index].deck.push(
+        ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+      ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+    const myCard = state.players[index].deck.pop()!; //Draw Card
+    state.players[index].hand.push(myCard);
+    ctx.broadcastEvent("draw");
+  } else {
+    ctx.broadcastEvent("drawBlocked");
+  }
   ctx.broadcastEvent("discard");
 };
 
@@ -261,10 +372,20 @@ const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) =
       if (state.players[index]) state.players[index].health += 1;
       ctx.broadcastEvent("+1Health");
     } else if (state.responseData.response == "draw") {
-      if (state.players[index].deck.length == 0) reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
-      const myCard = state.players[index].deck.pop()!; //Draw Card
-      state.players[index].hand.push(myCard);
-      ctx.broadcastEvent("draw");
+      const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+      if (isCurseActive == -1) {
+        //draw from deck
+        if (state.players[index].deck.length == 0)
+          state.players[index].deck.push(
+            ...ctx.chance.shuffle([...state.players[index].deck.splice(0), ...state.players[index].discard.splice(0)])
+          ); //reshuffleDeck(ctx, state.players[index].deck, state.players[index].discard);
+
+        const myCard = state.players[index].deck.pop()!; //Draw Card
+        state.players[index].hand.push(myCard);
+        ctx.broadcastEvent("draw");
+      } else {
+        ctx.broadcastEvent("drawBlocked");
+      }
     }
   }
 };
@@ -323,8 +444,38 @@ const addCoin1anyPlayer = (state: InternalState, index: number, ctx: Context) =>
   }
 };
 
+const allHereosGain1Health = (state: InternalState, index: number, ctx: Context) => {
+  state.players.forEach(p => {
+    if (p.health < 10) addHealth1(state, index, ctx);
+  });
+};
+
+const allHereosDrawOne = (state: InternalState, index: number, ctx: Context) => {
+  state.players.forEach(p => {
+    const isCurseActive = p.statusEffects.findIndex(se => se == StatusEffects.NoDraw);
+    if (isCurseActive == -1) {
+      //draw from deck
+      if (p.deck.length == 0) p.deck.push(...ctx.chance.shuffle([...p.deck.splice(0), ...p.discard.splice(0)]));
+
+      const myCard = p.deck.pop()!; //Draw Card
+      p.hand.push(myCard);
+      ctx.sendEvent("draw", p.id);
+    } else {
+      ctx.sendEvent("drawblocked", p.id);
+    }
+  });
+};
+
 const discard = (state: InternalState, index: number, ctx: Context) => {
   let cardToRemove = state.responseData.response;
+
+  //check for discard curse
+  const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.DiscardCurse);
+  if (isCurseActive != -1) {
+    ctx.broadcastEvent("discardcurse");
+    loseOneHealth(state, index, ctx);
+  }
+
   let CIndex = state.players[index].hand.findIndex(c => c.id === cardToRemove);
   if (CIndex != -1) {
     state.players[index].hand.splice(CIndex, 1);
@@ -338,7 +489,7 @@ const callbacks = {
   noDraw,
   ifActiveHeroLosesOneHealthLocationCurse,
   ifDiscardLose1Health,
-  addAbility1ifMonsterDefeated,
+  addAttack1ifMonsterDefeated,
   loseTwoHealth,
   addOneLocationPoint,
   loseOneHealth,
@@ -362,4 +513,7 @@ const callbacks = {
   chooseHealth1Draw1,
   addAttack1ToAHaddHealth1ToAll,
   discard,
+  allHereosDrawOne,
+  allHereosGain1Health,
+  removeStatuseffect,
 } as const;
