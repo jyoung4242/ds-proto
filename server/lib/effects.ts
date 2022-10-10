@@ -94,22 +94,13 @@ const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
   //STUN CHECK
   if (state.players[index].health <= 2) {
     //player will be stunned
-    state.players[index].health = 0;
-    addOneLocationPoint(state, index, ctx);
-    //lose half your cards
-    const numCardsToLose = Math.ceil(state.players[index].hand.length / 2);
-
-    for (let x = 0; x < numCardsToLose; x++) {
-      //TODO-finishe this here
-    }
-
-    ctx.broadcastEvent("STUNNED");
+    stunPlayer(state, index, ctx);
   }
 
   if (state.players[index]) state.players[index].health -= 2;
   ctx.broadcastEvent("Lose2Health");
 };
-const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
+export const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location) state.Location.damage += 1;
   ctx.broadcastEvent("add1toLocation");
   if (
@@ -481,6 +472,19 @@ const discard = (state: InternalState, index: number, ctx: Context) => {
     state.players[index].hand.splice(CIndex, 1);
     ctx.broadcastEvent("discarded");
   }
+};
+
+const stunPlayer = (state: InternalState, index: number, ctx: Context) => {
+  state.players[index].health = 0;
+  addOneLocationPoint(state, index, ctx);
+  //lose half your cards
+  const numCardsToLose = Math.ceil(state.players[index].hand.length / 2);
+  for (let x = 0; x < numCardsToLose; x++) {
+    let cardIndex = Math.floor(Math.random() * state.players[index].hand.length);
+    state.players[index].hand.splice(cardIndex, 1);
+  }
+  state.players[index].statusEffects.push(StatusEffects.Stunned);
+  ctx.broadcastEvent("STUNNED");
 };
 
 const callbacks = {

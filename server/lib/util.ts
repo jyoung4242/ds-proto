@@ -1,6 +1,6 @@
 import { ABCard, IJoinGameRequest, IStartGameRequest, LCard, MCard, Player, Roles, TDCard, UserId } from "../../api/types";
 import { Context } from "../.hathora/methods";
-import { barbarianCardDeck, paladinCardDeck, rogueCardDeck, wizardCardDeck } from "../impl";
+import { barbarianCardDeck, InternalState, paladinCardDeck, rogueCardDeck, wizardCardDeck } from "../impl";
 
 export const setupMonsterDeck = (library: MCard[], level: number, c: Context): MCard[] => {
   let tempDeck = library.filter(card => card.level <= level);

@@ -2,16 +2,17 @@ import { resolve } from "../webpack.config";
 import { utils } from "./utils";
 import { iStatusMessage } from "./components/character";
 import { clearIsChoiceFlag } from "./state/state";
-import { discard, nodraw, location } from "./assets/assetPool";
+import { discard, nodraw, location, stunned, mBonus } from "./assets/assetPool";
 import { RoundState } from "../../../api/types";
 import { Router } from "./components";
 
 let SE_map = {
-  0: { img: "", effect: "STUNNED" },
+  0: { img: stunned, effect: "STUNNED" },
   1: { img: "", effect: "NO HEALING" },
   2: { img: nodraw, effect: "CANNOT DRAW CARD" },
   3: { img: location, effect: "LOCATION CURSE" },
   4: { img: discard, effect: "DISCARD CURSE" },
+  5: { img: mBonus, effect: "MONSTER DEFEAT BONUS" },
 };
 
 type GameEventType = {

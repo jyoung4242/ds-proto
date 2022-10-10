@@ -614,6 +614,10 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     const playerIndex = state.players.findIndex(p => p.id === userId);
 
+    //if player stunned, reset health to 10
+    const seIndex = state.players[playerIndex].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+    if (seIndex != -1) state.players[playerIndex].health = 10;
+
     //clear all status effects
     state.players[playerIndex].statusEffects = [];
     ctx.broadcastEvent("clearSE");
