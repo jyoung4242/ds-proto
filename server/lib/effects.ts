@@ -43,16 +43,6 @@ const ifDiscardLose1Health = (state: InternalState, index: number, ctx: Context)
   state.players[index].statusEffects.push(StatusEffects.DiscardCurse);
 };
 
-const stunned = (state: InternalState, index: number, ctx: Context) => {
-  const isAlreadyThere = state.players[index].statusEffects.findIndex(s => {
-    return s == StatusEffects.Stunned;
-  });
-
-  if (isAlreadyThere != -1) return;
-  state.players[index].statusEffects.push(StatusEffects.Stunned);
-  ctx.broadcastEvent("STUNNED");
-};
-
 const removeStatuseffect = (state: InternalState, index: number, ctx: Context) => {
   //get callback
   let curseIndex;
@@ -86,20 +76,35 @@ const addAttack1ifMonsterDefeated = (state: InternalState, index: number, ctx: C
 };
 
 const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
-  if (state.players[index]) state.players[index].health -= 1;
-  ctx.broadcastEvent("Lose1Health");
+  //check if stunned
+  const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+  if (isStunned != -1) return;
+
+  //check if need to stun
+  if (state.players[index].health <= 1) {
+    //player will be stunned
+    stunPlayer(state, index, ctx);
+  } else {
+    if (state.players[index]) state.players[index].health -= 1;
+    ctx.broadcastEvent("Lose1Health");
+  }
 };
 
 const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
-  //STUN CHECK
+  //check if stunned
+  const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+  if (isStunned != -1) return;
+
+  //check if need to stun
   if (state.players[index].health <= 2) {
     //player will be stunned
     stunPlayer(state, index, ctx);
+  } else {
+    if (state.players[index]) state.players[index].health -= 2;
+    ctx.broadcastEvent("Lose2Health");
   }
-
-  if (state.players[index]) state.players[index].health -= 2;
-  ctx.broadcastEvent("Lose2Health");
 };
+
 export const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location) state.Location.damage += 1;
   ctx.broadcastEvent("add1toLocation");
@@ -112,7 +117,6 @@ export const addOneLocationPoint = (state: InternalState, index: number, ctx: Co
     ctx.broadcastEvent("locationCurseEffect");
     state.players[index].health -= 1;
     ctx.broadcastEvent("Lose1Health");
-    //TODO - stun check
   }
 
   //check for lost location
@@ -138,7 +142,11 @@ const addAttack1 = (state: InternalState, index: number, ctx: Context) => {
 };
 
 const addHealth1 = (state: InternalState, index: number, ctx: Context) => {
-  if (state.players[index]) state.players[index].health += 1;
+  //check if stunned
+  const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+  if (isStunned != -1) return;
+
+  if (state.players[index].health < 10) state.players[index].health += 1;
   ctx.broadcastEvent("+1Health");
 };
 
@@ -203,16 +211,21 @@ const addAttack1Draw1 = (state: InternalState, index: number, ctx: Context) => {
 
 const addHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
-  if (state.players[index]) state.players[index].health += 1;
   ctx.broadcastEvent("+1Coin");
-  ctx.broadcastEvent("+1Health");
+
+  //check if stunned
+  const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+  if (isStunned == -1 && state.players[index].health < 10) {
+    if (state.players[index]) state.players[index].health += 1;
+    ctx.broadcastEvent("+1Health");
+  }
 };
 
 const addAttack1ToAHaddHealth1ToAll = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].attack += 1;
   ctx.broadcastEvent("+1Attack");
   state.players.forEach((p, i) => {
-    if (i != index) p.health += 1;
+    if (i != index && p.health < 10) p.health += 1;
   });
   ctx.broadcastEvent("+1HealthtoAllOthers");
 };
@@ -246,7 +259,10 @@ const chooseHealth1Ability1 = (state: InternalState, index: number, ctx: Context
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Health") {
-      if (state.players[index]) state.players[index].health += 1;
+      //check if stunned
+      const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+      if (isStunned != -1) return;
+      if (state.players[index].health < 10) state.players[index].health += 1;
       ctx.broadcastEvent("+1Health");
     } else if (state.responseData.response == "Coin") {
       if (state.players[index]) state.players[index].coin += 1;
@@ -360,7 +376,10 @@ const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) =
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Health") {
-      if (state.players[index]) state.players[index].health += 1;
+      //check if stunned
+      const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+      if (isStunned != -1) return;
+      if (state.players[index].health < 10) state.players[index].health += 1;
       ctx.broadcastEvent("+1Health");
     } else if (state.responseData.response == "draw") {
       const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
@@ -388,22 +407,28 @@ const addHealth1anyPlayer = (state: InternalState, index: number, ctx: Context) 
   } else {
     userResponseFlag = false;
     let playerChosen = state.responseData.response;
-
     let pIndex = state.players.findIndex(p => p.name == playerChosen);
-    state.players[pIndex].health += 1;
-    switch (pIndex) {
-      case 0:
-        ctx.broadcastEvent("player1health");
-        break;
-      case 1:
-        ctx.broadcastEvent("player2health");
-        break;
-      case 2:
-        ctx.broadcastEvent("player3health");
-        break;
-      case 3:
-        ctx.broadcastEvent("player4health");
-        break;
+
+    //check if stunned
+    const isStunned = state.players[pIndex].statusEffects.findIndex(se => se == StatusEffects.Stunned);
+    if (isStunned != -1) return;
+
+    if (state.players[pIndex].health < 10) {
+      state.players[pIndex].health += 1;
+      switch (pIndex) {
+        case 0:
+          ctx.broadcastEvent("player1health");
+          break;
+        case 1:
+          ctx.broadcastEvent("player2health");
+          break;
+        case 2:
+          ctx.broadcastEvent("player3health");
+          break;
+        case 3:
+          ctx.broadcastEvent("player4health");
+          break;
+      }
     }
   }
 };
@@ -488,7 +513,6 @@ const stunPlayer = (state: InternalState, index: number, ctx: Context) => {
 };
 
 const callbacks = {
-  stunned,
   noHeal,
   noDraw,
   ifActiveHeroLosesOneHealthLocationCurse,

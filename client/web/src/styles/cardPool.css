@@ -20,8 +20,8 @@
   left: 50%;
   transform: translate(-50%, -50%);
 
-  width: 640px;
-  height: 400px;
+  width: 750px;
+  height: 525px;
   display: grid;
   grid-template-rows: 10px 1fr 10px 1fr 10px;
   grid-template-columns: 10px 1fr 10px 1fr 10px 1fr 10px;
@@ -56,7 +56,7 @@
 }
 
 .CP_cardspot {
-  width: 100px;
+  width: 150px;
   aspect-ratio: 1/1.5;
   border: 1px solid rgb(211, 211, 211);
   background-color: white;
@@ -132,8 +132,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 450px;
-  height: 350px;
+  width: 500px;
+  height: 450px;
   background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   border: 15px solid;
   border-image: url("../assets/border.svg");

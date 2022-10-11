@@ -83,7 +83,6 @@ import {
 
 //TODO -
 
-//STUNNED - whenever health gained or lost, during stun, needs to be ignored
 //validate all ability cards work
 //toast messages aren't high enough z index - try again later
 //helpfile needs finished
