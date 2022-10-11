@@ -18,6 +18,14 @@
   text-shadow: 2px 2px black;
 }
 
+.version {
+  font-size: small;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  font-family: "Gill Sans";
+}
+
 .STitle {
   position: absolute;
   bottom: 20px;

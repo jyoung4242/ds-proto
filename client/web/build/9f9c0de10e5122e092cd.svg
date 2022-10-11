@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg height="75" width="75" version="1.1" baseProfile="full" xmlns="http://www.w3.org/2000/svg">
+<!--  top left -->
+  	<path d="M 0 25 A 25 25 0 0 1  25 0" stroke="#636363" stroke-width="2" fill="none" />
+  	<path d="M 2 25 A 23 23 0 0 1  25 2" stroke="#787878" stroke-width="2" fill="none" />
+  	<path d="M 4 25 A 21 21 0 0 1  25 4" stroke="#a2a2a2" stroke-width="2" fill="none" />
+  	<path d="M 6 25 A 19 19 0 0 1  25 6" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 8 25 A 17 17 0 0 1  25 8" stroke="#e0e0e0" stroke-width="2" fill="none" />  
+    <path d="M 10 25 A 15 15 0 0 1  25 10" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 12 25 A 13 13 0 0 1  25 12" stroke="#787878" stroke-width="2" fill="none" />
+    
+<!--  top  -->
+    <path d="M 24 0 l 27 0" stroke="#636363" stroke-width="2" fill="none" />
+    <path d="M 24 2 l 27 0" stroke="#787878" stroke-width="2" fill="none" />
+    <path d="M 24 4 l 27 0" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 24 6 l 27 0" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 24 8 l 27 0" stroke="#e0e0e0" stroke-width="2" fill="none" />
+    <path d="M 24 10 l 27 0" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 24 12 l 27 0" stroke="#787878" stroke-width="2" fill="none" />
+
+<!--  top right -->
+  	<path d="M 50 0 A 25 25 0 0 1 75 25" stroke="#636363" stroke-width="2" fill="none" />
+  	<path d="M 50 2 A 23 23 0 0 1 73 25" stroke="#787878" stroke-width="2" fill="none" />
+  	<path d="M 50 4 A 21 21 0 0 1 71 25" stroke="#a2a2a2" stroke-width="2" fill="none" />
+  	<path d="M 50 6 A 19 19 0 0 1 69 25" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 50 8 A 17 17 0 0 1 67 25" stroke="#e0e0e0" stroke-width="2" fill="none" />  
+    <path d="M 50 10 A 15 15 0 0 1 65 25" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 50 12 A 13 13 0 0 1 63 25" stroke="#787878" stroke-width="2" fill="none" />
+    
+ 
+<!--  right  -->
+    <path d="M 75 24 l 0 27 " stroke="#636363" stroke-width="2" fill="none" />
+    <path d="M 73 24 l 0 27 " stroke="#787878" stroke-width="2" fill="none" />
+    <path d="M 71 24 l 0 27 " stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 69 24 l 0 27 " stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 67 24 l 0 27 " stroke="#e0e0e0" stroke-width="2" fill="none" />
+    <path d="M 65 24 l 0 27 " stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 63 24 l 0 27" stroke="#787878" stroke-width="2" fill="none" />
+    
+<!--  bottom right -->
+  	<path d="M 75 50 A 25 25 0 0 1 50 75" stroke="#636363" stroke-width="2" fill="none" />
+  	<path d="M 73 50 A 23 23 0 0 1 50 73" stroke="#787878" stroke-width="2" fill="none" />
+  	<path d="M 71 50 A 21 21 0 0 1 50 71" stroke="#a2a2a2" stroke-width="2" fill="none" />
+  	<path d="M 69 50 A 19 19 0 0 1 50 69" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 67 50 A 17 17 0 0 1 50 67" stroke="#e0e0e0" stroke-width="2" fill="none" />  
+    <path d="M 65 50 A 15 15 0 0 1 50 65" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 63 50 A 13 13 0 0 1 50 63" stroke="#787878" stroke-width="2" fill="none" />
+
+<!--  bottom  -->
+    <path d="M 51 75 l -27 0" stroke="#636363" stroke-width="2" fill="none" />
+    <path d="M 51 73 l -27 0" stroke="#787878" stroke-width="2" fill="none" />
+    <path d="M 51 71 l -27 0" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 51 69 l -27 0" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 51 67 l -27 0" stroke="#e0e0e0" stroke-width="2" fill="none" />
+    <path d="M 51 65 l -27 0" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 51 63 l -27 0" stroke="#787878" stroke-width="2" fill="none" />
+
+<!--  bottom left -->
+  	<path d="M 25 75 A 25 25 0 0 1 0 50" stroke="#636363" stroke-width="2" fill="none" />
+  	<path d="M 25 73 A 23 23 0 0 1 2 50" stroke="#787878" stroke-width="2" fill="none" />
+  	<path d="M 25 71 A 21 21 0 0 1 4 50" stroke="#a2a2a2" stroke-width="2" fill="none" />
+  	<path d="M 25 69 A 19 19 0 0 1 6 50" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 25 67 A 17 17 0 0 1 8 50" stroke="#e0e0e0" stroke-width="2" fill="none" />  
+    <path d="M 25 65 A 15 15 0 0 1 10 50" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 25 63 A 13 13 0 0 1 12 50" stroke="#787878" stroke-width="2" fill="none" />
+
+<!--  left  -->
+    <path d="M 0 51 l 0 -27" stroke="#636363" stroke-width="2" fill="none" />
+    <path d="M 2 51 l 0 -27" stroke="#787878" stroke-width="2" fill="none" />
+    <path d="M 4 51 l 0 -27" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 6 51 l 0 -27" stroke="#f4f4f4" stroke-width="2" fill="none" />
+    <path d="M 8 51 l 0 -27" stroke="#e0e0e0" stroke-width="2" fill="none" />
+    <path d="M 10 51 l 0 -27" stroke="#a2a2a2" stroke-width="2" fill="none" />
+    <path d="M 12 51 l 0 -27" stroke="#787878" stroke-width="2" fill="none" />
+
+</svg>

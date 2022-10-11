@@ -14,6 +14,7 @@ export class TitleComponent {
     this.localState = state;
     this.help = new Help(state);
     this.template = `
+    <span class="version">\${myTitle.version}</span>
     <div class="mainTitle" >
       <span>\${myTitle.title}</span>
     </div>
