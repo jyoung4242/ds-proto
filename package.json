@@ -3,7 +3,7 @@
     "peasy-ui": "^0.9.15"
   },
   "scripts": {
-    "build": "cross-env APP_ID=13d6e53c3bb8f9e7064ab0a2c3796c1c98f0a375fdb7b39610191c3f38eda5f8 hathora build"
+    "build": "cross-env APP_ID=13d6e53c3bb8f9e7064ab0a2c3796c1c98f0a375fdb7b39610191c3f38eda5f8 hathora build --only client"
   },
   "devDependencies": {
     "cross-env": "^7.0.3"
