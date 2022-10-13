@@ -639,7 +639,7 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
-    if (myTurn) {
+    if (myTurn && this.state.gameData.Players[usr].hand.length > 0) {
       this.state.myNavInput.contZ = "17";
       this.state.myNavInput.buttons = [];
       const numCards = this.state.myHand.hand.length;

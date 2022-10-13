@@ -2,21 +2,19 @@
   position: fixed;
   right: 0;
   top: 30px;
-  width: 50px;
+  width: 200px;
   height: var(--game-height);
-  /*  display: flex;
-  flex-direction: column;
-  justify-content: end;
-  align-content: flex-start; */
   margin: 10px;
-  z-index: 12;
+  z-index: 25;
+  pointer-events: none;
 }
 
 .toast_entry {
-  z-index: 10;
+  z-index: 25;
   display: flex;
   margin-bottom: 25px;
   justify-content: flex-end;
+  pointer-events: auto;
 }
 
 .toast_entry:hover > .toast_message {
@@ -122,13 +120,14 @@
   transform: translate(-35%, -50%);
   width: 20px;
   height: 20px;
-  /* border: 50%; */
   overflow: hidden;
   color: white;
   font-family: demonFont;
   font-size: large;
   transition: color 0.3s;
   z-index: 14;
+  pointer-events: auto;
+  cursor: pointer;
 }
 .toast_close:hover {
   color: red;

@@ -14,7 +14,6 @@ if (localStorage.getItem("DSsettings")) {
 }
 
 const GameComponent = new GameContainer(state);
-
 const globalCSSvars = `--background-start: \${mySettings.beginningColor}; --background-end: \${mySettings.endingColor}; --chatUM: \${mySettings.chatUM};--chatOM: \${mySettings.chatOM};--chatSM: \${mySettings.chatSM};--chatOP: \${mySettings.chatOP};--chatBG: \${mySettings.chatBG}`;
 
 const uiStringTemplate = `
@@ -32,3 +31,7 @@ const update = () => {
 };
 
 update();
+
+if (!localStorage.getItem("DS_RELEASE")) {
+  utils.setWhatsNew();
+}

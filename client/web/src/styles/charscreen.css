@@ -203,3 +203,34 @@
   grid-row-end: span 1;
   justify-items: center;
 }
+
+.tooltip {
+  position: relative; /* making the .tooltip span a container for the tooltip text */
+}
+
+.tooltip:before {
+  content: attr(data-text); /* here's the magic */
+  position: absolute;
+
+  /* vertically center */
+  top: 100%;
+  transform: translate(-50%, 0%);
+
+  /* move to right */
+  left: 50%;
+  margin-top: 15px; /* and add a small left margin */
+
+  /* basic styles */
+  width: 200px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #000;
+  color: #fff;
+  text-align: center;
+
+  display: none; /* hide by default */
+}
+
+.tooltip:hover:before {
+  display: block;
+}

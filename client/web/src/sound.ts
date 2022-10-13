@@ -42,7 +42,7 @@ export class SFX {
   constructor() {}
 
   play(sfx) {
-    // this.gameSfx[sfx].play();
+    this.gameSfx[sfx].play();
   }
 
   updateVolume(newLevel: number) {
@@ -90,7 +90,7 @@ export class BGM {
 
     this.currentSong = this.gameMusic[song];
     this.updateVolume(this.bgmGain);
-    //this.gameMusic[song].play();
+    this.gameMusic[song].play();
   }
 
   updateVolume(newLevel: number) {

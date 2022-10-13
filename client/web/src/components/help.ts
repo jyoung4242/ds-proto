@@ -8,6 +8,7 @@ export class Help {
         <div class="setting_relative_container">
             <div class="settings_background_mask">
             </div>
+            
             <div class="help_inner_container">
                 <span class="help_title">How To Play</span>
                 <span class="help_pagenum">Page \${myHelp.pageNum} / \${myHelp.numPages}</span>
@@ -91,8 +92,26 @@ export class Help {
                 This is where all the joined players are staged and waiting until match is started.
                   </p>
                 </div>
+
+                <div class="help_text" \${===myHelp.page5}>
+                  <p>What's new in BETA 0.1.3 - Release Notes</p>
+                   
+                  <p>-Issue #12, video tutorial link in help window</p>
+                  <p>-Updated the toast message width and color #11</p>
+                  <p>-Added the What's New Content for release notes #10</p>
+                  <p>-raised z-index of chat so its usable throughout round</p>
+                  <p>-add trim function to join game id field, to remove spaces #8</p>
+                  <p>-fixed draw 2, discard one bug, #7</p>
+                  <p>-added tool tips to class buttons to give brief details on classes</p>
+                  <p>-Fixed window title form Hello Typescript to Demon Siege</p>
+                  <p>-added sound back in</p>
+                  <p>-added many a try/catch loops for DOM exception error </p>
+                </div>
+
+
                 <img \${click@=>myHelp.back} class="help_nav_left" src="${arrow}" alt="" />
                 <img \${click@=>myHelp.next} class="help_nav_right" src="${arrow}" alt="" />
+                <a href="https://youtu.be/jm_ecaPqnDM" target="_blank" class="helplink" >Quick Start Video Tutorial</a>
                 <button class="lobbyButton settings_ok" \${click@=>myHelp.closeModal}>OK</button>
             </div>
         </div>

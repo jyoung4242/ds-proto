@@ -166,7 +166,7 @@ export class State {
         },
       },
       myTitle: {
-        version: "BETA 0.1.2 ",
+        version: "BETA 0.1.3 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
@@ -217,7 +217,8 @@ export class State {
           };
 
           //step one, read the input
-          let mystring = this.state.gameData.gameID;
+          let mystring = this.state.gameData.gameID.trim();
+          this.state.gameData.gameID = mystring;
           //step two, qualify the input
           let valStatus = validateGameID(mystring);
           //step three, do something to the UI to indicate pass/fail
@@ -718,7 +719,7 @@ export class State {
       myHelp: {
         isVisible: false,
         pageNum: 1,
-        numPages: 4,
+        numPages: 5,
         closeModal: (_event, model) => {
           utils.playSound("button");
           model.myHelp.isVisible = false;
@@ -739,6 +740,9 @@ export class State {
         },
         get page4() {
           return this.pageNum === 4;
+        },
+        get page5() {
+          return this.pageNum === 5;
         },
         back: (_event, model) => {
           utils.playSound("button");

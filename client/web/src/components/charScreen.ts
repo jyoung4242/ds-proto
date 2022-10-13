@@ -26,21 +26,21 @@ export class CharScreen {
             </div>
           </div>
 
-          <button class="lobbyButton barbutton" \${click@=>myCharscreen.selectBarbarian}>Barbarian</button>
+          <button class="lobbyButton barbutton tooltip" data-text="Barbarian class, attack oriented starting cards" \${click@=>myCharscreen.selectBarbarian}>Barbarian</button>
           <img src="${bmale}" class="cs_barbarian_sprite "  alt=""  \${===myCharscreen.isMale} >
-          <img src="${bfemale}" class="cs_barbarian_sprite "  alt="" \${!==myCharscreen.isMale} >
+          <img src="${bfemale}" class="cs_barbarian_sprite "   alt="" \${!==myCharscreen.isMale} >
                           
-          <button class="lobbyButton wizbutton" \${click@=>myCharscreen.selectWizard}>Wizard</button>
-          <img src="${wmale}" class="cs_wizard_sprite "  alt="" \${===myCharscreen.isMale} />
-          <img src="${wfemale}" class="cs_wizard_sprite " alt="" \${!==myCharscreen.isMale}/>
+          <button class="lobbyButton wizbutton tooltip" data-text="Wizard class, coin oriented starting cards"  \${click@=>myCharscreen.selectWizard}>Wizard</button>
+          <img src="${wmale}" class="cs_wizard_sprite " alt="" \${===myCharscreen.isMale} />
+          <img src="${wfemale}" class="cs_wizard_sprite" alt="" \${!==myCharscreen.isMale}/>
           
-          <button class="lobbyButton rogbutton" \${click@=>myCharscreen.selectRogue}>Rogue</button>
-          <img src="${rmale}" class="cs_rogue_sprite"  alt="" \${===myCharscreen.isMale} />
-          <img src="${rfemale}" class="cs_rogue_sprite" alt="" \${!==myCharscreen.isMale} />
+          <button class="lobbyButton rogbutton tooltip" data-text="Rogue class, balanced orientation of starting cards" \${click@=>myCharscreen.selectRogue}>Rogue</button>
+          <img src="${rmale}" class="cs_rogue_sprite "  alt="" \${===myCharscreen.isMale} />
+          <img src="${rfemale}" class="cs_rogue_sprite "   alt="" \${!==myCharscreen.isMale} />
         
-          <button class="lobbyButton palbutton" \${click@=>myCharscreen.selectPaladin}>Paladin</button>
-          <img src="${pmale}" class="cs_paladin_sprite"  alt="" \${===myCharscreen.isMale} />
-          <img src="${pfemale}" class="cs_paladin_sprite"  alt="" \${!==myCharscreen.isMale} />
+          <button class="lobbyButton palbutton tooltip" data-text="Paladin class, healing orientation of starting cards" \${click@=>myCharscreen.selectPaladin}>Paladin</button>
+          <img src="${pmale}" class="cs_paladin_sprite "  alt="" \${===myCharscreen.isMale} />
+          <img src="${pfemale}" class="cs_paladin_sprite "  alt="" \${!==myCharscreen.isMale} />
 
       </div>
       <div class="cs_modaldiv2" \${===myCharscreen.isModalShowing}>

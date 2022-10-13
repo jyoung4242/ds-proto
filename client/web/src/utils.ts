@@ -39,7 +39,11 @@ export const utils = {
   },
   async login() {
     if (sessionStorage.getItem("token") === null) {
-      sessionStorage.setItem("token", await client.loginAnonymous());
+      try {
+        sessionStorage.setItem("token", await client.loginAnonymous());
+      } catch (error) {
+        console.log(`response from server :`, error);
+      }
     }
     token = sessionStorage.getItem("token");
     user = HathoraClient.getUserFromToken(token);
@@ -59,7 +63,11 @@ export const utils = {
   async createGame() {
     const config: IInitializeRequest = {};
     roomID = "";
-    roomID = await client.create(token, config);
+    try {
+      roomID = await client.create(token, config);
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
 
     if (roomID != "") {
       localState.state.gameData.gameID = roomID;
@@ -72,7 +80,12 @@ export const utils = {
   },
   async joinGame(roomID: string) {
     const config: IInitializeRequest = {};
-    myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
+    try {
+      myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
+    } catch (error) {
+      console.log("server response: ", error);
+    }
+
     if (roomID != "") {
       localState.state.gameData.gameID = roomID;
       localState.state.myContainer.screenSwitch(Router.Character);
@@ -80,18 +93,27 @@ export const utils = {
   },
   async leaveRoom() {
     if (roomID == "") return;
-    await myConnection.disconnect();
+    try {
+      await myConnection.disconnect();
+    } catch (error) {
+      console.log("result response: ", error);
+    }
     roomID = "";
   },
   async findMatch() {
     console.log("here");
+    //not used
     let response = await client.findMatch(token, {}, 2, numPlayers => {
       console.log("Found", numPlayers);
     });
     console.log("result response: ", response);
   },
   async startGame() {
-    await myConnection.startGame({});
+    try {
+      await myConnection.startGame({});
+    } catch (error) {
+      console.log("result response: ", error);
+    }
   },
   playGameMusic() {
     bgm.play("game");
@@ -117,12 +139,16 @@ export const utils = {
     nickname = newname;
   },
   async enterGame() {
-    let rslt = await myConnection.joinGame({
-      role: role,
-      name: nickname,
-      gender: gender,
-      level: 1,
-    });
+    try {
+      let rslt = await myConnection.joinGame({
+        role: role,
+        name: nickname,
+        gender: gender,
+        level: 1,
+      });
+    } catch (error) {
+      console.log("result response: ", error);
+    }
   },
   loadSettings() {
     let settings = JSON.parse(localStorage.getItem("DSsettings"));
@@ -145,85 +171,147 @@ export const utils = {
     const message: ISendMessageRequest = {
       msg: msg,
     };
-    let m = await myConnection.sendMessage(message);
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.sendMessage(message);
+    } catch (error) {
+      console.log("result response: ", error);
+    }
   },
   async seenChat(msgID: number) {
     const message: ISeenMessageRequest = {
       msgID: msgID,
     };
-    let m = await myConnection.seenMessage(message);
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.seenMessage(message);
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   setupGame() {},
   async startTurn() {
-    let m = await myConnection.startTurn({});
-    console.log("m is: ", m);
+    try {
+      let m = await myConnection.startTurn({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async passives() {
-    let m = await myConnection.runMonsterPassives({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.runMonsterPassives({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async playTD(cardID: string) {
-    let m = await myConnection.playTD({ cardID: cardID });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.playTD({ cardID: cardID });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async enableM() {
-    let m = await myConnection.enableMonsters({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.enableMonsters({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async playMcard(cardID: string) {
-    let m = await myConnection.playMonster({ cardID: cardID });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.playMonster({ cardID: cardID });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async showPcard() {
-    let m = await myConnection.enablePlayer({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.enablePlayer({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async showCardPool() {
-    let m = await myConnection.enableCardPool({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.enableCardPool({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async buyCard(cardID: string) {
-    let m = await myConnection.buyFromCardPool({ cardID: cardID });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.buyFromCardPool({ cardID: cardID });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async doneBuyingCards() {
-    let m = await myConnection.closeCardPool({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.closeCardPool({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async endTurn() {
-    let m = await myConnection.endRound({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.endRound({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async enableMonsterDamage() {
-    let m = await myConnection.enableMonsterDamage({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.enableMonsterDamage({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async monsterDamageDone() {
-    let m = await myConnection.disableMonsterDamage({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.disableMonsterDamage({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async applyDamage(cardID: string) {
-    let m = await myConnection.applyMonsterDamage({ cardID: cardID });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.applyMonsterDamage({ cardID: cardID });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async playPcard(cardID: string) {
-    let m = await myConnection.playPlayerCard({ cardID: cardID });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.playPlayerCard({ cardID: cardID });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async userResponse(response: any) {
     let resp: UserResponse = {
       Callback: response.Callback,
       Response: response.Response,
     };
-    let m = await myConnection.userResponse({
-      response: resp,
-    });
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.userResponse({
+        response: resp,
+      });
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
   },
   async playerDone() {
-    let m = await myConnection.playerHandComplete({});
-    console.log(`response from server :`, m);
+    try {
+      let m = await myConnection.playerHandComplete({});
+    } catch (error) {
+      console.log(`response from server(229) :`, error);
+    }
+  },
+  setWhatsNew() {
+    setTimeout(() => {
+      console.log(localState);
+      localState.state.myHelp.pageNum = 5;
+      localState.state.myHelp.isVisible = true;
+      localStorage.setItem("DS_RELEASE", "read");
+    }, 100);
   },
 };
