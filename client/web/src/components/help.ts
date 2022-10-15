@@ -46,9 +46,9 @@ export class Help {
                   </p>
 
 
-                  At any time during the players turn, they can choose to spend coins gathered within that turn, and buy additional ability cards from the card pool.  These new purchased cards will be added to the players discard pile, and will be available on the next shuffle.
-                  
-                  As attack points are collected, the player may choose to apply them to the active monsters of their choosing.  When the cumulative damage for the monster reaches their health level, the monster is defeated, and discarded.
+                  After the players cards are played, the player can choose to spend coins gathered within that turn, and buy additional ability cards from the card pool.  These new purchased cards will be added to the players discard pile, and will be available on the next shuffle.
+                  If you don't have enough coins to buy a card, this step is skipped.
+                  As attack points are collected, the player may choose to apply them to the active monsters.  When the cumulative damage for the monster reaches their health level, the monster is defeated, and discarded.
                   
                   The round ends when all the monsters for the level are defeated.
                   </p>
@@ -94,18 +94,13 @@ export class Help {
                 </div>
 
                 <div class="help_text" \${===myHelp.page5}>
-                  <p>What's new in BETA 0.1.3 - Release Notes</p>
+                  <p>What's new in BETA 0.1.4 - Release Notes</p>
                    
-                  <p>-Issue #12, video tutorial link in help window</p>
-                  <p>-Updated the toast message width and color #11</p>
-                  <p>-Added the What's New Content for release notes #10</p>
-                  <p>-raised z-index of chat so its usable throughout round</p>
-                  <p>-add trim function to join game id field, to remove spaces #8</p>
-                  <p>-fixed draw 2, discard one bug, #7</p>
-                  <p>-added tool tips to class buttons to give brief details on classes</p>
-                  <p>-Fixed window title form Hello Typescript to Demon Siege</p>
-                  <p>-added sound back in</p>
-                  <p>-added many a try/catch loops for DOM exception error </p>
+                  <p>-added error checking on connection</p>
+                  <p>-updated what's new splash screen for version checking</p>
+                  <p>-removed extra console.logs</p>
+                  <p>-cleaned up help file</p>
+                  
                 </div>
 
 

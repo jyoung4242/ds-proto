@@ -68,12 +68,17 @@ export const utils = {
     } catch (error) {
       console.log(`response from server :`, error);
     }
-
+    console.log("room ID: ", roomID);
     if (roomID != "") {
       localState.state.gameData.gameID = roomID;
       localState.state.myContainer.screenSwitch(Router.Character);
-      myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
+      try {
+        myConnection = await client.connect(token, roomID, localState.updateArgs, localState.onError);
+      } catch (error) {
+        console.log(`response from server :`, error);
+      }
     }
+    console.log("DIAG: connection: ", myConnection);
   },
   leaveGame() {
     myConnection.leaveGame({});
@@ -311,7 +316,7 @@ export const utils = {
       console.log(localState);
       localState.state.myHelp.pageNum = 5;
       localState.state.myHelp.isVisible = true;
-      localStorage.setItem("DS_RELEASE", "read");
+      localStorage.setItem("DS_RELEASE", localState.state.myTitle.version);
     }, 100);
   },
 };

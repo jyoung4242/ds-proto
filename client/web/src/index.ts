@@ -32,6 +32,7 @@ const update = () => {
 
 update();
 
-if (!localStorage.getItem("DS_RELEASE")) {
+const updateVersion = localStorage.getItem("DS_RELEASE");
+if (updateVersion != state.state.myTitle.version) {
   utils.setWhatsNew();
 }

@@ -82,9 +82,6 @@ import {
 } from "../assets/assetPool";
 
 //TODO -
-
-//validate all ability cards work
-//toast messages aren't high enough z index - try again later
 //helpfile needs finished
 
 let isChoiceButtonActive = false;
@@ -158,15 +155,15 @@ export class State {
         },
         screenSwitch: async (newScreen: Router) => {
           this.state.mySceneTransition.fadeIn();
-          await utils.wait(900);
+          await utils.wait(800);
           this.state.myContainer.myRoute = newScreen;
           this.state.mySceneTransition.fadeOut();
-          await utils.wait(900);
+          await utils.wait(800);
           this.state.mySceneTransition.reset();
         },
       },
       myTitle: {
-        version: "BETA 0.1.3 ",
+        version: "BETA 0.1.4 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
@@ -920,7 +917,6 @@ export class State {
       this.state.gameData.turn = update.state.turn;
 
       if (update.state.activeMonsters.length > 0) {
-        console.log("monsters", this.state.gameData.activeMonsters[0], update.state.activeMonsters[0]);
         if (this.state.gameData.activeMonsters.length == 0) {
           this.state.gameData.activeMonsters = [...update.state.activeMonsters];
         } else if (update.state.activeMonsters[0].id != this.state.gameData.activeMonsters[0].id) {
@@ -1193,7 +1189,6 @@ export class State {
           startEventSequence(damageMonster, this.state);
           break;
         case "Ready for next player":
-          console.log("running endturn");
           startEventSequence(endturn, this.state);
           break;
         case "clearSE":
