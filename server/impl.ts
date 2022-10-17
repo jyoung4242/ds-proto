@@ -53,6 +53,7 @@ import WizardLibrary from "./lib/wizard";
 import PaladinLibrary from "./lib/paladin";
 import RogueLibrary from "./lib/rogue";
 import {
+  asyncAwait,
   dealPlayerCardsFromDeck,
   getNumberOfActiveMonstersWithActiveEvents,
   setPlayerDeckbyRole,
@@ -280,7 +281,7 @@ export class Impl implements Methods<InternalState> {
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeRunningMonsterPassives;
     const playerIndex = state.players.findIndex(p => p.id === userId);
-    console.log("line 283", state.players[playerIndex].hand);
+    //console.log("line 283", state.players[playerIndex].hand);
     state.activeMonsters.forEach((monster, index) => {
       if (monster.PassiveEffect != undefined) {
         executeCallback(monster.PassiveEffect.callback, state, playerIndex, ctx);
@@ -413,26 +414,26 @@ export class Impl implements Methods<InternalState> {
     let cardPlayed = request.cardID;
     const playerIndex = state.players.findIndex(p => p.id === userId);
     const cardindex = state.players[playerIndex].hand.findIndex(c => c.id === cardPlayed);
-    console.log("line 410", state.players[playerIndex].hand);
+    // console.log("line 410", state.players[playerIndex].hand);
     resetUserResponse();
     if (state.players[playerIndex].hand[cardindex].ActiveEffect) {
-      console.log("a callback: ", state.players[playerIndex].hand[cardindex].ActiveEffect?.callback);
+      //console.log("a callback: ", state.players[playerIndex].hand[cardindex].ActiveEffect?.callback);
       executeCallback(state.players[playerIndex].hand[cardindex].ActiveEffect?.callback!, state, playerIndex, ctx);
     }
     if (state.players[playerIndex].hand[cardindex].PassiveEffect) {
-      console.log("p callback: ", state.players[playerIndex].hand[cardindex].PassiveEffect?.callback);
+      //console.log("p callback: ", state.players[playerIndex].hand[cardindex].PassiveEffect?.callback);
       executeCallback(state.players[playerIndex].hand[cardindex].PassiveEffect?.callback!, state, playerIndex, ctx);
     }
     playerIndex;
 
     //remove card from hand and discard
-    console.log(`card index: ${cardindex}`);
-    console.log("line 421", state.players[playerIndex].hand);
+    //console.log(`card index: ${cardindex}`);
+    //console.log("line 421", state.players[playerIndex].hand);
     const moveCard = state.players[playerIndex].hand[cardindex];
-    console.log("before", state.players[playerIndex].hand);
+    //console.log("before", state.players[playerIndex].hand);
     state.players[playerIndex].discard.push(moveCard);
     state.players[playerIndex].hand.splice(cardindex, 1);
-    console.log("after", state.players[playerIndex].hand);
+    // console.log("after", state.players[playerIndex].hand);
     checkForValidHand(state.players[playerIndex].hand);
     state.players[playerIndex].hand = state.players[playerIndex].hand.filter(function (x) {
       return x !== undefined;
@@ -616,11 +617,43 @@ export class Impl implements Methods<InternalState> {
 
     //if player stunned, reset health to 10
     const seIndex = state.players[playerIndex].statusEffects.findIndex(se => se == StatusEffects.Stunned);
-    if (seIndex != -1) state.players[playerIndex].health = 10;
+    if (seIndex != -1) {
+      console.log("resetting player health");
+      switch (playerIndex) {
+        case 0:
+          ctx.broadcastEvent("RESETPLAYER0");
+          break;
+        case 1:
+          ctx.broadcastEvent("RESETPLAYER1");
+          break;
+        case 2:
+          ctx.broadcastEvent("RESETPLAYER2");
+          break;
+        case 3:
+          ctx.broadcastEvent("RESETPLAYER3");
+          break;
+      }
+
+      state.players[playerIndex].health = 10;
+    }
 
     //clear all status effects
     state.players[playerIndex].statusEffects = [];
-    ctx.broadcastEvent("clearSE");
+
+    switch (playerIndex) {
+      case 0:
+        ctx.broadcastEvent("clearSE0");
+        break;
+      case 1:
+        ctx.broadcastEvent("clearSE1");
+        break;
+      case 2:
+        ctx.broadcastEvent("clearSE2");
+        break;
+      case 3:
+        ctx.broadcastEvent("clearSE3");
+        break;
+    }
 
     //redeal hand for user
     //test to see if 5 cards in deck, if not... reshuffle discard

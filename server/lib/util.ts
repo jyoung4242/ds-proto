@@ -7,6 +7,14 @@ export const setupMonsterDeck = (library: MCard[], level: number, c: Context): M
   return c.chance.shuffle(tempDeck);
 };
 
+export const asyncAwait = (time: number): Promise<void> => {
+  return new Promise<void>(resolve =>
+    setTimeout(() => {
+      resolve();
+    }, time)
+  );
+};
+
 export const setupLocationDeck = (library: LCard[], level: number): LCard[] => {
   let tempDeck = library.filter(card => card.level === level);
   tempDeck.sort((a, b): number => {

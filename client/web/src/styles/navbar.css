@@ -5,6 +5,7 @@
   background-image: linear-gradient(to bottom right, #2c34d6, #101f6b);
   border-radius: 25px;
   position: relative;
+  user-select: none;
 }
 
 .NBtimeline.pui-adding {
@@ -39,6 +40,7 @@
   background-color: #ffffff00;
   color: #ccc;
   z-index: 0;
+  user-select: none;
 }
 
 .NBtimestap_rel {
@@ -50,6 +52,7 @@
   align-items: center;
   justify-content: flex-start;
   transform: translatey(-50%);
+  user-select: none;
 }
 
 .NBtimestap_rel > p {
@@ -70,6 +73,7 @@
   text-align: center;
   font-size: small;
   text-transform: uppercase;
+  user-select: none;
 }
 
 .NBhidden {

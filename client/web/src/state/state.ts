@@ -17,7 +17,10 @@ import {
   chooseCoin1Draw1,
   chooseHealth1Coin1,
   chooseHealth1Draw1,
-  clearSE,
+  clearSE0,
+  clearSE1,
+  clearSE2,
+  clearSE3,
   damageMonster,
   discard1,
   draw2NewCard,
@@ -49,6 +52,10 @@ import {
   readyToEndTurn,
   refreshHand,
   remove1Location,
+  resetPlayer0,
+  resetPlayer1,
+  resetPlayer2,
+  resetPlayer3,
   sendToastDiscardCurse,
   sendToastDrawBlocked,
   sendToastLocation,
@@ -59,6 +66,7 @@ import {
   startSequence,
   startSetupSeq,
   startTurn,
+  stunnedPlayer,
   updateStatEffects,
   winGameOver,
 } from "../events";
@@ -79,6 +87,7 @@ import {
   effectIcon,
   mute,
   unmute,
+  cursor,
 } from "../assets/assetPool";
 
 //TODO -
@@ -163,7 +172,7 @@ export class State {
         },
       },
       myTitle: {
-        version: "BETA 0.1.4 ",
+        version: "BETA 0.1.5 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
@@ -351,9 +360,6 @@ export class State {
         showModal: false,
       },
       myCardPool: {
-        //open issues
-        //toasts don't hover
-        //need to add cost to card
         cardSelected: 0,
         showConfirmation: false,
         selectedCard: {
@@ -385,8 +391,12 @@ export class State {
           //if coins > card cost let them buy
           //if coin < card cost, toast message
           const userMoneyAmount = this.state.gameData.Players[usr].coin;
+          console.log(
+            `cardpool: 387, clickedCard: ${clickedCard}, cardPoolIndex: ${cardPoolIndex}, usermoney: ${userMoneyAmount}`
+          );
 
           if (userMoneyAmount >= this.state.gameData.cardPool[cardPoolIndex].cost) {
+            console.log("selecting card");
             this.state.myCardPool.cardSelected = cardPoolIndex;
             this.state.myCardPool.selectedCard.title = this.state.gameData.cardPool[cardPoolIndex].title;
             this.state.myCardPool.selectedCard.desc = this.state.gameData.cardPool[cardPoolIndex].effectString;
@@ -556,6 +566,7 @@ export class State {
 
           const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
           console.log(this.state.gameData.Players[usr].id, myTurn, this.state.playerData.id);
+
           if (!myTurn) return;
           utils.playSound("playCard");
           const cardId = element.getAttribute("id");
@@ -588,9 +599,7 @@ export class State {
                 break;
             }
           }
-
           object.$parent.$model.myHand.isEmpty = myTurn && object.$parent.$model.myHand.hand.length == 0;
-
           return;
         },
       },
@@ -1009,6 +1018,7 @@ export class State {
       switch (event) {
         case "START":
           if (this.state.myContainer.myRoute != Router.Game) {
+            console.log("adding players");
             this.state.gameData.Players.forEach((p, i) => {
               this.state.mypUI.allPlayers.push(
                 new Character({
@@ -1067,7 +1077,7 @@ export class State {
           startEventSequence(playerHandDone, this.state);
           break;
         case "STUNNED":
-          //TODO - come up with Stunned practice
+          startEventSequence(stunnedPlayer, this.state);
           break;
         case "+1Attack":
           startEventSequence(add1Attack, this.state);
@@ -1191,9 +1201,19 @@ export class State {
         case "Ready for next player":
           startEventSequence(endturn, this.state);
           break;
-        case "clearSE":
-          startEventSequence(clearSE, this.state);
+        case "clearSE0":
+          startEventSequence(clearSE0, this.state);
           break;
+        case "clearSE1":
+          startEventSequence(clearSE1, this.state);
+          break;
+        case "clearSE2":
+          startEventSequence(clearSE2, this.state);
+          break;
+        case "clearSE3":
+          startEventSequence(clearSE3, this.state);
+          break;
+
         case "monsterdefeated":
           startEventSequence(ChangeMonster, this.state);
           break;
@@ -1217,6 +1237,18 @@ export class State {
           break;
         case "discardcurse":
           startEventSequence(sendToastDiscardCurse, this.state);
+          break;
+        case "RESETPLAYER0":
+          startEventSequence(resetPlayer0, this.state);
+          break;
+        case "RESETPLAYER1":
+          startEventSequence(resetPlayer1, this.state);
+          break;
+        case "RESETPLAYER2":
+          startEventSequence(resetPlayer2, this.state);
+          break;
+        case "RESETPLAYER3":
+          startEventSequence(resetPlayer3, this.state);
           break;
       }
     });

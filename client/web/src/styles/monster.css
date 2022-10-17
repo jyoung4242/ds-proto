@@ -26,6 +26,7 @@
   transform: translate(-50%, -50%);
   width: 100%;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_outer {
@@ -92,6 +93,7 @@
   transform: translate(-50%, -50%);
   font-size: xx-large;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_reward {
@@ -102,6 +104,7 @@
   transform: translate(-50%, -50%);
   font-size: large;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_subtitle {
@@ -111,6 +114,7 @@
   transform: translate(-50%, -50%);
   font-size: large;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_level {
@@ -119,6 +123,7 @@
   right: 10px;
   font-size: small;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_health {
@@ -127,6 +132,7 @@
   left: 10px;
   font-size: small;
   text-align: center;
+  user-select: none;
 }
 
 .monster_card_description {
@@ -136,4 +142,5 @@
   left: 10px;
   font-size: small;
   text-align: center;
+  user-select: none;
 }

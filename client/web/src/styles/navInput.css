@@ -20,6 +20,7 @@
   opacity: 1;
   transition: opacity 1s ease-in-out;
   z-index: var(--component-zh);
+  user-select: none;
 }
 
 .NIcontainer.pui-adding {
@@ -42,6 +43,7 @@
   cursor: pointer;
   box-shadow: 2px 2px 1px 1px var(--background-end);
   text-shadow: 1px 1px black;
+  user-select: none;
 }
 
 .NIbutton:hover {

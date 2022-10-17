@@ -12,6 +12,38 @@
   gap: 25px;
   align-content: center;
   z-index: 17;
+  user-select: none;
+}
+
+.nameplate {
+  position: absolute;
+  bottom: 1%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  height: auto;
+  color: var(--background-end);
+  background-color: white;
+  z-index: 5;
+  font-family: demonfont;
+  font-size: medium;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 3px;
+  border: 2px white solid;
+  border-radius: 5px;
+}
+
+.pui_turncursor {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%) scale(0.35) rotate(-90deg);
+  width: auto;
+  height: auto;
+  z-index: 5;
+  animation: blink 1.25s infinite;
 }
 
 .pui_playerContainer {
@@ -125,6 +157,10 @@
   width: 20px;
   height: 20px;
   text-shadow: 2px 2px black;
+}
+
+.pui_stundim {
+  filter: grayscale(95%);
 }
 
 .playerBloom {

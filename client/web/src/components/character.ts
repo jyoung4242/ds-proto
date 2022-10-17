@@ -18,10 +18,12 @@ export class Character {
   role: Roles;
   gender: Gender;
   bloomStatus: "";
+  stunStatus: "";
   hovered: boolean;
   statusEffects: Array<iStatusMessage>;
   attackPlacard: any;
   coinPlacard: any;
+  myTurn: false;
 
   roleMap = {
     [Roles.Barbarian]: {
@@ -59,6 +61,8 @@ export class Character {
     this.gender = config.gender || Gender.Male;
     this.img = this.roleMap[this.role][this.gender];
     this.bloomStatus = config.bloomStatus;
+    this.myTurn = false;
+    this.stunStatus = "";
     this.hovered = false;
     this.statusEffects = config.statusEffects;
     this.coinPlacard = {
@@ -85,6 +89,7 @@ export class Character {
     if (this.health <= 4 && this.health > 2) myUI.style.stroke = "yellow";
     else if (this.health > 4) myUI.style.stroke = "lime";
   }
+
   lowerHealth(num: number) {
     this.health = this.health - num >= 0 ? this.health - num : 0;
     let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
@@ -93,12 +98,22 @@ export class Character {
     if (this.health <= 4 && this.health > 2) myUI.style.stroke = "yellow";
     else if (this.health <= 2) myUI.style.stroke = "red";
   }
+
+  zeroHealth() {
+    this.health = 0;
+    let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
+    let newAngle = (10 - this.health) * 36;
+    myUI.style.setProperty(`--angle${this.index}`, `${newAngle}`);
+    myUI.style.stroke = "red";
+  }
+
   resetHealth() {
     this.health = 10;
     let myUI: HTMLElement = document.querySelector(`.${this.classMap[this.index]}`);
     myUI.style.setProperty(`--angle${this.index}`, `${0}`);
     myUI.style.stroke = "lime";
   }
+
   clearHover = () => {
     this.hovered = false;
   };

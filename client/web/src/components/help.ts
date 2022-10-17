@@ -94,12 +94,15 @@ export class Help {
                 </div>
 
                 <div class="help_text" \${===myHelp.page5}>
-                  <p>What's new in BETA 0.1.4 - Release Notes</p>
+                  <p>What's new in BETA 0.1.5 - Release Notes</p>
                    
-                  <p>-added error checking on connection</p>
-                  <p>-updated what's new splash screen for version checking</p>
-                  <p>-removed extra console.logs</p>
-                  <p>-cleaned up help file</p>
+                  <p>-added stunned player logic</p>
+                  <p>-UI text no longer selectable</p>
+                  <p>-name placards for each player</p>
+                  <p>-active turn indicator</p>
+                  <p>-fixed status effect end or round cleanup</p>
+                  <p>-finished button logic cleaned up</p>
+                  <p>-new font</p>
                   
                 </div>
 

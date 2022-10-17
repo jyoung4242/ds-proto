@@ -24,6 +24,7 @@ import coin from "../assets/hud/stackofcoin.png";
 import help from "../assets/help/whitequestion-mark.png";
 import mBonus from "../assets/hud/statusEffect_MonsterBonus.png";
 import stunned from "../assets/hud/statusEffect_stunned.png";
+import cursor from "../assets/hud/cursor.png";
 
 import bgMusic from "../assets/audio/main.wav";
 import gmMusic from "../assets/audio/ingame.wav";
@@ -60,6 +61,7 @@ export {
   help,
   mBonus,
   stunned,
+  cursor,
 };
 
 export { mail, woosh, gmMusic, bgMusic, buttonWav, dealcard, sad };

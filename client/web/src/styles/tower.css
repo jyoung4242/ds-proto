@@ -23,6 +23,7 @@
   width: 100%;
   transform: translate(-50%, -50%);
   text-align: center;
+  user-select: none;
 }
 
 .td_card {
@@ -41,6 +42,7 @@
   box-shadow: 5px 5px 8px 3px #00000080;
   opacity: 1;
   transition: opacity 1s ease-in-out;
+  user-select: none;
 }
 
 .td_card.pui-adding {
@@ -58,6 +60,7 @@
   transform: translate(-50%, -50%);
   font-size: xx-large;
   text-align: center;
+  user-select: none;
 }
 
 .td_card_level {
@@ -67,6 +70,7 @@
   transform: translateX(-50%);
   font-size: small;
   text-align: center;
+  user-select: none;
 }
 
 .td_card_desc {
@@ -77,6 +81,7 @@
   font-size: x-small;
   text-align: center;
   width: 100%;
+  user-select: none;
 }
 
 .td_bloom {

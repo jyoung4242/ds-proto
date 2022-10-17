@@ -4,7 +4,7 @@ import { iStatusMessage } from "./components/character";
 import { clearIsChoiceFlag } from "./state/state";
 import { discard, nodraw, location, stunned, mBonus } from "./assets/assetPool";
 import { RoundState } from "../../../api/types";
-import { Router } from "./components";
+import { Game, Router } from "./components";
 
 let SE_map = {
   0: { img: stunned, effect: "STUNNED" },
@@ -103,7 +103,10 @@ let checkforCoins: GameEventType = { type: "checkCoins" };
 let checkforAttack: GameEventType = { type: "checkForAttackPoints" };
 let enableEndTurn: GameEventType = { type: "promptForEndTurn" };
 let damagemonster: GameEventType = { type: "applyDamage" };
-let clearSe: GameEventType = { type: "clearStatusEffects" };
+let clearSe0: GameEventType = { type: "clearStatusEffects", value: 0 };
+let clearSe1: GameEventType = { type: "clearStatusEffects", value: 1 };
+let clearSe2: GameEventType = { type: "clearStatusEffects", value: 2 };
+let clearSe3: GameEventType = { type: "clearStatusEffects", value: 3 };
 let showMonster: GameEventType = { type: "monsterChange", message: "show" };
 let hideMonster: GameEventType = { type: "monsterChange", message: "hide" };
 let gameoverwin: GameEventType = { type: "Endbanner", message: "VICTORY" };
@@ -115,6 +118,14 @@ let showLocationToast: GameEventType = { type: "toastLocationCurse" };
 let showDrawToast: GameEventType = { type: "toastDrawCurse" };
 let showDiscardCurseToast: GameEventType = { type: "toastDiscardCurse" };
 let returnToLogin: GameEventType = { type: "resetGame" };
+let dimPlayer: GameEventType = { type: "dimplayer" };
+let setPlayerback0: GameEventType = { type: "reset", value: 0 };
+let setPlayerback1: GameEventType = { type: "reset", value: 1 };
+let setPlayerback2: GameEventType = { type: "reset", value: 2 };
+let setPlayerback3: GameEventType = { type: "reset", value: 3 };
+
+let hideCursor: GameEventType = { type: "hidecursor" };
+let showCursor: GameEventType = { type: "showcursor" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
@@ -124,7 +135,7 @@ export let damageMonster: GameEventSequence = { sequence: [damagemonster] };
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
 export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
 export let startTurn: GameEventSequence = {
-  sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD, shortdelay, playerPassives],
+  sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD, showCursor, shortdelay, playerPassives],
 };
 export let passives: GameEventSequence = {
   sequence: [hideNavButton, shortdelay, indexProgressBar_passive, shortdelay, highlightTD],
@@ -178,14 +189,28 @@ export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerH
 export let showCardPool: GameEventSequence = { sequence: [openCardPool, shortdelay, checkforCoins] };
 export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard] };
 export let hideCardpool: GameEventSequence = {
-  sequence: [shortdelay, closeCardPool, indexProgressBar_cardPool, shortdelay, enableMonsterDamage],
+  sequence: [shortdelay, closeCardPool, shortdelay, indexProgressBar_cardPool, shortdelay, enableMonsterDamage],
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
 export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
 export let endturn: GameEventSequence = {
-  sequence: [indexProgressBar_EndTurn, shortdelay, indexProgressBar_reset, shortdelay, hideNavbar, nextRound, dealCards],
+  sequence: [
+    indexProgressBar_EndTurn,
+    shortdelay,
+    hideCursor,
+    indexProgressBar_reset,
+    shortdelay,
+    hideNavbar,
+    nextRound,
+    dealCards,
+    showCursor,
+  ],
 };
-export let clearSE: GameEventSequence = { sequence: [clearSe] };
+export let clearSE0: GameEventSequence = { sequence: [clearSe0] };
+export let clearSE1: GameEventSequence = { sequence: [clearSe1] };
+export let clearSE2: GameEventSequence = { sequence: [clearSe2] };
+export let clearSE3: GameEventSequence = { sequence: [clearSe3] };
+
 export let ChangeMonster: GameEventSequence = { sequence: [hideMonster, shortdelay, showMonster] };
 export let winGameOver: GameEventSequence = { sequence: [gameoverwin, clearscreen, returnToLogin] };
 export let loseGameOver: GameEventSequence = { sequence: [gameoverlose, clearscreen, returnToLogin] };
@@ -194,6 +219,13 @@ export let showNewLocation: GameEventSequence = { sequence: [shortdelay, shownew
 export let sendToastLocation: GameEventSequence = { sequence: [showLocationToast] };
 export let sendToastDrawBlocked: GameEventSequence = { sequence: [showDrawToast] };
 export let sendToastDiscardCurse: GameEventSequence = { sequence: [showDiscardCurseToast] };
+export let stunnedPlayer: GameEventSequence = {
+  sequence: [dimPlayer, refreshPlayerHand, updateStatusEffects, locationDamage],
+};
+export let resetPlayer0: GameEventSequence = { sequence: [setPlayerback0] };
+export let resetPlayer1: GameEventSequence = { sequence: [setPlayerback1] };
+export let resetPlayer2: GameEventSequence = { sequence: [setPlayerback2] };
+export let resetPlayer3: GameEventSequence = { sequence: [setPlayerback3] };
 
 class GameEvent {
   state: any;
@@ -600,6 +632,17 @@ class GameEvent {
     resolve();
   }
 
+  dimplayer(resolve) {
+    console.log("dimmed");
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    this.state.mypUI.allPlayers[usr].stunStatus = " pui_stundim";
+    this.state.mypUI.allPlayers[usr].zeroHealth();
+    this.state.myToast.addToast("user", "PLAYER STUNNED!");
+    resolve();
+  }
+
   monsterChange(resolve) {
     if (this.event.message == "hide") {
       this.state.myMonster.isVisible = false;
@@ -773,6 +816,13 @@ class GameEvent {
     resolve();
   }
 
+  reset(resolve) {
+    const usr = this.event.value;
+    console.log("resetting player", usr);
+    this.state.mypUI.allPlayers[usr].resetHealth();
+    resolve();
+  }
+
   buyCardfromPool(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -805,6 +855,7 @@ class GameEvent {
 
   closeCardPool(resolve) {
     this.state.myGame.showModal = false;
+    console.log("hiding modal");
     resolve();
   }
 
@@ -958,6 +1009,20 @@ class GameEvent {
     resolve();
   }
 
+  hidecursor(resolve) {
+    this.state.mypUI.allPlayers.forEach(p => (p.myTurn = false));
+    resolve();
+  }
+
+  showcursor(resolve) {
+    const usr = this.state.gameData.Players.findIndex(p => {
+      return this.state.gameData.turn === p.id;
+    });
+    console.log("setting cursor:", usr);
+    this.state.mypUI.allPlayers[usr].myTurn = true;
+    resolve();
+  }
+
   show_playerHand(resolve) {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
@@ -967,7 +1032,6 @@ class GameEvent {
     switch (usr) {
       case 0:
         this.state.myHand.hand = [...this.state.myHand.player1Hand];
-
         break;
       case 1:
         this.state.myHand.hand = [...this.state.myHand.player2Hand];
@@ -980,6 +1044,8 @@ class GameEvent {
         break;
     }
     this.state.myHand.footer = `${username.replace(/^\w/, c => c.toUpperCase())}'s Hand`;
+    const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
+    this.state.myHand.isEmpty = myTurn && this.state.myHand.hand.length == 0;
     if (this.state.myHand.hand.length != 0) this.state.myHand.isVisible = true;
     //make cards clickable
     resolve();
@@ -1166,9 +1232,9 @@ class GameEvent {
 
   clearStatusEffects(resolve) {
     clearIsChoiceFlag();
-    const usr = this.state.gameData.Players.findIndex(p => {
-      return this.state.gameData.turn === p.id;
-    });
+
+    const usr = this.event.value;
+    this.state.mypUI.allPlayers[usr].stunStatus = "";
     this.state.mypUI.allPlayers[usr].clearStatusMessages();
     resolve();
   }
@@ -1371,6 +1437,8 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
     this.state.mypUI.allPlayers[usr].bloomStatus = "playerBloom";
+    this.state.mypUI.allPlayers[usr].myTurn = true;
+
     resolve();
   }
 
@@ -1409,6 +1477,10 @@ class GameEvent {
 export const startEventSequence = async (events: GameEventSequence, state: any) => {
   for (let i = 0; i < events.sequence.length; i++) {
     const eventHandler = new GameEvent(events.sequence[i]);
-    await eventHandler.init(state);
+    try {
+      await eventHandler.init(state);
+    } catch (error) {
+      console.log("event loop fault", events.sequence, error);
+    }
   }
 };

@@ -81,8 +81,10 @@ const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
   if (isStunned != -1) return;
 
   //check if need to stun
+  console.log("player health: ", state.players[index].health);
   if (state.players[index].health <= 1) {
     //player will be stunned
+    console.log("stunning player");
     stunPlayer(state, index, ctx);
   } else {
     if (state.players[index]) state.players[index].health -= 1;
@@ -96,8 +98,10 @@ const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
   if (isStunned != -1) return;
 
   //check if need to stun
+  console.log("player health: ", state.players[index].health);
   if (state.players[index].health <= 2) {
     //player will be stunned
+    console.log("stunning player");
     stunPlayer(state, index, ctx);
   } else {
     if (state.players[index]) state.players[index].health -= 2;

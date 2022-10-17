@@ -64,6 +64,7 @@
   height: 30px;
   cursor: pointer;
   pointer-events: all;
+  user-select: none;
 }
 
 .chat_inputtext {
@@ -87,6 +88,7 @@
   bottom: 17px;
   cursor: pointer;
   z-index: 16;
+  user-select: none;
 }
 
 .chat_unreadpill {
@@ -105,6 +107,7 @@
   justify-content: center;
   cursor: pointer;
   pointer-events: all;
+  user-select: none;
 }
 .chat_unreadpill > span {
   text-align: center;
