@@ -26,11 +26,11 @@
   grid-template-rows: 10px 1fr 10px 1fr 10px;
   grid-template-columns: 10px 1fr 10px 1fr 10px 1fr 10px;
   box-shadow: 5px 5px black;
-  animation: 0.75s ease-in-out 0s 1 slideInFromLeft;
+  animation: slideInFromLeft 0.75s ease-in-out;
 }
 
 .exit {
-  animation: 0.75s ease-in-out 0s 1 slideOutToLeft;
+  animation: slideOutToLeft 0.75s ease-in-out;
 }
 
 @keyframes slideInFromLeft {

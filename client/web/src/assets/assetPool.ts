@@ -33,6 +33,21 @@ import woosh from "../assets/audio/woosh.mp3";
 import mail from "../assets/audio/mail.mp3";
 import dealcard from "../assets/audio/dealingcard.wav";
 import sad from "../assets/audio/sadtrombone.wav";
+import damage1 from "../assets/audio/damage1.wav";
+import damage2 from "../assets/audio/damage2.wav";
+import damage3 from "../assets/audio/damage3.wav";
+import attack1 from "../assets/audio/attack1.wav";
+import attack2 from "../assets/audio/attack2.wav";
+import attack3 from "../assets/audio/attack3.wav";
+import mcry from "../assets/audio/monstercry.wav";
+import defeat from "../assets/audio/monsterdefeated.wav";
+import buzzer from "../assets/audio/buzzer.wav";
+import coindrop from "../assets/audio/coin.mp3";
+import gainAttack from "../assets/audio/gainattack.wav";
+import building from "../assets/audio/building.mp3";
+import heal from "../assets/audio/heal.mp3";
+import purchase from "../assets/audio/purchase.mp3";
+import seffect from "../assets/audio/statuseffect.wav";
 
 export {
   bmale,
@@ -64,4 +79,27 @@ export {
   cursor,
 };
 
-export { mail, woosh, gmMusic, bgMusic, buttonWav, dealcard, sad };
+export {
+  mail,
+  woosh,
+  gmMusic,
+  bgMusic,
+  buttonWav,
+  dealcard,
+  sad,
+  damage1,
+  damage2,
+  damage3,
+  attack1,
+  attack2,
+  attack3,
+  mcry,
+  defeat,
+  buzzer,
+  coindrop,
+  gainAttack,
+  building,
+  heal,
+  purchase,
+  seffect,
+};

@@ -72,6 +72,7 @@
 .titleButton:hover {
   background-color: rgb(211, 211, 211);
   color: var(--background-start);
+  text-shadow: none;
 }
 
 @keyframes blink {

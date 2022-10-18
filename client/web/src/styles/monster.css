@@ -144,3 +144,20 @@
   text-align: center;
   user-select: none;
 }
+
+.slash {
+  position: absolute;
+  height: 175px;
+  width: 250px;
+  background-image: url("../assets/hud/damage.png");
+  animation: slashing 1s steps(13, end);
+  z-index: 5;
+}
+@keyframes slashing {
+  0% {
+    background-position: 0px 0px;
+  }
+  100% {
+    background-position: -3250px 0px;
+  }
+}

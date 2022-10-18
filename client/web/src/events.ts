@@ -189,7 +189,7 @@ export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerH
 export let showCardPool: GameEventSequence = { sequence: [openCardPool, shortdelay, checkforCoins] };
 export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard] };
 export let hideCardpool: GameEventSequence = {
-  sequence: [shortdelay, closeCardPool, shortdelay, indexProgressBar_cardPool, shortdelay, enableMonsterDamage],
+  sequence: [shortdelay, shortdelay, closeCardPool, shortdelay, indexProgressBar_cardPool, shortdelay, enableMonsterDamage],
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
 export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
@@ -466,6 +466,7 @@ class GameEvent {
   }
 
   openCardPool(resolve) {
+    utils.playSound("mailSend");
     this.state.myGame.showModal = true;
     resolve();
   }
@@ -646,6 +647,8 @@ class GameEvent {
   monsterChange(resolve) {
     if (this.event.message == "hide") {
       this.state.myMonster.isVisible = false;
+      utils.playSound("cry");
+      utils.playSound("die");
     } else if (this.event.message == "show") {
       this.state.myToast.addToast("monster", "New Monster Appears");
       this.state.myMonster.isVisible = true;
@@ -660,6 +663,7 @@ class GameEvent {
     const username = this.state.gameData.Players[usr].name;
     const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
 
+    utils.playSound("statuseffect");
     //clear UI statusEffects
     this.state.mypUI.allPlayers[usr].statusEffects = [];
     //loop through statuseffects call execute callbacks
@@ -802,7 +806,7 @@ class GameEvent {
 
     console.log(`purchase test result: ${canBuy}`);
     if (!canBuy) {
-      utils.playSound("sadT");
+      utils.playSound("buzzer");
       setTimeout(() => {
         utils.doneBuyingCards();
         resolve();
@@ -845,7 +849,7 @@ class GameEvent {
     const canBuy = newGroupOfBuyableCards.some(c => {
       return remainingFunds >= c.cost;
     });
-
+    utils.playSound("buy");
     console.log(`purchase test result: ${canBuy}`);
     if (!canBuy) {
       utils.doneBuyingCards();
@@ -980,14 +984,7 @@ class GameEvent {
       const lastcardindex = this.state.gameData.Players[usr].hand.length;
       const newCard = this.state.gameData.Players[usr].hand[lastcardindex - 1];
 
-      console.log("state hand");
-      console.table(this.state.gameData.Players[0].hand);
-
-      console.log("display hand");
-      console.table(this.state.myHand.hand);
-
-      console.log("player ui hand");
-      console.table(this.state.myHand.player1Hand);
+      utils.playSound("playCard");
 
       //update current hand
       switch (usr) {
@@ -1056,6 +1053,7 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
 
+    utils.playSound("coin");
     if (this.event.message == "add") {
       this.state.mypUI.allPlayers[usr].coinPlacard.color = "limegreen";
       this.state.mypUI.allPlayers[usr].coinPlacard.text = `+${this.event.value}`;
@@ -1120,6 +1118,8 @@ class GameEvent {
       return this.state.gameData.turn === p.id;
     });
 
+    utils.playSound("gainAtk");
+
     if (this.event.message == "add") {
       this.state.mypUI.allPlayers[usr].attackPlacard.color = "limegreen";
       this.state.mypUI.allPlayers[usr].attackPlacard.text = `+${this.event.value}`;
@@ -1169,6 +1169,7 @@ class GameEvent {
   }
 
   healFlash(resolve) {
+    utils.playSound("healing");
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
@@ -1177,6 +1178,7 @@ class GameEvent {
   }
 
   locationFlash(resolve) {
+    utils.playSound("crash");
     this.state.myLocation.cssString = " locationdamage";
     setTimeout(() => {
       this.state.myLocation.cssString = "";
@@ -1207,6 +1209,10 @@ class GameEvent {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
+
+    const mediaIndex = Math.floor(Math.random() * 3);
+    utils.playSound(`dmg${mediaIndex}`);
+
     this.state.mypUI.allPlayers[usr].lowerHealth(this.event.value);
     resolve();
   }

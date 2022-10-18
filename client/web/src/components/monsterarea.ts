@@ -2,6 +2,7 @@ export class Monster {
   componentName: string = "myMonster";
   template: string = `
       <div  class="monster_container" >
+          <div class="slash" style="left: \${attack.x }px; top: \${attack.y }px; \${attack.orientation}" \${attack<=*myMonster.monsterAttacks}></div>
           <div  class="monster_rel_container" >
               <span class="monster_title">Monster Card</span>
               <div id="mon" class="monster_card_outer \${myMonster.cssString}" $\{===myMonster.isVisible}>

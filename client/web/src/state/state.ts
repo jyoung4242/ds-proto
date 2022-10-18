@@ -1,5 +1,6 @@
 import { utils } from "../utils";
-import { Router, Card } from "../components";
+import { UI } from "peasy-ui";
+import { Router } from "../components";
 import { Character } from "../components/character";
 import { Gender, MCard, Roles, RoundState } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
@@ -172,7 +173,7 @@ export class State {
         },
       },
       myTitle: {
-        version: "BETA 0.1.5 ",
+        version: "BETA 0.1.6 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
@@ -403,7 +404,9 @@ export class State {
             this.state.myCardPool.selectedCard.cost = this.state.gameData.cardPool[cardPoolIndex].cost;
             this.state.myCardPool.selectedCard.level = this.state.gameData.cardPool[cardPoolIndex].level;
             this.state.myCardPool.selectedCard.id = this.state.gameData.cardPool[cardPoolIndex].id;
+            console.log("showing confirmation modal");
             this.state.myCardPool.showConfirmation = true;
+            console.log("after showing confirmation modal");
             //show card confirmation window
           } else {
             this.state.myToast.addToast("card", "Player lacks the funds");
@@ -568,7 +571,7 @@ export class State {
           console.log(this.state.gameData.Players[usr].id, myTurn, this.state.playerData.id);
 
           if (!myTurn) return;
-          utils.playSound("playCard");
+          //utils.playSound("playCard");
           const cardId = element.getAttribute("id");
           if (
             this.state.gameData.roundState == RoundState.activeRunningPlayer ||
@@ -653,8 +656,28 @@ export class State {
           }
           if (this.state.gameData.roundState == RoundState.activeApplyingDamage) {
             utils.applyDamage(cardId);
+            //playsound
+            const mediaIndex = Math.floor(Math.random() * 3);
+            if (this.state.gameData.activeMonsters[0].damage != this.state.gameData.activeMonsters[0].health)
+              utils.playSound(`atk${mediaIndex}`);
+            //showanimation
+            this.state.myMonster.addAttack();
           }
           return;
+        },
+        monsterAttacks: [],
+        addAttack: () => {
+          //random x, y, and direction
+          const x = Math.floor(Math.random() * 50) - 25;
+          const y = Math.floor(Math.random() * 50) - 25;
+          const flip = Math.floor(Math.random() * 2);
+          let orientation = "";
+          if (flip == 1) orientation = "transform: scaleX(-1);";
+
+          this.state.myMonster.monsterAttacks.push({ x, y, orientation });
+          UI.update();
+          this.state.myMonster.monsterAttacks = [];
+          console.log(this.state.myMonster.monsterAttacks);
         },
       },
       mySettings: {

@@ -1,4 +1,27 @@
-import { bgMusic, gmMusic, buttonWav, woosh, mail, dealcard, sad } from "./assets/assetPool";
+import {
+  bgMusic,
+  gmMusic,
+  buttonWav,
+  woosh,
+  mail,
+  dealcard,
+  sad,
+  damage1,
+  damage2,
+  damage3,
+  attack1,
+  attack2,
+  attack3,
+  mcry,
+  defeat,
+  buzzer,
+  coindrop,
+  gainAttack,
+  building,
+  heal,
+  purchase,
+  seffect,
+} from "./assets/assetPool";
 
 import { Howl } from "howler";
 
@@ -7,6 +30,32 @@ export class SFX {
 
   buttonClick = new Howl({
     src: [buttonWav],
+    volume: this.sfxGain,
+  });
+
+  Damage1 = new Howl({
+    src: [damage1],
+    volume: this.sfxGain,
+  });
+  Damage2 = new Howl({
+    src: [damage2],
+    volume: this.sfxGain,
+  });
+  Damage3 = new Howl({
+    src: [damage3],
+    volume: this.sfxGain,
+  });
+
+  Attack1 = new Howl({
+    src: [attack1],
+    volume: this.sfxGain,
+  });
+  Attack2 = new Howl({
+    src: [attack2],
+    volume: this.sfxGain,
+  });
+  Attack3 = new Howl({
+    src: [attack3],
     volume: this.sfxGain,
   });
 
@@ -31,12 +80,76 @@ export class SFX {
     volume: this.sfxGain,
   });
 
+  cry = new Howl({
+    src: [mcry],
+    volume: this.sfxGain,
+  });
+
+  die = new Howl({
+    src: [defeat],
+    volume: this.sfxGain,
+  });
+
+  buzzer = new Howl({
+    src: [buzzer],
+    volume: this.sfxGain,
+  });
+
+  coin = new Howl({
+    src: [coindrop],
+    volume: this.sfxGain * 1.2,
+  });
+
+  gainAttack = new Howl({
+    src: [gainAttack],
+    volume: this.sfxGain * 0.9,
+    rate: 2,
+  });
+
+  crash = new Howl({
+    src: [building],
+    volume: this.sfxGain,
+  });
+
+  healing = new Howl({
+    src: [heal],
+    volume: this.sfxGain * 0.9,
+    rate: 2,
+  });
+
+  buy = new Howl({
+    src: [purchase],
+    volume: this.sfxGain * 0.9,
+    rate: 2,
+  });
+
+  statuseffect = new Howl({
+    src: [seffect],
+    volume: this.sfxGain * 0.9,
+    rate: 2,
+  });
+
   gameSfx = {
     button: this.buttonClick,
     mailSend: this.mailSend,
     mailGet: this.mailGet,
     playCard: this.cardPlayed,
     sadT: this.sadtrombone,
+    dmg0: this.Damage1,
+    dmg1: this.Damage2,
+    dmg2: this.Damage3,
+    atk0: this.Attack1,
+    atk1: this.Attack2,
+    atk2: this.Attack3,
+    cry: this.cry,
+    die: this.die,
+    buzzer: this.buzzer,
+    coin: this.coin,
+    gainAtk: this.gainAttack,
+    crash: this.crash,
+    healing: this.healing,
+    buy: this.buy,
+    statuseffect: this.statuseffect,
   };
 
   constructor() {}

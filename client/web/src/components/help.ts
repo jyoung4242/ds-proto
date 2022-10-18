@@ -94,16 +94,11 @@ export class Help {
                 </div>
 
                 <div class="help_text" \${===myHelp.page5}>
-                  <p>What's new in BETA 0.1.5 - Release Notes</p>
+                  <p>What's new in BETA 0.1.6 - Release Notes</p>
                    
-                  <p>-added stunned player logic</p>
-                  <p>-UI text no longer selectable</p>
-                  <p>-name placards for each player</p>
-                  <p>-active turn indicator</p>
-                  <p>-fixed status effect end or round cleanup</p>
-                  <p>-finished button logic cleaned up</p>
-                  <p>-new font</p>
-                  
+                  <p>-added monster damage animations</p>
+                  <p>-filled out emmersive sounds</p>
+                                    
                 </div>
 
 

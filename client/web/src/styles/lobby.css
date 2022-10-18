@@ -115,5 +115,6 @@
 
 .lobbyButton:hover {
   background-color: rgb(211, 211, 211);
+  text-shadow: none;
   color: var(--background-start);
 }
