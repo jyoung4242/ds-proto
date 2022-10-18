@@ -1249,6 +1249,13 @@ class GameEvent {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
+
+    const mediaIndex = Math.floor(Math.random() * 3);
+    if (this.state.gameData.activeMonsters[0].damage != this.state.gameData.activeMonsters[0].health)
+      utils.playSound(`atk${mediaIndex}`);
+    //showanimation
+    this.state.myMonster.addAttack();
+
     // add locationdamage css to monster card
     const existingString = this.state.myMonster.cssString;
     this.state.myMonster.cssString = existingString + " playerdamage";

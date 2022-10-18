@@ -657,11 +657,6 @@ export class State {
           if (this.state.gameData.roundState == RoundState.activeApplyingDamage) {
             utils.applyDamage(cardId);
             //playsound
-            const mediaIndex = Math.floor(Math.random() * 3);
-            if (this.state.gameData.activeMonsters[0].damage != this.state.gameData.activeMonsters[0].health)
-              utils.playSound(`atk${mediaIndex}`);
-            //showanimation
-            this.state.myMonster.addAttack();
           }
           return;
         },
