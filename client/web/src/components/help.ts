@@ -94,10 +94,10 @@ export class Help {
                 </div>
 
                 <div class="help_text" \${===myHelp.page5}>
-                  <p>What's new in BETA 0.1.6 - Release Notes</p>
+                  <p>What's new in BETA 0.1.7 - Release Notes</p>
                    
-                  <p>-added monster damage animations</p>
-                  <p>-filled out emmersive sounds</p>
+                  <p>-custom artwork for characters</p>
+                 
                                     
                 </div>
 

@@ -173,7 +173,7 @@ export class State {
         },
       },
       myTitle: {
-        version: "BETA 0.1.6 ",
+        version: "BETA 0.1.7 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
