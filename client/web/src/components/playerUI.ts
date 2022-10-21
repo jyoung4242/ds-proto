@@ -26,7 +26,7 @@ export class pUI {
                 ${this.atkPlac.template}
                 <img class="pui_coinIMG" src=${coin} alt="" width="25" height="25"/>
                 ${this.coinPlac.template}
-                <img class="pui_character \${player.stunStatus}" src="\${player.img}" alt="" width="60" height="100" \${mouseenter@=>player.setHover} \${mouseleave@=>player.clearHover} />
+                <img class="pui_character \${player.stunStatus}" src="\${|player.img}" alt="" width="60" height="100" \${mouseenter@=>player.setHover} \${mouseleave@=>player.clearHover} />
                 <svg class="pui_svg \${player.bloomStatus}" >
                     <style>
                       pui_meter-\${player.index}{

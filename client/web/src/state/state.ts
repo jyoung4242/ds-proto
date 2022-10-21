@@ -73,6 +73,8 @@ import {
 } from "../events";
 
 import {
+  settings,
+  help,
   bmale,
   bfemale,
   wmale,
@@ -176,9 +178,47 @@ export class State {
         version: "BETA 0.1.8 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
+        isDisabled: true,
+        preload: "",
+        preloadArray: [
+          settings,
+          help,
+          bmale,
+          bfemale,
+          wmale,
+          wfemale,
+          rmale,
+          rfemale,
+          pmale,
+          pfemale,
+          userIcon,
+          locationIcon,
+          monsterIcon,
+          cardIcon,
+          effectIcon,
+          mute,
+          unmute,
+          cursor,
+        ],
+        preloadIndex: 0,
         login: () => {
           utils.playSound("button");
           utils.login();
+        },
+        load_next: (event, model, element) => {
+          if (this.state.myTitle.isDisabled == false) return;
+
+          if (this.state.myTitle.preloadIndex + 1 == this.state.myTitle.preloadArray.length) {
+            this.state.myTitle.isDisabled = false;
+            this.state.myTitle.subtitle = "PRESS LOGIN TO BEGIN";
+            return;
+          }
+          this.state.myTitle.preload = this.state.myTitle.preloadArray[this.state.myTitle.preloadIndex];
+
+          this.state.myTitle.preloadIndex += 1;
+          let percentComplete = this.state.myTitle.preloadIndex / this.state.myTitle.preloadArray.length;
+          percentComplete *= 100;
+          this.state.myTitle.subtitle = `LOADING.... (${percentComplete.toFixed(2)}%)`;
         },
       },
       mySceneTransition: {
@@ -335,6 +375,13 @@ export class State {
         imgSource: null,
       },
       myStaging: {
+        get isDisabled() {
+          return this.numConnectedPlayers != this.numSetupPlayer;
+        },
+        numConnectedPlayers: 0,
+        get numSetupPlayer() {
+          return this.group.length;
+        },
         isVisible: true,
         group: [],
         back: () => {
@@ -938,6 +985,7 @@ export class State {
       this.state.gameData.gameID = update.stateId;
       this.state.gameData.playerIndex = update.state.me;
       this.state.gameData.Players = update.state.players;
+      this.state.myStaging.numConnectedPlayers = this.state.gameData.Players.length;
       this.state.gameData.roundState = update.state.roundState;
       this.state.gameData.cardPool = update.state.cardPool;
       this.state.gameData.turnOrder = update.state.turnOrder;

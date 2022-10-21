@@ -11,6 +11,7 @@
   justify-content: center;
   flex-direction: column;
   align-content: center;
+  user-select: none;
 }
 
 .mainLobby > span {
@@ -34,6 +35,7 @@
   flex-direction: column;
   align-content: center;
   animation: blink 1.5s infinite;
+  user-select: none;
 }
 
 .sLobby > span {
@@ -55,6 +57,7 @@
   cursor: pointer;
   box-shadow: 2px 2px 1px 1px black;
   text-shadow: 1px 1px black;
+  user-select: none;
 }
 
 .lobbyButton:disabled {

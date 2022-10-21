@@ -4,6 +4,7 @@
   margin: 0 auto;
   bottom: 650px;
   text-align: center;
+  user-select: none;
 }
 
 .stg_Container {
@@ -20,6 +21,7 @@
   justify-content: space-evenly;
   align-content: center;
   flex-direction: column;
+  user-select: none;
 }
 
 .stg_buttonflex {
@@ -32,6 +34,7 @@
   display: flex;
   justify-content: space-evenly;
   align-content: center;
+  user-select: none;
 }
 
 .stg_PlayerEntry {
@@ -45,6 +48,7 @@
   padding: 8px;
   opacity: 1;
   transition: opacity 0.75s ease-in-out;
+  user-select: none;
 }
 
 stg_PlayerEntry.pui-removing {

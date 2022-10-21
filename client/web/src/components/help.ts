@@ -99,7 +99,9 @@ export class Help {
                   <p>-passives phase of turn is automatic</p>
                   <p>-server broadcast optimizations (...cleaner code)</p>
                   <p>-if not enough coins to buy card, cardpool doesn't show</p>
-                 
+                  <p>-image preloading added</p>
+                  <p>-one time image bindings, performance improvement</p>
+                  <p>-all unecessary selectable UI items, now unselectable</p>
                                     
                 </div>
 

@@ -5,6 +5,7 @@
   bottom: 600px;
   text-align: center;
   text-shadow: 2px 2px black;
+  user-select: none;
 }
 
 .charscreenContainer {
@@ -17,6 +18,7 @@
   border-image: url("../assets/border.svg");
   border-image-slice: 20;
   border-radius: 20px;
+  user-select: none;
 }
 
 .cs_modaldiv {

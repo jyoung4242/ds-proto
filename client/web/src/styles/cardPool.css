@@ -6,6 +6,7 @@
   height: var(--game-height);
   display: block;
   z-index: 18;
+  user-select: none;
 }
 
 .CP_CardModal {
@@ -27,6 +28,7 @@
   grid-template-columns: 10px 1fr 10px 1fr 10px 1fr 10px;
   box-shadow: 5px 5px black;
   animation: slideInFromLeft 0.75s ease-in-out;
+  user-select: none;
 }
 
 .exit {
@@ -67,6 +69,7 @@
   transform: translate(-50%, -50%);
   box-shadow: 8px 3px rgba(0, 0, 0, 125);
   transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  user-select: none;
 }
 
 .CP_cardspot:hover {
@@ -125,6 +128,7 @@
   width: var(--game-width);
   height: var(--game-height);
   z-index: 3;
+  user-select: none;
 }
 
 .CP_Modal_Inner {
@@ -140,6 +144,7 @@
   border-image-slice: 15;
   background-image: linear-gradient(to bottom right, var(--background-start), var(--background-end));
   border-radius: 20px;
+  user-select: none;
 }
 
 .CP_Modaltitle {
@@ -149,6 +154,7 @@
   transform: translateX(-50%);
   width: 400px;
   text-align: center;
+  user-select: none;
 }
 
 .CP_buttonflex {
@@ -161,6 +167,7 @@
   height: 50px;
   justify-content: space-evenly;
   align-content: center;
+  user-select: none;
 }
 
 .CP_backgroundtint {
@@ -171,4 +178,5 @@
   height: var(--game-height);
   background-color: rgb(211, 211, 211);
   opacity: 0.6;
+  user-select: none;
 }

@@ -11,6 +11,7 @@
   justify-content: center;
   flex-direction: column;
   align-content: center;
+  user-select: none;
 }
 
 .mainTitle > span {
@@ -24,6 +25,7 @@
   top: 15px;
   left: 15px;
   font-family: "Gill Sans";
+  user-select: none;
 }
 
 .STitle {
@@ -43,6 +45,7 @@
   align-content: center;
   animation: blink 1.5s infinite;
   text-shadow: 2px 2px black;
+  user-select: none;
 }
 
 .STitle > span {
@@ -67,6 +70,7 @@
   cursor: pointer;
   text-shadow: 2px 2px black;
   box-shadow: 2px 2px 1px 1px black;
+  user-select: none;
 }
 
 .titleButton:hover {
@@ -96,4 +100,5 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+  user-select: none;
 }

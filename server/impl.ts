@@ -620,14 +620,41 @@ export class Impl implements Methods<InternalState> {
     const seIndex = state.players[playerIndex].statusEffects.findIndex(se => se == StatusEffects.Stunned);
     if (seIndex != -1) {
       console.log("resetting player health");
-      ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER", index: playerIndex });
+      //ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER", index: playerIndex });
+      switch (playerIndex) {
+        case 0:
+          ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER0" });
+          break;
+        case 1:
+          ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER1" });
+          break;
+        case 2:
+          ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER2" });
+          break;
+        case 3:
+          ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER3" });
+          break;
+      }
       state.players[playerIndex].health = 10;
     }
 
     //clear all status effects
     state.players[playerIndex].statusEffects = [];
     ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE", index: playerIndex });
-
+    switch (playerIndex) {
+      case 0:
+        ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE0" });
+        break;
+      case 1:
+        ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE1" });
+        break;
+      case 2:
+        ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE2" });
+        break;
+      case 3:
+        ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE3" });
+        break;
+    }
     //redeal hand for user
     //test to see if 5 cards in deck, if not... reshuffle discard
 
