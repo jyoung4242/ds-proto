@@ -198,7 +198,7 @@ export let p2Coin1: GameEventSequence = { sequence: [raisep2Coin, refreshPlayerH
 export let p3Coin1: GameEventSequence = { sequence: [raisep3Coin, refreshPlayerHand] };
 export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerHand] };
 export let showCardPool: GameEventSequence = {
-  sequence: [shortdelay, openCardPool, shortdelay, shortdelay, enableMonsterDamage],
+  sequence: [shortdelay, openCardPool, shortdelay, shortdelay],
 };
 export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard, shortdelay, shortdelay] };
 export let hideCardpool: GameEventSequence = {
@@ -211,6 +211,7 @@ export let hideCardpool: GameEventSequence = {
     shortdelay,
     indexProgressBar_cardPool,
     shortdelay,
+    enableMonsterDamage,
   ],
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
@@ -822,6 +823,7 @@ class GameEvent {
           if (canbuy) {
             utils.showCardPool();
             utils.playSound("button");
+            this.state.myNavInput.isVisible = false;
           } else {
             utils.playSound("buzzer");
             utils.doneBuyingCards();
