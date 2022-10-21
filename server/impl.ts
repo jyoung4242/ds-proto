@@ -640,7 +640,7 @@ export class Impl implements Methods<InternalState> {
 
     //clear all status effects
     state.players[playerIndex].statusEffects = [];
-    ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE", index: playerIndex });
+    //ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE", index: playerIndex });
     switch (playerIndex) {
       case 0:
         ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE0" });
