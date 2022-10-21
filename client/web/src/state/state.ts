@@ -2,7 +2,7 @@ import { utils } from "../utils";
 import { UI } from "peasy-ui";
 import { Router } from "../components";
 import { Character } from "../components/character";
-import { Gender, MCard, Roles, RoundState } from "../../../../api/types";
+import { Gender, HathoraEventTypes, MCard, Roles, RoundState } from "../../../../api/types";
 import { UpdateArgs } from "../../../.hathora/client";
 import {
   add1Attack,
@@ -173,7 +173,7 @@ export class State {
         },
       },
       myTitle: {
-        version: "BETA 0.1.7 ",
+        version: "BETA 0.1.8 ",
         title: "DEMON SIEGE",
         subtitle: "PRESS LOGIN TO BEGIN",
         login: () => {
@@ -1032,243 +1032,16 @@ export class State {
     if (update.events.length) {
       console.log("SERVER EVENTS: ", update.events);
     }
+
     update.events.forEach(event => {
-      switch (event) {
-        case "START":
-          if (this.state.myContainer.myRoute != Router.Game) {
-            console.log("adding players");
-            this.state.gameData.Players.forEach((p, i) => {
-              this.state.mypUI.allPlayers.push(
-                new Character({
-                  name: p.name,
-                  role: p.role,
-                  index: i,
-                  gender: p.gender,
-                  bloomStatus: "",
-                  statusEffects: p.statusEffects,
-                })
-              );
-            });
-            this.state.myContainer.screenSwitch(Router.Game);
-            utils.playGameMusic();
-          }
-
-          startEventSequence(startSetupSeq, this.state);
-          startEventSequence(startSequence, this.state);
-
-          break;
-        case "START TURN":
-          startEventSequence(startTurn, this.state);
-          break;
-        case "PASSIVES":
-          startEventSequence(passives, this.state);
-          break;
-        case "STATUSEFFECT ADDED":
-          startEventSequence(updateStatEffects, this.state);
-          break;
-        case "Lose1Health":
-          startEventSequence(lowerHealth1, this.state);
-          break;
-        case "Lose2Health":
-          startEventSequence(lowerHealth2, this.state);
-          break;
-        case "add1toLocation":
-          startEventSequence(locDamage, this.state);
-          this.state.myLocation.addPoint(1, this.state);
-          break;
-        case "hideTD":
-          startEventSequence(hideTD, this.state);
-          break;
-        case "ENABLE_Monster":
-          startEventSequence(bloomMonsters, this.state);
-          break;
-        case "NO MONSTERS READY":
-          startEventSequence(skipMonsters, this.state);
-          break;
-        case "MONSTER_PLAYED":
-          startEventSequence(MonsterPlayed, this.state);
-          break;
-        case "ENABLE_Player":
-          startEventSequence(playerHandShow, this.state);
-          break;
-        case "PLAYERDONE":
-          startEventSequence(playerHandDone, this.state);
-          break;
-        case "STUNNED":
-          startEventSequence(stunnedPlayer, this.state);
-          break;
-        case "+1Attack":
-          startEventSequence(add1Attack, this.state);
-          break;
-        case "+1Health":
-          startEventSequence(raiseHealth1, this.state);
-          break;
-
-        case "+2Coin":
-          startEventSequence(add2Coin, this.state);
-          break;
-
-        case "+1Coin":
-          startEventSequence(add1Coin, this.state);
-          break;
-
-        case "draw":
-          startEventSequence(drawNewCard, this.state);
-          break;
-        case "draw2":
-          startEventSequence(draw2NewCard, this.state);
-          break;
-
-        case "+1HealthtoAllOthers":
-          startEventSequence(healOthers1, this.state);
-          break;
-
-        case "remove1fromLocation":
-          startEventSequence(remove1Location, this.state);
-          break;
-
-        case "chooseAttack1Ability1":
-          isChoiceButtonActive = true;
-          startEventSequence(chooseAtk1Coin1, this.state);
-
-          break;
-
-        case "chooseHealth1Ability1":
-          isChoiceButtonActive = true;
-          startEventSequence(chooseHealth1Coin1, this.state);
-
-          break;
-
-        case "chooseAttack1Draw1":
-          isChoiceButtonActive = true;
-          startEventSequence(chooseAtk1Draw1, this.state);
-
-          break;
-
-        case "chooseAbility1Draw1":
-          isChoiceButtonActive = true;
-          startEventSequence(chooseCoin1Draw1, this.state);
-
-          break;
-        case "discard":
-          isChoiceButtonActive = true;
-          startEventSequence(discard1, this.state);
-
-          break;
-        case "discarded":
-          startEventSequence(refreshHand, this.state);
-          break;
-        case "chooseHealth1Draw1":
-          isChoiceButtonActive = true;
-          startEventSequence(chooseHealth1Draw1, this.state);
-
-          break;
-        case "addHealth1anyPlayer":
-          isChoiceButtonActive = true;
-          startEventSequence(anyPlayer1Health, this.state);
-
-          break;
-        case "addCoin1anyPlayer":
-          isChoiceButtonActive = true;
-          startEventSequence(anyPlayer1Coin, this.state);
-
-          break;
-        case "player1health":
-          startEventSequence(p1Health1, this.state);
-
-          break;
-        case "player2health":
-          startEventSequence(p2Health1, this.state);
-          break;
-        case "player3health":
-          startEventSequence(p3Health1, this.state);
-          break;
-        case "player4health":
-          startEventSequence(p4Health1, this.state);
-          break;
-        case "player1coin":
-          startEventSequence(p1Coin1, this.state);
-          break;
-        case "player2coin":
-          startEventSequence(p2Coin1, this.state);
-          break;
-        case "player3coin":
-          startEventSequence(p3Coin1, this.state);
-          break;
-        case "player4coin":
-          startEventSequence(p4Coin1, this.state);
-          break;
-        case "Show Card Pool":
-          startEventSequence(showCardPool, this.state);
-          break;
-        case "card purchased":
-          startEventSequence(cardpurchased, this.state);
-          break;
-        case "Close Card Pool":
-          startEventSequence(hideCardpool, this.state);
-          break;
-        case "Ready to apply damage":
-          startEventSequence(enablemonsterDamage, this.state);
-          break;
-        case "Ready to End Turn":
-          startEventSequence(readyToEndTurn, this.state);
-          break;
-        case "Applying Damage":
-          startEventSequence(damageMonster, this.state);
-          break;
-        case "Ready for next player":
-          startEventSequence(endturn, this.state);
-          break;
-        case "clearSE0":
-          startEventSequence(clearSE0, this.state);
-          break;
-        case "clearSE1":
-          startEventSequence(clearSE1, this.state);
-          break;
-        case "clearSE2":
-          startEventSequence(clearSE2, this.state);
-          break;
-        case "clearSE3":
-          startEventSequence(clearSE3, this.state);
-          break;
-
-        case "monsterdefeated":
-          startEventSequence(ChangeMonster, this.state);
-          break;
-        case "VICTORY":
-          startEventSequence(winGameOver, this.state);
-          break;
-        case "drawBlocked":
-          startEventSequence(sendToastDrawBlocked, this.state);
-          break;
-        case "LOST":
-          startEventSequence(loseGameOver, this.state);
-          break;
-        case "LocationLost":
-          startEventSequence(hideLocation, this.state);
-          break;
-        case "newlocation":
-          startEventSequence(showNewLocation, this.state);
-          break;
-        case "locationCurseEffect":
-          startEventSequence(sendToastLocation, this.state);
-          break;
-        case "discardcurse":
-          startEventSequence(sendToastDiscardCurse, this.state);
-          break;
-        case "RESETPLAYER0":
-          startEventSequence(resetPlayer0, this.state);
-          break;
-        case "RESETPLAYER1":
-          startEventSequence(resetPlayer1, this.state);
-          break;
-        case "RESETPLAYER2":
-          startEventSequence(resetPlayer2, this.state);
-          break;
-        case "RESETPLAYER3":
-          startEventSequence(resetPlayer3, this.state);
-          break;
+      let commandtype: string;
+      let paramFromCommand: number;
+      if (event.type == HathoraEventTypes.default) commandtype = event.val;
+      else if (event.type == HathoraEventTypes.userEventType) {
+        commandtype = event.val.command;
+        event.val.index ? (paramFromCommand = event.val.index) : (paramFromCommand = -1);
       }
+      startEventSequence(commandMap[commandtype], this.state);
     });
   };
 
@@ -1276,3 +1049,69 @@ export class State {
     console.log("message error", errorMessage);
   }
 }
+
+const commandMap = {
+  SETUP: startSetupSeq,
+  START: startSequence,
+  "START TURN": startTurn,
+  PASSIVES: passives,
+  "STATUSEFFECT ADDED": updateStatEffects,
+  Lose1Health: lowerHealth1,
+  Lose2Health: lowerHealth2,
+  add1toLocation: locDamage,
+  hideTD: hideTD,
+  ENABLE_Monster: bloomMonsters,
+  "NO MONSTERS READY": skipMonsters,
+  MONSTER_PLAYED: MonsterPlayed,
+  ENABLE_Player: playerHandShow,
+  PLAYERDONE: playerHandDone,
+  STUNNED: stunnedPlayer,
+  "+1Attack": add1Attack,
+  "+1Health": raiseHealth1,
+  "+2Coin": add2Coin,
+  "+1Coin": add1Coin,
+  draw: drawNewCard,
+  draw2: draw2NewCard,
+  "+1HealthtoAllOthers": healOthers1,
+  remove1Location: remove1Location,
+  chooseAttack1Ability1: chooseAtk1Coin1,
+  chooseHealth1Ability1: chooseHealth1Coin1,
+  chooseAttack1Draw1: chooseAtk1Draw1,
+  chooseAbility1Draw1: chooseCoin1Draw1,
+  discard: discard1,
+  discarded: refreshHand,
+  chooseHealth1Draw1: chooseHealth1Draw1,
+  addHealth1anyPlayer: anyPlayer1Health,
+  addcoin1anyPlayer: anyPlayer1Coin,
+  player1health: p2Health1,
+  player2health: p2Health1,
+  player3health: p3Health1,
+  player4health: p4Health1,
+  player1coin: p1Coin1,
+  player2coin: p2Coin1,
+  player3coin: p3Coin1,
+  player4coin: p4Coin1,
+  "Show Card Pool": showCardPool,
+  "card purchased": cardpurchased,
+  "Close Card Pool": hideCardpool,
+  "Ready to apply damage": enablemonsterDamage,
+  "Ready to End Turn": readyToEndTurn,
+  RESETPLAYER0: resetPlayer0,
+  RESETPLAYER1: resetPlayer1,
+  RESETPLAYER2: resetPlayer2,
+  RESETPLAYER3: resetPlayer3,
+  discardcurse: sendToastDiscardCurse,
+  locationCurseEffect: sendToastLocation,
+  newlocation: showNewLocation,
+  LocationLost: hideLocation,
+  LOST: loseGameOver,
+  drawBlocked: sendToastDrawBlocked,
+  VICTORY: winGameOver,
+  monsterdefeated: ChangeMonster,
+  clearSE0: clearSE0,
+  clearSE1: clearSE1,
+  clearSE2: clearSE2,
+  clearSE3: clearSE3,
+  "Ready for next player": endturn,
+  "Applying Damage": damageMonster,
+};

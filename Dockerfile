@@ -2,7 +2,7 @@ FROM node:16
 
 WORKDIR /app
 
-RUN npm i -g hathora@0.9.26
+RUN npm i -g hathora@0.10.0
 
 ENV NODE_ENV=production
 

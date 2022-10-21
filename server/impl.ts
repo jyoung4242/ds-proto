@@ -41,6 +41,8 @@ import {
   ISeenMessageRequest,
   IUserResponseRequest,
   IPlayerHandCompleteRequest,
+  HathoraEventTypes,
+  BCAST,
 } from "../api/types";
 
 //importing decks
@@ -210,8 +212,8 @@ export class Impl implements Methods<InternalState> {
     //gaurd conditions
     if (state.gameState != GameState.Lobby) return Response.error("Cannot Start game, its already started");
     if (state.players.length <= 0) return Response.error("No players are joined, cannot start");
-
-    ctx.broadcastEvent("START");
+    ctx.broadcastEvent(HathoraEventTypes.default, "SETUP");
+    ctx.broadcastEvent(HathoraEventTypes.default, "START");
 
     //Setting State and turn order
     state.gameState = GameState.GameSetup;
@@ -255,7 +257,7 @@ export class Impl implements Methods<InternalState> {
     //show TD card
     state.TD = towerDefenseDeck.pop();
 
-    ctx.broadcastEvent(`START TURN`);
+    ctx.broadcastEvent(HathoraEventTypes.default, `START TURN`);
     return Response.ok();
   }
 
@@ -285,11 +287,11 @@ export class Impl implements Methods<InternalState> {
     state.activeMonsters.forEach((monster, index) => {
       if (monster.PassiveEffect != undefined) {
         executeCallback(monster.PassiveEffect.callback, state, playerIndex, ctx);
-        ctx.broadcastEvent("STATUSEFFECT ADDED");
+        ctx.broadcastEvent(HathoraEventTypes.default, "STATUSEFFECT ADDED");
       }
     });
 
-    ctx.broadcastEvent(`PASSIVES`);
+    ctx.broadcastEvent(HathoraEventTypes.default, `PASSIVES`);
     state.roundState = RoundState.waitingOnTD;
     return Response.ok();
   }
@@ -300,7 +302,7 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
-    ctx.broadcastEvent("ENABLE_TD");
+    ctx.broadcastEvent(HathoraEventTypes.default, "ENABLE_TD");
     return Response.ok();
   }
 
@@ -319,19 +321,19 @@ export class Impl implements Methods<InternalState> {
     if (state.TD?.ActiveEffect) executeCallback(state.TD?.ActiveEffect.callback, state, pIndex, ctx);
     if (state.TD?.PassiveEffect) {
       executeCallback(state.TD?.PassiveEffect.callback, state, pIndex, ctx);
-      ctx.broadcastEvent("STATUSEFFECT ADDED");
+      ctx.broadcastEvent(HathoraEventTypes.default, "STATUSEFFECT ADDED");
     }
 
     if (numberOfTDCardsForThisLocation > 1) {
       numberOfTDCardsForThisLocation -= 1;
       state.roundState = RoundState.waitingOnTD;
       state.TD = towerDefenseDeck.pop();
-      ctx.broadcastEvent("updateTD");
+      ctx.broadcastEvent(HathoraEventTypes.default, "updateTD");
     } else {
       state.roundState = RoundState.waitingOnMonster;
       //discard TD
       state.TD = undefined;
-      ctx.broadcastEvent("hideTD");
+      ctx.broadcastEvent(HathoraEventTypes.default, "hideTD");
     }
 
     //check if TD needs reshuffled
@@ -344,7 +346,6 @@ export class Impl implements Methods<InternalState> {
   }
 
   enableMonsters(state: InternalState, userId: UserId, ctx: Context, request: IEnableMonstersRequest): Response {
-    ctx.broadcastEvent("TEST");
     //gaurd conditions
     if (state.roundState != RoundState.waitingOnMonster)
       return Response.error("Cannot process this command, the round isn't at this step");
@@ -354,12 +355,12 @@ export class Impl implements Methods<InternalState> {
     numberOfActiveMonstersThatHaveActiveEvents = 0;
     numberOfActiveMonstersThatHaveActiveEvents = getNumberOfActiveMonstersWithActiveEvents(state.activeMonsters);
     if (numberOfActiveMonstersThatHaveActiveEvents == 0) {
-      ctx.broadcastEvent("NO MONSTERS READY");
+      ctx.broadcastEvent(HathoraEventTypes.default, "NO MONSTERS READY");
       state.roundState = RoundState.waitingOnPlayer;
       return Response.ok();
     }
 
-    ctx.broadcastEvent("ENABLE_Monster");
+    ctx.broadcastEvent(HathoraEventTypes.default, "ENABLE_Monster");
     state.roundState = RoundState.activeRunningMonster;
     return Response.ok();
   }
@@ -378,17 +379,17 @@ export class Impl implements Methods<InternalState> {
     if (state.activeMonsters[0].ActiveEffect)
       executeCallback(state.activeMonsters[0].ActiveEffect.callback, state, pIndex, ctx);
 
-    ctx.broadcastEvent("MONSTER_PLAYED");
+    ctx.broadcastEvent(HathoraEventTypes.default, "MONSTER_PLAYED");
 
     //Decrement counter until all monsters played
     numberOfActiveMonstersThatHaveActiveEvents -= 1;
     if (numberOfActiveMonstersThatHaveActiveEvents == 0) {
       state.roundState = RoundState.waitingOnPlayer;
-      ctx.broadcastEvent("MONSTER_DONE");
+      ctx.broadcastEvent(HathoraEventTypes.default, "MONSTER_DONE");
       return Response.ok();
     }
 
-    ctx.broadcastEvent("NEXT_MONSTER");
+    ctx.broadcastEvent(HathoraEventTypes.default, "NEXT_MONSTER");
     return Response.ok();
   }
 
@@ -399,7 +400,7 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
 
-    ctx.broadcastEvent("ENABLE_Player");
+    ctx.broadcastEvent(HathoraEventTypes.default, "ENABLE_Player");
     return Response.ok();
   }
 
@@ -455,7 +456,7 @@ export class Impl implements Methods<InternalState> {
     if (state.players[playerIndex].hand.length) {
       state.roundState = RoundState.waitingOnPlayer;
     } else {
-      ctx.broadcastEvent("PLAYERDONE");
+      ctx.broadcastEvent(HathoraEventTypes.default, "PLAYERDONE");
       state.roundState = RoundState.waitingToBuyCard;
     }
     return Response.ok();
@@ -468,7 +469,7 @@ export class Impl implements Methods<InternalState> {
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.activeBuyingCard;
-    ctx.broadcastEvent("Show Card Pool");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Show Card Pool");
     return Response.ok();
   }
 
@@ -503,18 +504,18 @@ export class Impl implements Methods<InternalState> {
 
     checkForValidHand(state.players[playerIndex].discard);
 
-    ctx.broadcastEvent("card purchased");
+    ctx.broadcastEvent(HathoraEventTypes.default, "card purchased");
     return Response.ok();
   }
 
   closeCardPool(state: InternalState, userId: UserId, ctx: Context, request: ICloseCardPoolRequest): Response {
     //guard conditions
-    if (state.roundState != RoundState.activeBuyingCard)
+    if (state.roundState != RoundState.activeBuyingCard && state.roundState != RoundState.waitingToBuyCard)
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
     state.roundState = RoundState.waitingOnApplyingDamage;
-    ctx.broadcastEvent("Close Card Pool");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Close Card Pool");
     return Response.ok();
   }
 
@@ -524,7 +525,7 @@ export class Impl implements Methods<InternalState> {
       return Response.error("Cannot process this command, the round isn't at this step");
     if (state.gameState != GameState.PlayersTurn) return Response.error("Cannot process this command, game is not ready");
     if (userId != state.turn) return Response.error("You cannot run this command, it is not your turn!");
-    ctx.broadcastEvent("Ready to apply damage");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Ready to apply damage");
     state.roundState = RoundState.activeApplyingDamage;
     return Response.ok();
   }
@@ -550,7 +551,7 @@ export class Impl implements Methods<InternalState> {
     if (state.activeMonsters[cardIndex].damage == state.activeMonsters[cardIndex].health) {
       //monster defeated
       console.log("monster defeated");
-      ctx.broadcastEvent("monsterdefeated");
+      ctx.broadcastEvent(HathoraEventTypes.default, "monsterdefeated");
 
       //issue reward to players
       if (state.activeMonsters[0].ActiveEffect)
@@ -575,7 +576,7 @@ export class Impl implements Methods<InternalState> {
       else {
         //game over - you win
         console.log("GAME OVER YOU WIN");
-        ctx.broadcastEvent("VICTORY");
+        ctx.broadcastEvent(HathoraEventTypes.default, "VICTORY");
         state.roundState = RoundState.idle;
         state.gameState = GameState.GameOver;
         return Response.ok();
@@ -584,13 +585,13 @@ export class Impl implements Methods<InternalState> {
       //if monster has passives, play
       if (state.activeMonsters[0].PassiveEffect != undefined) {
         executeCallback(state.activeMonsters[0].PassiveEffect.callback, state, playerIndex, ctx);
-        ctx.broadcastEvent("STATUSEFFECT ADDED");
+        ctx.broadcastEvent(HathoraEventTypes.default, "STATUSEFFECT ADDED");
       }
     }
 
     //reduce hero's attack
     state.players[playerIndex].attack -= 1;
-    ctx.broadcastEvent("Applying Damage");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Applying Damage");
     return Response.ok();
   }
 
@@ -603,7 +604,7 @@ export class Impl implements Methods<InternalState> {
     const playerIndex = state.players.findIndex(p => p.id === userId);
     if (state.players[playerIndex].attack > 0) return Response.error("You still have damage left");
 
-    ctx.broadcastEvent("Ready to End Turn");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Ready to End Turn");
     state.roundState = RoundState.waitingOnEndTurn;
     return Response.ok();
   }
@@ -619,41 +620,13 @@ export class Impl implements Methods<InternalState> {
     const seIndex = state.players[playerIndex].statusEffects.findIndex(se => se == StatusEffects.Stunned);
     if (seIndex != -1) {
       console.log("resetting player health");
-      switch (playerIndex) {
-        case 0:
-          ctx.broadcastEvent("RESETPLAYER0");
-          break;
-        case 1:
-          ctx.broadcastEvent("RESETPLAYER1");
-          break;
-        case 2:
-          ctx.broadcastEvent("RESETPLAYER2");
-          break;
-        case 3:
-          ctx.broadcastEvent("RESETPLAYER3");
-          break;
-      }
-
+      ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "RESETPLAYER", index: playerIndex });
       state.players[playerIndex].health = 10;
     }
 
     //clear all status effects
     state.players[playerIndex].statusEffects = [];
-
-    switch (playerIndex) {
-      case 0:
-        ctx.broadcastEvent("clearSE0");
-        break;
-      case 1:
-        ctx.broadcastEvent("clearSE1");
-        break;
-      case 2:
-        ctx.broadcastEvent("clearSE2");
-        break;
-      case 3:
-        ctx.broadcastEvent("clearSE3");
-        break;
-    }
+    ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "CLEARSE", index: playerIndex });
 
     //redeal hand for user
     //test to see if 5 cards in deck, if not... reshuffle discard
@@ -684,7 +657,8 @@ export class Impl implements Methods<InternalState> {
     else turnIndex += 1; //next player is next index
     state.turn = state.turnOrder[turnIndex];
 
-    ctx.broadcastEvent("Ready for next player");
+    ctx.broadcastEvent(HathoraEventTypes.userEventType, { command: "Ready for next player" });
+
     state.roundState = RoundState.idle;
     state.gameState = GameState.ReadyToStart;
     return Response.ok();

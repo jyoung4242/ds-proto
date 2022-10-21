@@ -202,6 +202,11 @@ export const utils = {
   },
   async passives() {
     try {
+      let m = await myConnection.runPlayerPassives({});
+    } catch (error) {
+      console.log(`response from server :`, error);
+    }
+    try {
       let m = await myConnection.runMonsterPassives({});
     } catch (error) {
       console.log(`response from server :`, error);

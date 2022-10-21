@@ -94,9 +94,11 @@ export class Help {
                 </div>
 
                 <div class="help_text" \${===myHelp.page5}>
-                  <p>What's new in BETA 0.1.7 - Release Notes</p>
+                  <p>What's new in BETA 0.1.8 - Release Notes</p>
                    
-                  <p>-custom artwork for characters</p>
+                  <p>-passives phase of turn is automatic</p>
+                  <p>-server broadcast optimizations (...cleaner code)</p>
+                  <p>-if not enough coins to buy card, cardpool doesn't show</p>
                  
                                     
                 </div>

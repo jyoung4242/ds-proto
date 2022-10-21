@@ -1,10 +1,10 @@
 import { resolve } from "../webpack.config";
 import { utils } from "./utils";
-import { iStatusMessage } from "./components/character";
+import { Character, iStatusMessage } from "./components/character";
 import { clearIsChoiceFlag } from "./state/state";
 import { discard, nodraw, location, stunned, mBonus } from "./assets/assetPool";
 import { RoundState } from "../../../api/types";
-import { Game, Router } from "./components";
+import { Router } from "./components";
 
 let SE_map = {
   0: { img: stunned, effect: "STUNNED" },
@@ -126,6 +126,7 @@ let setPlayerback3: GameEventType = { type: "reset", value: 3 };
 
 let hideCursor: GameEventType = { type: "hidecursor" };
 let showCursor: GameEventType = { type: "showcursor" };
+let setState: GameEventType = { type: "startsequence" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
@@ -133,7 +134,9 @@ type GameEventSequence = {
 
 export let damageMonster: GameEventSequence = { sequence: [damagemonster] };
 export let startSetupSeq: GameEventSequence = { sequence: [clearscreen] };
-export let startSequence: GameEventSequence = { sequence: [startScreen, dealCards, showStartTurn, setPlayerBloom] };
+export let startSequence: GameEventSequence = {
+  sequence: [setState, startScreen, dealCards, showStartTurn, setPlayerBloom],
+};
 export let startTurn: GameEventSequence = {
   sequence: [hideNavButton, shortdelay, showNavBar, shortdelay, dealTD, showCursor, shortdelay, playerPassives],
 };
@@ -193,6 +196,7 @@ export let hideCardpool: GameEventSequence = {
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
 export let readyToEndTurn: GameEventSequence = { sequence: [indexProgressBar_mDamage, enableEndTurn] };
+
 export let endturn: GameEventSequence = {
   sequence: [
     indexProgressBar_EndTurn,
@@ -229,9 +233,11 @@ export let resetPlayer3: GameEventSequence = { sequence: [setPlayerback3] };
 
 class GameEvent {
   state: any;
+  optParam: number;
   event: GameEventType;
-  constructor(event: GameEventType) {
+  constructor(event: GameEventType, optParam?: number) {
     this.event = event;
+    optParam ? (this.optParam = optParam) : (this.optParam = -1);
   }
 
   handChoiceAttack1Ability1(resolve) {
@@ -334,6 +340,27 @@ class GameEvent {
       ];
       this.state.myNavInput.contTop = "25%";
       this.state.myNavInput.isVisible = true;
+    }
+    resolve();
+  }
+
+  startsequence(resolve) {
+    if (this.state.myContainer.myRoute != Router.Game) {
+      console.log("adding players");
+      this.state.gameData.Players.forEach((p, i) => {
+        this.state.mypUI.allPlayers.push(
+          new Character({
+            name: p.name,
+            role: p.role,
+            index: i,
+            gender: p.gender,
+            bloomStatus: "",
+            statusEffects: p.statusEffects,
+          })
+        );
+      });
+      this.state.myContainer.screenSwitch(Router.Game);
+      utils.playGameMusic();
     }
     resolve();
   }
@@ -767,9 +794,16 @@ class GameEvent {
       this.state.myNavInput.buttons.push({
         label: "Open Card Pool",
         action: (event, model, element) => {
-          utils.showCardPool();
-          utils.playSound("button");
-          this.state.myNavInput.isVisible = false;
+          const canbuy = this.checkCoins();
+          if (canbuy) {
+            utils.showCardPool();
+            utils.playSound("button");
+          } else {
+            utils.playSound("buzzer");
+            utils.doneBuyingCards();
+            this.state.myNavInput.isVisible = false;
+            this.state.myToast.addToast("card", "Not enough coins to buy cards");
+          }
         },
         unaction: (event, model, element) => {},
         style: "",
@@ -780,7 +814,7 @@ class GameEvent {
     resolve();
   }
 
-  checkCoins(resolve) {
+  checkCoins() {
     const usr = this.state.gameData.Players.findIndex(p => {
       return this.state.gameData.turn === p.id;
     });
@@ -804,15 +838,7 @@ class GameEvent {
       return remainingFunds >= c.cost;
     });
 
-    console.log(`purchase test result: ${canBuy}`);
-    if (!canBuy) {
-      utils.playSound("buzzer");
-      setTimeout(() => {
-        utils.doneBuyingCards();
-        resolve();
-      }, 1250);
-    }
-    resolve();
+    return canBuy;
   }
 
   resetTimebar(resolve) {
@@ -859,7 +885,6 @@ class GameEvent {
 
   closeCardPool(resolve) {
     this.state.myGame.showModal = false;
-    console.log("hiding modal");
     resolve();
   }
 
@@ -1178,6 +1203,7 @@ class GameEvent {
   }
 
   locationFlash(resolve) {
+    this.state.myLocation.addPoint(1, this.state);
     utils.playSound("crash");
     this.state.myLocation.cssString = " locationdamage";
     setTimeout(() => {
@@ -1399,7 +1425,10 @@ class GameEvent {
     if (myTurn) {
       //show start turn button
 
-      this.state.myNavInput.buttons = [];
+      //0.1.8, skip button press, go straight into passives
+      utils.passives();
+    }
+    /* this.state.myNavInput.buttons = [];
       this.state.myNavInput.buttons.push({
         label: "Run Passives",
         action: (event, model, element) => {
@@ -1412,7 +1441,7 @@ class GameEvent {
       });
       this.state.myNavInput.isVisible = true;
     } else {
-    }
+    } */
     resolve();
   }
 

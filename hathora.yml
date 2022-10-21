@@ -5,6 +5,10 @@ types:
     - Weapon
     - Friend
 
+  BCAST:
+    command: string
+    index: int?
+
   Roles:
     - Barbarian
     - Wizard
@@ -170,6 +174,10 @@ methods:
     msgID: int
   userResponse:
     response: UserResponse
+
+events:
+  userEventType: BCAST
+  default: string
 
 auth:
   anonymous: {}

@@ -1,4 +1,4 @@
-import { ABCard, GameState, RoundState, StatusEffects } from "../../api/types";
+import { ABCard, GameState, HathoraEventTypes, RoundState, StatusEffects } from "../../api/types";
 import { Context } from "../.hathora/methods";
 import { InternalState, locationDeck } from "../impl";
 import { reshuffleDeck } from "./util";
@@ -56,7 +56,7 @@ const removeStatuseffect = (state: InternalState, index: number, ctx: Context) =
       if (curseIndex != -1) state.players[index].statusEffects.splice(curseIndex, 1);
       break;
   }
-  ctx.broadcastEvent("STATUSEFFECT ADDED");
+  ctx.broadcastEvent(HathoraEventTypes.default, "STATUSEFFECT ADDED");
 };
 
 const noHeal = (state: InternalState, index: number, ctx: Context) => {
@@ -88,7 +88,7 @@ const loseOneHealth = (state: InternalState, index: number, ctx: Context) => {
     stunPlayer(state, index, ctx);
   } else {
     if (state.players[index]) state.players[index].health -= 1;
-    ctx.broadcastEvent("Lose1Health");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Lose1Health");
   }
 };
 
@@ -105,35 +105,35 @@ const loseTwoHealth = (state: InternalState, index: number, ctx: Context) => {
     stunPlayer(state, index, ctx);
   } else {
     if (state.players[index]) state.players[index].health -= 2;
-    ctx.broadcastEvent("Lose2Health");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Lose2Health");
   }
 };
 
 export const addOneLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location) state.Location.damage += 1;
-  ctx.broadcastEvent("add1toLocation");
+  ctx.broadcastEvent(HathoraEventTypes.default, "add1toLocation");
   if (
     state.players[index].statusEffects.some(se => {
       return se == StatusEffects.LocationCursed;
     })
   ) {
     //found location curse
-    ctx.broadcastEvent("locationCurseEffect");
+    ctx.broadcastEvent(HathoraEventTypes.default, "locationCurseEffect");
     state.players[index].health -= 1;
-    ctx.broadcastEvent("Lose1Health");
+    ctx.broadcastEvent(HathoraEventTypes.default, "Lose1Health");
   }
 
   //check for lost location
   if (state.Location?.damage == state.Location?.health) {
     //location lost
-    ctx.broadcastEvent("LocationLost");
+    ctx.broadcastEvent(HathoraEventTypes.default, "LocationLost");
 
     //next location check
     if (locationDeck.length > 0) {
       state.Location = locationDeck.pop(); //Location Cards
-      ctx.broadcastEvent("newlocation");
+      ctx.broadcastEvent(HathoraEventTypes.default, "newlocation");
     } else {
-      ctx.broadcastEvent("LOST");
+      ctx.broadcastEvent(HathoraEventTypes.default, "LOST");
       state.roundState = RoundState.idle;
       state.gameState = GameState.GameOver;
     }
@@ -142,7 +142,7 @@ export const addOneLocationPoint = (state: InternalState, index: number, ctx: Co
 
 const addAttack1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].attack += 1;
-  ctx.broadcastEvent("+1Attack");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
 };
 
 const addHealth1 = (state: InternalState, index: number, ctx: Context) => {
@@ -151,29 +151,29 @@ const addHealth1 = (state: InternalState, index: number, ctx: Context) => {
   if (isStunned != -1) return;
 
   if (state.players[index].health < 10) state.players[index].health += 1;
-  ctx.broadcastEvent("+1Health");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Health");
 };
 
 const addAbility2 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 2;
-  ctx.broadcastEvent("+2Coin");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+2Coin");
 };
 
 const addAbility1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
-  ctx.broadcastEvent("+1Coin");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
 };
 
 const addAttack1Ability1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
   if (state.players[index]) state.players[index].attack += 1;
-  ctx.broadcastEvent("+1Coin");
-  ctx.broadcastEvent("+1Attack");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
 };
 
 const addAbility1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
-  ctx.broadcastEvent("+1Coin");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
 
   //check for draw curse
   const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
@@ -186,15 +186,15 @@ const addAbility1Draw1 = (state: InternalState, index: number, ctx: Context) => 
 
     const myCard = state.players[index].deck.pop()!; //Draw Card
     state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
+    ctx.broadcastEvent(HathoraEventTypes.default, "draw");
   } else {
-    ctx.broadcastEvent("drawBlocked");
+    ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
   }
 };
 
 const addAttack1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].attack += 1;
-  ctx.broadcastEvent("+1Attack");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
 
   //check for draw curse
   const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
@@ -207,58 +207,58 @@ const addAttack1Draw1 = (state: InternalState, index: number, ctx: Context) => {
 
     const myCard = state.players[index].deck.pop()!; //Draw Card
     state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
+    ctx.broadcastEvent(HathoraEventTypes.default, "draw");
   } else {
-    ctx.broadcastEvent("drawBlocked");
+    ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
   }
 };
 
 const addHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].coin += 1;
-  ctx.broadcastEvent("+1Coin");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
 
   //check if stunned
   const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
   if (isStunned == -1 && state.players[index].health < 10) {
     if (state.players[index]) state.players[index].health += 1;
-    ctx.broadcastEvent("+1Health");
+    ctx.broadcastEvent(HathoraEventTypes.default, "+1Health");
   }
 };
 
 const addAttack1ToAHaddHealth1ToAll = (state: InternalState, index: number, ctx: Context) => {
   if (state.players[index]) state.players[index].attack += 1;
-  ctx.broadcastEvent("+1Attack");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
   state.players.forEach((p, i) => {
     if (i != index && p.health < 10) p.health += 1;
   });
-  ctx.broadcastEvent("+1HealthtoAllOthers");
+  ctx.broadcastEvent(HathoraEventTypes.default, "+1HealthtoAllOthers");
 };
 
 const removeLocationPoint = (state: InternalState, index: number, ctx: Context) => {
   if (state.Location?.damage == 0) return;
   if (state.Location) state.Location.damage -= 1;
-  ctx.broadcastEvent("remove1fromLocation");
+  ctx.broadcastEvent(HathoraEventTypes.default, "remove1fromLocation");
 };
 
 const chooseAttack1Ability1 = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("chooseAttack1Ability1");
+    ctx.broadcastEvent(HathoraEventTypes.default, "chooseAttack1Ability1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Attack") {
       if (state.players[index]) state.players[index].attack += 1;
-      ctx.broadcastEvent("+1Attack");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
     } else if (state.responseData.response == "Coin") {
       if (state.players[index]) state.players[index].coin += 1;
-      ctx.broadcastEvent("+1Coin");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
     }
   }
 };
 
 const chooseHealth1Ability1 = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("chooseHealth1Ability1");
+    ctx.broadcastEvent(HathoraEventTypes.default, "chooseHealth1Ability1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
@@ -267,22 +267,22 @@ const chooseHealth1Ability1 = (state: InternalState, index: number, ctx: Context
       const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
       if (isStunned != -1) return;
       if (state.players[index].health < 10) state.players[index].health += 1;
-      ctx.broadcastEvent("+1Health");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Health");
     } else if (state.responseData.response == "Coin") {
       if (state.players[index]) state.players[index].coin += 1;
-      ctx.broadcastEvent("+1Coin");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
     }
   }
 };
 const chooseAttack1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("chooseAttack1Draw1");
+    ctx.broadcastEvent(HathoraEventTypes.default, "chooseAttack1Draw1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Attack") {
       if (state.players[index]) state.players[index].attack += 1;
-      ctx.broadcastEvent("+1Attack");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Attack");
     } else if (state.responseData.response == "draw") {
       //check for draw curse
       const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
@@ -295,22 +295,22 @@ const chooseAttack1Draw1 = (state: InternalState, index: number, ctx: Context) =
 
         const myCard = state.players[index].deck.pop()!; //Draw Card
         state.players[index].hand.push(myCard);
-        ctx.broadcastEvent("draw");
+        ctx.broadcastEvent(HathoraEventTypes.default, "draw");
       } else {
-        ctx.broadcastEvent("drawBlocked");
+        ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
       }
     }
   }
 };
 const chooseAbility1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("chooseAbility1Draw1");
+    ctx.broadcastEvent(HathoraEventTypes.default, "chooseAbility1Draw1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
     if (state.responseData.response == "Coin") {
       if (state.players[index]) state.players[index].coin += 1;
-      ctx.broadcastEvent("+1Coin");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Coin");
     } else if (state.responseData.response == "draw") {
       const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
       if (isCurseActive == -1) {
@@ -322,9 +322,9 @@ const chooseAbility1Draw1 = (state: InternalState, index: number, ctx: Context) 
 
         const myCard = state.players[index].deck.pop()!; //Draw Card
         state.players[index].hand.push(myCard);
-        ctx.broadcastEvent("draw");
+        ctx.broadcastEvent(HathoraEventTypes.default, "draw");
       } else {
-        ctx.broadcastEvent("drawBlocked");
+        ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
       }
     }
   }
@@ -348,11 +348,11 @@ const draw2discard1 = (state: InternalState, index: number, ctx: Context) => {
 
     myCard = state.players[index].deck.pop()!; //Draw Card
     state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw2");
+    ctx.broadcastEvent(HathoraEventTypes.default, "draw2");
   } else {
-    ctx.broadcastEvent("drawBlocked");
+    ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
   }
-  ctx.broadcastEvent("discard");
+  ctx.broadcastEvent(HathoraEventTypes.default, "discard");
 };
 
 const Draw1Discard1 = (state: InternalState, index: number, ctx: Context) => {
@@ -366,16 +366,16 @@ const Draw1Discard1 = (state: InternalState, index: number, ctx: Context) => {
 
     const myCard = state.players[index].deck.pop()!; //Draw Card
     state.players[index].hand.push(myCard);
-    ctx.broadcastEvent("draw");
+    ctx.broadcastEvent(HathoraEventTypes.default, "draw");
   } else {
-    ctx.broadcastEvent("drawBlocked");
+    ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
   }
-  ctx.broadcastEvent("discard");
+  ctx.broadcastEvent(HathoraEventTypes.default, "discard");
 };
 
 const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("chooseHealth1Draw1");
+    ctx.broadcastEvent(HathoraEventTypes.default, "chooseHealth1Draw1");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
@@ -384,7 +384,7 @@ const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) =
       const isStunned = state.players[index].statusEffects.findIndex(se => se == StatusEffects.Stunned);
       if (isStunned != -1) return;
       if (state.players[index].health < 10) state.players[index].health += 1;
-      ctx.broadcastEvent("+1Health");
+      ctx.broadcastEvent(HathoraEventTypes.default, "+1Health");
     } else if (state.responseData.response == "draw") {
       const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.NoDraw);
       if (isCurseActive == -1) {
@@ -396,9 +396,9 @@ const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) =
 
         const myCard = state.players[index].deck.pop()!; //Draw Card
         state.players[index].hand.push(myCard);
-        ctx.broadcastEvent("draw");
+        ctx.broadcastEvent(HathoraEventTypes.default, "draw");
       } else {
-        ctx.broadcastEvent("drawBlocked");
+        ctx.broadcastEvent(HathoraEventTypes.default, "drawBlocked");
       }
     }
   }
@@ -406,7 +406,7 @@ const chooseHealth1Draw1 = (state: InternalState, index: number, ctx: Context) =
 
 const addHealth1anyPlayer = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("addHealth1anyPlayer");
+    ctx.broadcastEvent(HathoraEventTypes.default, "addHealth1anyPlayer");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
@@ -421,16 +421,16 @@ const addHealth1anyPlayer = (state: InternalState, index: number, ctx: Context) 
       state.players[pIndex].health += 1;
       switch (pIndex) {
         case 0:
-          ctx.broadcastEvent("player1health");
+          ctx.broadcastEvent(HathoraEventTypes.default, "player1health");
           break;
         case 1:
-          ctx.broadcastEvent("player2health");
+          ctx.broadcastEvent(HathoraEventTypes.default, "player2health");
           break;
         case 2:
-          ctx.broadcastEvent("player3health");
+          ctx.broadcastEvent(HathoraEventTypes.default, "player3health");
           break;
         case 3:
-          ctx.broadcastEvent("player4health");
+          ctx.broadcastEvent(HathoraEventTypes.default, "player4health");
           break;
       }
     }
@@ -439,7 +439,7 @@ const addHealth1anyPlayer = (state: InternalState, index: number, ctx: Context) 
 
 const addCoin1anyPlayer = (state: InternalState, index: number, ctx: Context) => {
   if (!userResponseFlag) {
-    ctx.broadcastEvent("addCoin1anyPlayer");
+    ctx.broadcastEvent(HathoraEventTypes.default, "addCoin1anyPlayer");
     userResponseFlag = true;
   } else {
     userResponseFlag = false;
@@ -447,18 +447,19 @@ const addCoin1anyPlayer = (state: InternalState, index: number, ctx: Context) =>
 
     let pIndex = state.players.findIndex(p => p.name == playerChosen);
     state.players[pIndex].coin += 1;
+
     switch (pIndex) {
       case 0:
-        ctx.broadcastEvent("player1coin");
+        ctx.broadcastEvent(HathoraEventTypes.default, "player1coin");
         break;
       case 1:
-        ctx.broadcastEvent("player2coin");
+        ctx.broadcastEvent(HathoraEventTypes.default, "player2coin");
         break;
       case 2:
-        ctx.broadcastEvent("player3coin");
+        ctx.broadcastEvent(HathoraEventTypes.default, "player3coin");
         break;
       case 3:
-        ctx.broadcastEvent("player4coin");
+        ctx.broadcastEvent(HathoraEventTypes.default, "player4coin");
         break;
     }
   }
@@ -479,9 +480,9 @@ const allHereosDrawOne = (state: InternalState, index: number, ctx: Context) => 
 
       const myCard = p.deck.pop()!; //Draw Card
       p.hand.push(myCard);
-      ctx.sendEvent("draw", p.id);
+      ctx.sendEvent(HathoraEventTypes.default, "draw", p.id);
     } else {
-      ctx.sendEvent("drawblocked", p.id);
+      ctx.sendEvent(HathoraEventTypes.default, "drawblocked", p.id);
     }
   });
 };
@@ -492,14 +493,14 @@ const discard = (state: InternalState, index: number, ctx: Context) => {
   //check for discard curse
   const isCurseActive = state.players[index].statusEffects.findIndex(se => se == StatusEffects.DiscardCurse);
   if (isCurseActive != -1) {
-    ctx.broadcastEvent("discardcurse");
+    ctx.broadcastEvent(HathoraEventTypes.default, "discardcurse");
     loseOneHealth(state, index, ctx);
   }
 
   let CIndex = state.players[index].hand.findIndex(c => c.id === cardToRemove);
   if (CIndex != -1) {
     state.players[index].hand.splice(CIndex, 1);
-    ctx.broadcastEvent("discarded");
+    ctx.broadcastEvent(HathoraEventTypes.default, "discarded");
   }
 };
 
@@ -513,7 +514,7 @@ const stunPlayer = (state: InternalState, index: number, ctx: Context) => {
     state.players[index].hand.splice(cardIndex, 1);
   }
   state.players[index].statusEffects.push(StatusEffects.Stunned);
-  ctx.broadcastEvent("STUNNED");
+  ctx.broadcastEvent(HathoraEventTypes.default, "STUNNED");
 };
 
 const callbacks = {
