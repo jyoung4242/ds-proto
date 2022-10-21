@@ -197,11 +197,12 @@ export let p1Coin1: GameEventSequence = { sequence: [raisep1Coin, refreshPlayerH
 export let p2Coin1: GameEventSequence = { sequence: [raisep2Coin, refreshPlayerHand] };
 export let p3Coin1: GameEventSequence = { sequence: [raisep3Coin, refreshPlayerHand] };
 export let p4Coin1: GameEventSequence = { sequence: [raisep4Coin, refreshPlayerHand] };
-export let showCardPool: GameEventSequence = { sequence: [shortdelay, openCardPool, shortdelay, shortdelay] };
+export let showCardPool: GameEventSequence = {
+  sequence: [shortdelay, openCardPool, shortdelay, shortdelay, enableMonsterDamage],
+};
 export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard, shortdelay, shortdelay] };
 export let hideCardpool: GameEventSequence = {
   sequence: [
-    enableMonsterDamage,
     shortdelay,
     shortdelay,
     shortdelay,
