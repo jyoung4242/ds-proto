@@ -157,8 +157,9 @@ export let skipMonsters: GameEventSequence = {
   sequence: [shortdelay, indexProgressBar_monster, shortdelay, promptPlayersHand],
 };
 export let MonsterPlayed: GameEventSequence = {
-  sequence: [unBloomMonster, shortdelay, indexProgressBar_monster, promptPlayersHand],
+  sequence: [unBloomMonster, shortdelay, indexProgressBar_monster],
 };
+export let showplayerenable: GameEventSequence = { sequence: [shortdelay, promptPlayersHand] };
 export let playerHandShow: GameEventSequence = { sequence: [shortdelay, showPlayerHand] };
 export let add1Attack: GameEventSequence = { sequence: [addAttack1, refreshPlayerHand] };
 export let add2Attack: GameEventSequence = { sequence: [addAttack2, refreshPlayerHand] };
