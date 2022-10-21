@@ -206,6 +206,7 @@ export class State {
           utils.login();
         },
         load_next: (event, model, element) => {
+          console.log("loaded");
           if (this.state.myTitle.isDisabled == false) return;
 
           if (this.state.myTitle.preloadIndex + 1 == this.state.myTitle.preloadArray.length) {
@@ -439,21 +440,15 @@ export class State {
           //if coins > card cost let them buy
           //if coin < card cost, toast message
           const userMoneyAmount = this.state.gameData.Players[usr].coin;
-          console.log(
-            `cardpool: 387, clickedCard: ${clickedCard}, cardPoolIndex: ${cardPoolIndex}, usermoney: ${userMoneyAmount}`
-          );
 
           if (userMoneyAmount >= this.state.gameData.cardPool[cardPoolIndex].cost) {
-            console.log("selecting card");
             this.state.myCardPool.cardSelected = cardPoolIndex;
             this.state.myCardPool.selectedCard.title = this.state.gameData.cardPool[cardPoolIndex].title;
             this.state.myCardPool.selectedCard.desc = this.state.gameData.cardPool[cardPoolIndex].effectString;
             this.state.myCardPool.selectedCard.cost = this.state.gameData.cardPool[cardPoolIndex].cost;
             this.state.myCardPool.selectedCard.level = this.state.gameData.cardPool[cardPoolIndex].level;
             this.state.myCardPool.selectedCard.id = this.state.gameData.cardPool[cardPoolIndex].id;
-            console.log("showing confirmation modal");
             this.state.myCardPool.showConfirmation = true;
-            console.log("after showing confirmation modal");
             //show card confirmation window
           } else {
             this.state.myToast.addToast("card", "Player lacks the funds");
@@ -607,7 +602,6 @@ export class State {
         },
         isEmpty: false,
         clickHandler: (_event, model, element, _attribute, object) => {
-          console.log("choice button: ", isChoiceButtonActive);
           if (isChoiceButtonActive) return;
 
           const usr = this.state.gameData.Players.findIndex(p => {
@@ -615,8 +609,6 @@ export class State {
           });
 
           const myTurn = this.state.gameData.Players[usr].id == this.state.playerData.id;
-          console.log(this.state.gameData.Players[usr].id, myTurn, this.state.playerData.id);
-
           if (!myTurn) return;
           //utils.playSound("playCard");
           const cardId = element.getAttribute("id");
@@ -719,7 +711,6 @@ export class State {
           this.state.myMonster.monsterAttacks.push({ x, y, orientation });
           UI.update();
           this.state.myMonster.monsterAttacks = [];
-          console.log(this.state.myMonster.monsterAttacks);
         },
       },
       mySettings: {
@@ -969,7 +960,7 @@ export class State {
       b.forEach((card, i) => {
         if ("id" in a[i]) {
           if (card.id != a[i].id) failedtests++;
-          console.log(`card damage: ${card.damage} vs ${a[i].damage}`);
+
           if (card.damage != a[i].damage) failedtests++;
         }
       });
