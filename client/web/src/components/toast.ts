@@ -6,7 +6,7 @@ export class Toast {
     <div class="toast_container">
         <div  class="toast_entry" \${msg<=*myToast.messages} >
             <div id="elm_\${msg.$index}"  class="toast_img_container bloom">
-                    <img \${mouseover@=>msg.hover} class="toast_img" src="\${msg.img}" alt=""/>    
+                    <img \${mouseover@=>msg.hover} class="toast_img" src="\${|msg.img}" alt=""/>    
             </div>
             <div  class="toast_message">\${msg.msg}</div>
             <div \${click@=>msg.close} class="toast_close">X</div>

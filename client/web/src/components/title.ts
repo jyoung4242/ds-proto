@@ -44,7 +44,7 @@ export class TitleComponent {
       <button class="titleButton" \${click@=>myTitle.login} \${disabled <== myTitle.isDisabled}>LOGIN</button>
       <img class="titleHelp" src="${help}" alt="" \${click@=>myHelp.showModal}/>
       <img class="game_menu_icon" src="${settings}" alt="" \${click@=>mypUI.showOptions}/>
-      <img id="preload" style="visibility: hidden; position: fixed; top: 0; left: 0;" src="\${myTitle.preload}" alt=""  \${load@=>myTitle.load_next}/img>
+      <img id="preload" style="visibility: hidden; position: fixed; top: 0; left: 0;" src="\${myTitle.preload}" alt=""  \${load@=>myTitle.load_next}/>
       ${this.help.template}
       ${this.settings.template}
     </div>`;
