@@ -206,7 +206,6 @@ export class State {
           utils.login();
         },
         load_next: (event, model, element) => {
-          console.log("loaded");
           if (this.state.myTitle.isDisabled == false) return;
 
           if (this.state.myTitle.preloadIndex + 1 == this.state.myTitle.preloadArray.length) {
