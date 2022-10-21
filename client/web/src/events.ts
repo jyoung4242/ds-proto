@@ -201,6 +201,7 @@ export let showCardPool: GameEventSequence = { sequence: [shortdelay, openCardPo
 export let cardpurchased: GameEventSequence = { sequence: [shortdelay, buycard, shortdelay, shortdelay] };
 export let hideCardpool: GameEventSequence = {
   sequence: [
+    enableMonsterDamage,
     shortdelay,
     shortdelay,
     shortdelay,
@@ -209,7 +210,6 @@ export let hideCardpool: GameEventSequence = {
     shortdelay,
     indexProgressBar_cardPool,
     shortdelay,
-    enableMonsterDamage,
   ],
 };
 export let enablemonsterDamage: GameEventSequence = { sequence: [checkforAttack, highlightMonsters] };
