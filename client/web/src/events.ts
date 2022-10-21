@@ -1,7 +1,7 @@
 import { resolve } from "../webpack.config";
 import { utils } from "./utils";
 import { Character, iStatusMessage } from "./components/character";
-import { clearIsChoiceFlag } from "./state/state";
+import { clearIsChoiceFlag, setIsChoiceFlag } from "./state/state";
 import { discard, nodraw, location, stunned, mBonus } from "./assets/assetPool";
 import { RoundState } from "../../../api/types";
 import { Router } from "./components";
@@ -127,6 +127,7 @@ let setPlayerback3: GameEventType = { type: "reset", value: 3 };
 let hideCursor: GameEventType = { type: "hidecursor" };
 let showCursor: GameEventType = { type: "showcursor" };
 let setState: GameEventType = { type: "startsequence" };
+let ChoiceButtonActive: GameEventType = { type: "setChoiceButtonActive" };
 
 type GameEventSequence = {
   sequence: GameEventType[];
@@ -169,23 +170,29 @@ export let drawNewCard: GameEventSequence = { sequence: [drawCard, refreshPlayer
 export let draw2NewCard: GameEventSequence = { sequence: [drawCard2, refreshPlayerHand] };
 export let healOthers1: GameEventSequence = { sequence: [healOthers, refreshPlayerHand] };
 export let remove1Location: GameEventSequence = { sequence: [locationHeal, refreshPlayerHand] };
-export let chooseAtk1Coin1: GameEventSequence = { sequence: [choose_Atk1Coin1, refreshPlayerHand] };
-export let chooseHealth1Coin1: GameEventSequence = { sequence: [choose_Health1Coin1, refreshPlayerHand] };
-export let chooseAtk1Draw1: GameEventSequence = { sequence: [choose_Atk1Draw1, refreshPlayerHand] };
-export let chooseCoin1Draw1: GameEventSequence = { sequence: [choose_Coin1Draw1, refreshPlayerHand] };
-export let chooseHealth1Draw1: GameEventSequence = { sequence: [choose_Health1Draw1, refreshPlayerHand] };
+export let chooseAtk1Coin1: GameEventSequence = { sequence: [ChoiceButtonActive, choose_Atk1Coin1, refreshPlayerHand] };
+export let chooseHealth1Coin1: GameEventSequence = {
+  sequence: [ChoiceButtonActive, choose_Health1Coin1, refreshPlayerHand],
+};
+export let chooseAtk1Draw1: GameEventSequence = { sequence: [ChoiceButtonActive, choose_Atk1Draw1, refreshPlayerHand] };
+export let chooseCoin1Draw1: GameEventSequence = { sequence: [ChoiceButtonActive, choose_Coin1Draw1, refreshPlayerHand] };
+export let chooseHealth1Draw1: GameEventSequence = {
+  sequence: [ChoiceButtonActive, choose_Health1Draw1, refreshPlayerHand],
+};
 export let playerHandDone: GameEventSequence = {
   sequence: [hidePlayerHand, shortdelay, indexProgressBar_player, shortdelay, showCardPoolEnable],
 };
 export let otherPlayer1Health: GameEventSequence = { sequence: [chooseOtherPlayerToHeal, refreshPlayerHand] };
-export let anyPlayer1Health: GameEventSequence = { sequence: [chooseAnyPlayerToHeal, refreshPlayerHand] };
-export let discard1: GameEventSequence = { sequence: [discard1card, refreshPlayerHand] };
+export let anyPlayer1Health: GameEventSequence = {
+  sequence: [ChoiceButtonActive, chooseAnyPlayerToHeal, refreshPlayerHand],
+};
+export let discard1: GameEventSequence = { sequence: [ChoiceButtonActive, discard1card, refreshPlayerHand] };
 export let p1Health1: GameEventSequence = { sequence: [raisep1health, flashp1, refreshPlayerHand] };
 export let p2Health1: GameEventSequence = { sequence: [raisep2health, flashp2, refreshPlayerHand] };
 export let p3Health1: GameEventSequence = { sequence: [raisep3health, flashp3, refreshPlayerHand] };
 export let p4Health1: GameEventSequence = { sequence: [raisep4health, flashp4, refreshPlayerHand] };
 export let refreshHand: GameEventSequence = { sequence: [refreshPlayerHand] };
-export let anyPlayer1Coin: GameEventSequence = { sequence: [chooseAnyPlayerToCoin, refreshPlayerHand] };
+export let anyPlayer1Coin: GameEventSequence = { sequence: [ChoiceButtonActive, chooseAnyPlayerToCoin, refreshPlayerHand] };
 export let p1Coin1: GameEventSequence = { sequence: [raisep1Coin, refreshPlayerHand] };
 export let p2Coin1: GameEventSequence = { sequence: [raisep2Coin, refreshPlayerHand] };
 export let p3Coin1: GameEventSequence = { sequence: [raisep3Coin, refreshPlayerHand] };
@@ -616,6 +623,11 @@ class GameEvent {
       this.state.myNavInput.contTop = "25%";
       this.state.myNavInput.isVisible = true;
     }
+    resolve();
+  }
+
+  setChoiceButtonActive(resolve) {
+    setIsChoiceFlag();
     resolve();
   }
 

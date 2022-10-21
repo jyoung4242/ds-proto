@@ -127,6 +127,10 @@ export const clearIsChoiceFlag = () => {
   isChoiceButtonActive = false;
 };
 
+export const setIsChoiceFlag = () => {
+  isChoiceButtonActive = true;
+};
+
 export class State {
   state: any;
 
